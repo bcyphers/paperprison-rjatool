@@ -8,4 +8,4 @@
 
 `npm run build`
 
-It will generate everything under ./docs folder. Please follow https://docs.github.com/en/pages
+It will generate everything under ./docs folder.
