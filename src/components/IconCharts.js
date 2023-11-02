@@ -37,7 +37,7 @@ const PersonIcon = ({ value = 0, label = 0, race = '', scale = 1, onDisclaimerCh
                   className={`icon-person re-${race}`}
                   title={valueRoof}
                 >
-                  <use href="/images/sprites.svg#person"></use>
+                  <use href="/media/sprites.svg#person"></use>
                 </svg>
                 <span
                   className="icon-chart-data-point-mask"
