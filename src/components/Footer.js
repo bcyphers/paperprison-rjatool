@@ -3,7 +3,7 @@ import React from "react";
 const Footer = () => {
   return (
     <div className="disclaimer footer">
-      <a href="mailto:info@paperprisons.org">info@paperprisons.org</a>
+      <a href="mailto:rja@paperprisons.org">info@paperprisons.org</a>
       <p> © 2023 Paper Prison Initiative</p>
       <p>
         <a href="https://paperprisons.org/privacypolicy.html">Privacy Policy</a>{" "}
