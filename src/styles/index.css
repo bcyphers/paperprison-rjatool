@@ -23,7 +23,7 @@
 ::after,
 ::before {
   box-sizing: border-box;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
 }
 
 .sub-nav-wrapper {
@@ -36,7 +36,7 @@
 @media (min-width: 900px), print {
   .sub-nav-wrapper {
     display: flex;
-  } 
+  }
 }
 
 .icon-person {
@@ -244,14 +244,14 @@
 }
 
 .select-component.select-component-counties ul {
-  display: flex;
-  flex-wrap: wrap;
+  column-count: 5;
 }
 
 .select-component ul li {
   cursor: pointer;
   font-weight: bold;
   padding: 10px 0;
+  break-inside: avoid;
 }
 
 .select-component ul li input {
