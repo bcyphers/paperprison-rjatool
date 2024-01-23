@@ -9,16 +9,27 @@ const formatNumber = (number) => {
   }
 };
 
-const PersonIcon = ({ value = 0, label = 0, race = '', scale = 1, onDisclaimerChange = () => {} }) => {
+const PersonIcon = ({
+  value = 0,
+  label = 0,
+  race = "",
+  scale = 1,
+  curDisclaimers = [],
+  onDisclaimerChange = () => {},
+}) => {
   const valueRoof = Math.ceil(value);
   const maskHeight = {
     height: `${valueRoof * 100 - value * 100}%`,
   };
-  if (valueRoof === 0 && scale !== 1) {
-    onDisclaimerChange("N/A")
-  } else if (scale == 1 && valueRoof === 0) {
-    onDisclaimerChange("0.0")
+
+  if (valueRoof === 0) {
+    if (scale == 1 && !curDisclaimers.includes("0.0")) {
+      onDisclaimersChange(curDisclaimers.concat(["0.0"]));
+    } else if (scale != 1 && !curDisclaimers.includes("N/A")) {
+      onDisclaimersChange(curDisclaimers.concat(["N/A"]));
+    }
   }
+
   return (
     <div className="icon-chart-data">
       {((valueRoof > 0 && label >= 10) || scale == 1) ? (
@@ -65,8 +76,9 @@ const PersonIcon = ({ value = 0, label = 0, race = '', scale = 1, onDisclaimerCh
 };
 
 const CHART_DISCLAIMER = {
-  "N/A": "N/A: Our tool displays N/A when when there are 10 or less underlying observations.",
-  "0.0": "Anywhere a disparity gap reads 0.0, it means that there were no white adults in the system at that point for a comparison of rates. Please see raw numbers and rates to see how adults of color are impacted by the decision point.",
+  "N/A": "Our tool displays N/A when when there are 10 or fewer underlying observations for at least one of the variables needed to compute the metric.",
+  "0.0": "A displayed value of 0.00 means that sufficient data is available, but the value is less than 0.005.",
+  "Dgap": "No disparity gap per prior event information is available for arrests.",
 }
 
 const SCALE = {
@@ -96,7 +108,14 @@ const getScale = (data) => {
 }
 
 const IconCharInner = ({ chartData, races, base, measurement }) => {
-  const [disclaimer, setDisclaimer] = useState('')
+  const [disclaimers, setDisclaimers] = useState([]);
+
+  if (measurement.indexOf("Disparity gap") > -1 && !disclaimers.includes("Dgap")) {
+    setDisclaimers(["Dgap"]);
+  } else if (measurement.indexOf("Disparity gap") == -1 && disclaimers.includes("Dgap")) {
+    setDisclaimers([]);
+  }
+
   let scale = 1;
   const isRawNumber = [
     "Raw numbers",
@@ -108,7 +127,7 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
     ...getScale(chartData.data),
   }));
   if (measurement === "Raw numbers" || measurement === "Rate per prior event point") {
-    scale = yearData.scale 
+    scale = yearData.scale
   }
   const scaledYearData = yearData.data.map((yd) => {
     return {
@@ -160,7 +179,8 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
                           race={raceItem}
                           scale={scale}
                           label={raceData?.items[raceItem]?.origin}
-                          onDisclaimerChange={setDisclaimer}
+                          curDisclaimers={disclaimers}
+                          onDisclaimersChange={setDisclaimers}
                         />
                       </div>
                     );
@@ -170,8 +190,9 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
             );
           })}
       </div>
-      {CHART_DISCLAIMER[disclaimer] && (<p className="icon-chart-disclaimer">{CHART_DISCLAIMER[disclaimer]}</p>)}
-      {measurement.indexOf("Disparity gap") > -1 && (<p className="icon-chart-disclaimer">No disparity gap information is available for arrests because they are the beginning of the process.</p>)}
+      <div>
+        {disclaimers.map((d) => <p className="icon-chart-disclaimer">{CHART_DISCLAIMER[d]}</p>)}
+      </div>
     </div>
   );
 };
