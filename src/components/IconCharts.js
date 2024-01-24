@@ -84,6 +84,14 @@ const CHART_DISCLAIMER = {
   pep: "No rate per prior event information is available for arrests because arrests are the beginning of the process.",
 }
 
+const MEASUREMENTS = {
+  RAW: "Raw numbers",
+  RATE: "Rate per population",
+  R_PEP: "Rate per prior event point",
+  DG: "Disparity gap per population",
+  DG_PEP: "Disparity gap per prior event point",
+};
+
 const SCALE = {
   100: 10,
   500: 50,
@@ -98,20 +106,32 @@ const SCALE = {
   10000000: 1000000
 }
 
-const getScale = (data) => {
+const scaleDown = (data) => {
   let max = 0;
 
-  // find largest value present in data
+  // find smallest values present in data
   data.forEach(({items}) => {
-    max = Math.max(...Object.values(items), max)
+    max = Math.max(...Object.values(items), max);
+  });
+
+  let scale = 1;
+  while (max * scale < 1) {
+    scale *= 10;
+  }
+
+  return 1 / scale;
+}
+
+const scaleUp = (data) => {
+  let max = 0;
+
+  // find largest & smallest values present in data
+  data.forEach(({items}) => {
+    max = Math.max(...Object.values(items), max);
   });
 
   const list = Object.keys(SCALE).map(item => parseInt(item, 10)).concat([max]);
-
-  return {
-    max,
-    scale: SCALE[`${list[list.sort((a,b) => a - b).indexOf(max) + 1]}`]
-  };
+  return SCALE[`${list[list.sort((a,b) => a - b).indexOf(max) + 1]}`];
 }
 
 const IconCharInner = ({ chartData, races, base, measurement }) => {
@@ -124,30 +144,30 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
   let scale = 1;
 
   const isRawNumber = [
-    "Raw numbers",
-    "Rate per population",
-    "Rate per prior event point",
+    MEASUREMENTS.RAW,
+    MEASUREMENTS.RATE,
+    MEASUREMENTS.R_PEP,
   ].includes(measurement);
+
+  if (measurement === MEASUREMENTS.RAW) {
+    scale = scaleUp(chartData.data);
+  } else if (measurement === MEASUREMENTS.RATE) {
+    scale = scaleDown(chartData.data);
+  }
 
   const yearData = JSON.parse(JSON.stringify({
     ...chartData,
-    ...getScale(chartData.data),
   }));
-
-  if (measurement === "Raw numbers" || measurement === "Rate per prior event point") {
-    scale = yearData.scale;
-  }
 
   const scaledYearData = yearData.data.map((yd) => {
     return {
       label: yd.label,
       items: Object.keys(yd.items).reduce((acc, k) => {
-        const _scaled = isRawNumber
-            ? (yd.items[k] / scale).toFixed(2)
-            : (yd.items[k] / (yd.records[k] || 1) / scale).toFixed(2);
-        const _origin = isRawNumber
-            ? yd.items[k]
-            : (yd.items[k] / (yd.records[k] || 1)).toFixed(2);
+        let _origin = yd.items[k];
+        if (scale < 1) {
+          _origin /= scale;
+        }
+        const _scaled = (yd.items[k] / scale).toFixed(2);
 
         if (Math.ceil(_scaled) === 0) {
           if (_origin > 0) {
@@ -167,14 +187,22 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
     };
   });
 
+  let scaleString = scale.toLocaleString();
+  let postScaleString = "";
+
+  if (scale < 1) {
+    scaleString = "1"
+    postScaleString = "per " + (1/scale * 100).toLocaleString();
+  }
+
   return (
     <div className="icon-chart" key={yearData.year}>
       <h3>
         {yearData.year}
         <div className="chart-meta">
           <div className="chart-scale">
-            <PersonIcon value={1} race={base} scale={1} /> {scale.toLocaleString()}{" "}
-            {!base ? (scale > 1 ? "Adults" : "Adult ") : "White Adult"}
+            <PersonIcon value={1} race={base} scale={1} /> {scaleString}{" "}
+            {base ? "White Adult" : (scale > 1 ? "Adults" : "Adult")} {postScaleString}
           </div>
         </div>
       </h3>

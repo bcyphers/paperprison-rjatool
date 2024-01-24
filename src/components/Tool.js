@@ -9,14 +9,12 @@ import Grid from "@/components/Grid";
 
 const MEASUREMENTS_MAP = {
   "Raw numbers": "Raw numbers",
-  "Rate per population": "Rate per 1,000 adults",
+  "Rate per population": "Rate per unit population",
   "Rate per prior event point": "Rate per prior decision point",
-  "Disparity gap per population": "Disparity gap per 1,000 adults",
+  "Disparity gap per population": "Disparity gap vs. white adults",
   "Disparity gap per prior event point":
     "Disparity gap per prior decision point",
 };
-
-const MEASUREMENTS = Object.keys(MEASUREMENTS_MAP);
 
 const RACES = {
   White: "White",
@@ -251,7 +249,7 @@ export default function App() {
             : item.rate_per_100_pop;
           item["Rate per prior event point"] = isNaN(item.rate_cond_previous)
             ? 0
-            : item.rate_cond_previous;
+            : item.rate_cond_previous / 100;
           item["Disparity gap per population"] = isNaN(item.disparity_gap_pop_w)
             ? 0
             : item.disparity_gap_pop_w;
@@ -556,7 +554,7 @@ export default function App() {
             label="Measurement"
             value={measurement}
             onChange={onMeasurementsChange}
-            options={MEASUREMENTS.map((m) => ({
+            options={Object.keys(MEASUREMENTS_MAP).map((m) => ({
               text: m,
               value: m,
             }))}
