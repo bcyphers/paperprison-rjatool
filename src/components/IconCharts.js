@@ -58,21 +58,14 @@ const PersonIcon = ({
           );
         })
       ) : (
-        label > 0 ? (
-          <div className="icon-chart-data-point">
-            <div className="icon-person icon-person-placeholder" />
-            <span className="icon-chart-data-point-mask">
-              <div className="icon-chart-data-label">{formatNumber(label)}</div>
-            </span>
-          </div>
-        ) : (
-          <div className="icon-chart-data-point">
-            <div className="icon-person icon-person-placeholder" />
-              <span className="icon-chart-data-point-mask">
-              <div className="icon-chart-data-label">N/A</div>
-            </span>
-          </div>
-        )
+        <div className="icon-chart-data-point">
+          <div className="icon-person icon-person-placeholder" />
+          <span className="icon-chart-data-point-mask">
+            <div className="icon-chart-data-label">
+              {label > 0 ? formatNumber(label) : "N/A"}
+            </div>
+          </span>
+        </div>
       )}
     </div>
   );
@@ -109,7 +102,7 @@ const SCALE = {
 const scaleDown = (data) => {
   let max = 0;
 
-  // find smallest values present in data
+  // find largest value present in data
   data.forEach(({items}) => {
     max = Math.max(...Object.values(items), max);
   });
@@ -125,7 +118,7 @@ const scaleDown = (data) => {
 const scaleUp = (data) => {
   let max = 0;
 
-  // find largest & smallest values present in data
+  // find largest value present in data
   data.forEach(({items}) => {
     max = Math.max(...Object.values(items), max);
   });
@@ -175,7 +168,6 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
         acc[k] = {
           scaled: _scaled,
           origin: _origin,
-          scale,
         };
         return acc;
       }, {}),
