@@ -129,22 +129,6 @@ export default function App() {
     setShowTable(!showTable);
   };
 
-  const getRaces = (chart) => {
-    let _races = [];
-
-    for (let year of chart) {
-      for (let ep of year.data) {
-        for (let race in ep.items) {
-          if (!_races.includes(race)) {
-            _races.push(race)
-          }
-        }
-      }
-    }
-
-    return Object.fromEntries(Object.entries(RACES).filter(([key]) => _races.includes(key)));
-  };
-
   const filter = (
     { decisionPoints, races, offenses, years, measurement, genders },
     records = fullRecords,
@@ -624,7 +608,7 @@ export default function App() {
         ) : (
           <IconCharts
             data={filteredRecords.chart}
-            races={getRaces(filteredRecords.chart)}
+            races={Object.fromEntries(Object.entries(RACES).filter(([key]) => races.includes(key)))}
             base={chartConfig.base}
             measurement={measurement}
           />

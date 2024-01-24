@@ -143,38 +143,33 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
 
   let scale = 1;
 
-  const isRawNumber = [
-    MEASUREMENTS.RAW,
-    MEASUREMENTS.RATE,
-    MEASUREMENTS.R_PEP,
-  ].includes(measurement);
-
   if (measurement === MEASUREMENTS.RAW) {
     scale = scaleUp(chartData.data);
   } else if (measurement === MEASUREMENTS.RATE) {
     scale = scaleDown(chartData.data);
   }
 
-  const yearData = JSON.parse(JSON.stringify({
-    ...chartData,
-  }));
+  const filteredRaces = Object.keys(races).filter(
+    (raceItem) => raceItem.toLowerCase() !== base);
 
-  const scaledYearData = yearData.data.map((yd) => {
+  const scaledYearData = chartData.data.map((yd) => {
     return {
       label: yd.label,
-      items: Object.keys(yd.items).reduce((acc, k) => {
+      items: filteredRaces.reduce((acc, k) => {
+        if (!(k in yd.items)) {
+          disclaimers.n_a = true;
+          acc[k] = {scaled: 0, origin: 0, scale: 1};
+          return acc;
+        }
+
         let _origin = yd.items[k];
         if (scale < 1) {
           _origin /= scale;
         }
         const _scaled = (yd.items[k] / scale).toFixed(2);
 
-        if (_origin < 0.005) {
-          if (_origin > 0) {
-            disclaimers.zero = true;
-          } else {
-            disclaimers.n_a = true;
-          }
+        if (_origin < 0.005 && _origin > 0) {
+          disclaimers.zero = true;
         }
 
         acc[k] = {
@@ -196,9 +191,9 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
   }
 
   return (
-    <div className="icon-chart" key={yearData.year}>
+    <div className="icon-chart" key={chartData.year}>
       <h3>
-        {yearData.year}
+        {chartData.year}
         <div className="chart-meta">
           <div className="chart-scale">
             <PersonIcon value={1} race={base} scale={1} /> {scaleString}{" "}
@@ -207,9 +202,7 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
         </div>
       </h3>
       <div className="icon-chart-races-container">
-        {Object.keys(races)
-          .filter((raceItem) => raceItem.toLowerCase() !== base)
-          .map((raceItem) => {
+        {filteredRaces.map((raceItem) => {
             return (
               <div className="icon-chart-race-container" key={raceItem}>
                 <h4>{races[raceItem]}</h4>
