@@ -9,14 +9,12 @@ import Grid from "@/components/Grid";
 
 const MEASUREMENTS_MAP = {
   "Raw numbers": "Raw numbers",
-  "Rate per population": "Rate per 1,000 adults",
+  "Rate per population": "Rate per unit population",
   "Rate per prior event point": "Rate per prior decision point",
-  "Disparity gap per population": "Disparity gap per 1,000 adults",
+  "Disparity gap per population": "Disparity gap vs. white adults",
   "Disparity gap per prior event point":
     "Disparity gap per prior decision point",
 };
-
-const MEASUREMENTS = Object.keys(MEASUREMENTS_MAP);
 
 const RACES = {
   White: "White",
@@ -134,17 +132,17 @@ export default function App() {
     records = fullRecords,
   ) => {
     const allowedEventPoints = [
-      "Charge",
+      "Court",
       "Conviction",
       "Prison sentence",
       "Felony conviction",
     ];
     const raw = records.filter((r) => {
       if (
-        measurement === "Rate per prior event point" &&
+        measurement.indexOf("prior event point") > -1 &&
         !allowedEventPoints.includes(r["Event Point"])
       ) {
-        // Exclude records with measurement "Rate per prior event point" and other event points
+        // Exclude arrest data from "prior event point" metrics
         return false;
       }
       if (races.length > 0 && !races.includes(r.Race)) {
@@ -208,8 +206,6 @@ export default function App() {
                 let temp = acc[k] + (dd.items[k] || 0);
                 if (measurement === "Raw numbers") {
                   temp = Math.ceil(temp);
-                } else {
-                  temp = Number(Number(temp).toFixed(2));
                 }
                 acc[k] = temp;
                 return acc;
@@ -232,7 +228,8 @@ export default function App() {
     setLoading(true);
     const parser = new PublicGoogleSheetsParser();
     parser
-      .parse("1j9YBu-u-5tTgEAUy7uP9NmHdSLEwDVKWZJsMDTvAPXQ", sheet)
+      //.parse("1j9YBu-u-5tTgEAUy7uP9NmHdSLEwDVKWZJsMDTvAPXQ", sheet)
+      .parse("1qFsF5ivZUHDRsst4sHZYt_eMZypO93eYUpXT1XBQYYQ", sheet)
       .then((originItems) => {
         let _years = [];
         const _decisionPoints = [];
@@ -252,14 +249,11 @@ export default function App() {
             : item.rate_per_100_pop;
           item["Rate per prior event point"] = isNaN(item.rate_cond_previous)
             ? 0
-            : item.rate_cond_previous;
-
+            : item.rate_cond_previous / 100;
           item["Disparity gap per population"] = isNaN(item.disparity_gap_pop_w)
             ? 0
             : item.disparity_gap_pop_w;
-          item["Disparity gap per prior event point"] = isNaN(
-            item.disparity_gap_cond_w,
-          )
+          item["Disparity gap per prior event point"] = isNaN(item.disparity_gap_cond_w)
             ? 0
             : item.disparity_gap_cond_w;
           return item;
@@ -463,7 +457,7 @@ export default function App() {
 
       filter({
         races,
-        genders,
+        //genders,
         decisionPoints,
         offenses,
         years,
@@ -560,7 +554,7 @@ export default function App() {
             label="Measurement"
             value={measurement}
             onChange={onMeasurementsChange}
-            options={MEASUREMENTS.map((m) => ({
+            options={Object.keys(MEASUREMENTS_MAP).map((m) => ({
               text: m,
               value: m,
             }))}
