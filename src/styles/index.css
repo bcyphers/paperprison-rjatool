@@ -264,14 +264,14 @@
 }
 
 .select-component.select-component-counties ul {
-  display: flex;
-  flex-wrap: wrap;
+  column-count: 5;
 }
 
 .select-component ul li {
   cursor: pointer;
   font-weight: bold;
   padding: 10px 0;
+  break-inside: avoid;
 }
 
 .select-component ul li input {
@@ -331,9 +331,7 @@
   text-decoration: none;
   padding: 8px 16px;
   border-radius: 20px;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
   margin: 5px;
 }
 
@@ -601,9 +599,7 @@
   color: #333;
   padding: 10px 20px;
   border-radius: 10px 10px 0 0;
-  transition:
-    background 0.3s,
-    box-shadow 0.3s;
+  transition: background 0.3s, box-shadow 0.3s;
 }
 
 .left {
