@@ -208,8 +208,6 @@ export default function App() {
                 let temp = acc[k] + (dd.items[k] || 0);
                 if (measurement === "Raw numbers") {
                   temp = Math.ceil(temp);
-                } else {
-                  temp = Number(Number(temp).toFixed(2));
                 }
                 acc[k] = temp;
                 return acc;

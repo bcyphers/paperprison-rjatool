@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 
-const formatNumber = (number) => {
+const formatNumber = (n) => {
+  const number = Number(n);
+
   if (number > 1000) {
-    const formattedNumber = (number / 1000).toFixed(1);
-    return formattedNumber + "k";
+    // we want three sig figs
+    return (number / 1000).toPrecision(3) + "k";
+  } else if (Number.isInteger(number)) {
+    // if it's an integer less than 1000, display normally
+    return number;
+  } else if (number > 1) {
+    // round smaller numbers to three sigfigs again
+    return number.toPrecision(3);
   } else {
-    return number.toString();
+    // no more than two digits after the decimal
+    return number.toFixed(2);
   }
 };
 
@@ -32,51 +41,55 @@ const PersonIcon = ({
 
   return (
     <div className="icon-chart-data">
-      {((valueRoof > 0 && label >= 10) || scale == 1) ? (
-        valueRoof === 0 ? (<div className="icon-chart-data-point">
-        <div className="icon-person icon-person-placeholder" />
-        <span className="icon-chart-data-point-mask">
-          <div className="icon-chart-data-label">0.0</div>
-        </span>
-      </div>) : Array(valueRoof)
-          .fill(0)
-          .map((_, index) => {
-            return (
-              <div className="icon-chart-data-point" key={index}>
-                <svg
-                  aria-label="Person"
-                  className={`icon-person re-${race}`}
-                  title={valueRoof}
-                >
-                  <use href="/images/sprites.svg#person"></use>
-                </svg>
-                <span
-                  className="icon-chart-data-point-mask"
-                  style={valueRoof - 1 === index ? maskHeight : {}}
-                >
-                  {valueRoof - 1 === index && (
-                    <div className="icon-chart-data-label">
-                      {formatNumber(label)}
-                    </div>
-                  )}
-                </span>
-              </div>
-            );
-          })
+      {valueRoof > 0 ? (
+        Array(valueRoof)
+        .fill(0)
+        .map((_, index) => {
+          return (
+            <div className="icon-chart-data-point" key={index}>
+              <svg
+                aria-label="Person"
+                className={`icon-person re-${race}`}
+                title={valueRoof}
+              >
+                <use href="/images/sprites.svg#person"></use>
+              </svg>
+              <span
+                className="icon-chart-data-point-mask"
+                style={valueRoof - 1 === index ? maskHeight : {}}
+              >
+                {valueRoof - 1 === index && (
+                  <div className="icon-chart-data-label">
+                    {formatNumber(label)}
+                  </div>
+                )}
+              </span>
+            </div>
+          );
+        })
       ) : (
-        <div className="icon-chart-data-point">
-          <div className="icon-person icon-person-placeholder" />
-          <span className="icon-chart-data-point-mask">
-            <div className="icon-chart-data-label">N/A</div>
-          </span>
-        </div>
+        label > 0 ? (
+          <div className="icon-chart-data-point">
+            <div className="icon-person icon-person-placeholder" />
+            <span className="icon-chart-data-point-mask">
+              <div className="icon-chart-data-label">0.00</div>
+            </span>
+          </div>
+        ) : (
+          <div className="icon-chart-data-point">
+            <div className="icon-person icon-person-placeholder" />
+              <span className="icon-chart-data-point-mask">
+              <div className="icon-chart-data-label">N/A</div>
+            </span>
+          </div>
+        )
       )}
     </div>
   );
 };
 
 const CHART_DISCLAIMER = {
-  "N/A": "Our tool displays N/A when when there are 10 or fewer underlying observations for at least one of the variables needed to compute the metric.",
+  "N/A": "A displayed value of N/A indicates there are 10 or fewer underlying observations for at least one of the variables needed to compute the metric.",
   "0.0": "A displayed value of 0.00 means that sufficient data is available, but the value is less than 0.005.",
   "Dgap": "No disparity gap per prior event information is available for arrests.",
 }
@@ -96,15 +109,19 @@ const SCALE = {
 }
 
 const getScale = (data) => {
-  let max = 0
+  let max = 0;
+
+  // find largest value present in data
   data.forEach(({items}) => {
     max = Math.max(...Object.values(items), max)
-  })
-  const list = Object.keys(SCALE).map(item => parseInt(item, 10)).concat([max])
+  });
+
+  const list = Object.keys(SCALE).map(item => parseInt(item, 10)).concat([max]);
+
   return {
     max,
     scale: SCALE[`${list[list.sort((a,b) => a - b).indexOf(max) + 1]}`]
-  }
+  };
 }
 
 const IconCharInner = ({ chartData, races, base, measurement }) => {
@@ -117,18 +134,22 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
   }
 
   let scale = 1;
+
   const isRawNumber = [
     "Raw numbers",
     "Rate per population",
     "Rate per prior event point",
   ].includes(measurement);
+
   const yearData = JSON.parse(JSON.stringify({
     ...chartData,
     ...getScale(chartData.data),
   }));
+
   if (measurement === "Raw numbers" || measurement === "Rate per prior event point") {
-    scale = yearData.scale
+    scale = yearData.scale;
   }
+
   const scaledYearData = yearData.data.map((yd) => {
     return {
       label: yd.label,
@@ -146,6 +167,7 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
       }, {}),
     };
   });
+
   return (
     <div className="icon-chart" key={yearData.year}>
       <h3>
