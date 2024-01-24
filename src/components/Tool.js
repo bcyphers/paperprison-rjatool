@@ -7,6 +7,14 @@ import DataTable from "@/components/DataTable";
 import PrivateSelect from "@/components/Select";
 import Grid from "@/components/Grid";
 
+const MEASUREMENTS = {
+  RAW: "Raw numbers",
+  RATE: "Rate per population",
+  R_PEP: "Rate per prior event point",
+  DG: "Disparity gap per population",
+  DG_PEP: "Disparity gap per prior event point",
+};
+
 const MEASUREMENTS_MAP = {
   "Raw numbers": "Raw numbers",
   "Rate per population": "Rate per unit population",
@@ -292,10 +300,10 @@ export default function App() {
         });
         //const defaultGender = _genders[0];
         const mostRecentYear = _years[0];
-        // const defaultOffense = _offenses[0];
+        //const defaultOffense = _offenses[0];
         setYears([mostRecentYear]);
         setYearsAvailable(_years);
-        // setGendersAvailable(_genders);
+        //setGendersAvailable(_genders);
         //setGenders([defaultGender]);
         setDecisionPointsAvailable(_decisionPoints);
         setDecisionPoints(_decisionPoints);
@@ -328,24 +336,24 @@ export default function App() {
     setCounty(value);
     await fetchData(value);
     filter({
-      races,
-      //genders,
-      decisionPoints,
-      years,
-      offenses,
-      measurement,
+      decisionPoints: decisionPoints,
+      races: races,
+      offenses: offenses,
+      years: years,
+      measurement: measurement,
+      //genders: genders,
     });
   };
 
   const onYearChange = (values) => {
     setYears(values);
     filter({
-      races,
-      decisionPoints,
-      // genders,
+      decisionPoints: decisionPoints,
+      races: races,
+      offenses: offenses,
       years: values,
-      offenses,
-      measurement,
+      measurement: measurement,
+      //genders: genders,
     });
   };
 
@@ -358,12 +366,12 @@ export default function App() {
       });
     } else {
       filter({
-        races,
         decisionPoints: values,
-        offenses,
-        // genders,
-        years,
-        measurement,
+        races: races,
+        offenses: offenses,
+        years: years,
+        measurement: measurement,
+        //genders: genders,
       });
     }
   };
@@ -377,12 +385,12 @@ export default function App() {
       });
     } else {
       filter({
+        decisionPoints: decisionPoints,
         races: values,
-        decisionPoints,
-        // genders,
-        offenses,
-        years,
-        measurement,
+        offenses: offenses,
+        years: years,
+        measurement: measurement,
+        //genders: genders,
       });
     }
   };
@@ -408,18 +416,19 @@ export default function App() {
       });
     }
   };*/
+
   const onOffensesChange = (values) => {
     if (!values || values.length === 0) {
       return;
     }
     setOffenses(values);
     filter({
-      races,
-      // genders,
-      decisionPoints,
+      decisionPoints: decisionPoints,
+      races: races,
       offenses: values,
-      years,
-      measurement,
+      years: years,
+      measurement: measurement,
+      //genders: genders,
     });
   };
 
@@ -427,14 +436,14 @@ export default function App() {
     if (value) {
       setMeasurement(value);
       if (
-        value === "Disparity gap per population" ||
-        value === "Disparity gap per prior event point"
+        value === MEASUREMENTS.DG ||
+        value === MEASUREMENTS.DG_PEP
       ) {
         setChartConfig({
           base: "white",
           ratio: 0.01,
         });
-      } else if (value === "Raw numbers") {
+      } else if (value === MEASUREMENTS.RAW) {
         setChartConfig({
           base: null,
           ratio: 1,
@@ -447,27 +456,27 @@ export default function App() {
       }
 
       filter({
-        races,
-        //genders,
-        decisionPoints,
-        offenses,
-        years,
+        decisionPoints: decisionPoints,
+        races: races,
+        offenses: offenses,
+        years: years,
         measurement: value,
+        //genders: genders,
       });
     } else {
-      setMeasurement("Raw numbers");
+      setMeasurement(MEASUREMENTS.RAW);
       setChartConfig({
         base: null,
         ratio: 1,
       });
 
       filter({
-        races,
-        //genders,
-        decisionPoints,
-        offenses,
-        years,
-        measurement: "Raw numbers",
+        decisionPoints: decisionPoints,
+        races: races,
+        offenses: offenses,
+        years: years,
+        measurement: MEASUREMENTS.RAW,
+        //genders: genders,
       });
     }
   };
