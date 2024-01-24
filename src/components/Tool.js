@@ -134,17 +134,17 @@ export default function App() {
     records = fullRecords,
   ) => {
     const allowedEventPoints = [
-      "Charge",
+      "Court",
       "Conviction",
       "Prison sentence",
       "Felony conviction",
     ];
     const raw = records.filter((r) => {
       if (
-        measurement === "Rate per prior event point" &&
+        measurement.indexOf("prior event point") > -1 &&
         !allowedEventPoints.includes(r["Event Point"])
       ) {
-        // Exclude records with measurement "Rate per prior event point" and other event points
+        // Exclude arrest data from "prior event point" metrics
         return false;
       }
       if (races.length > 0 && !races.includes(r.Race)) {
@@ -252,13 +252,10 @@ export default function App() {
           item["Rate per prior event point"] = isNaN(item.rate_cond_previous)
             ? 0
             : item.rate_cond_previous;
-
           item["Disparity gap per population"] = isNaN(item.disparity_gap_pop_w)
             ? 0
             : item.disparity_gap_pop_w;
-          item["Disparity gap per prior event point"] = isNaN(
-            item.disparity_gap_cond_w,
-          )
+          item["Disparity gap per prior event point"] = isNaN(item.disparity_gap_cond_w)
             ? 0
             : item.disparity_gap_cond_w;
           return item;

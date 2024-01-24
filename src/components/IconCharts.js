@@ -81,7 +81,7 @@ const PersonIcon = ({
 const CHART_DISCLAIMER = {
   n_a: "A displayed value of N/A indicates there are 10 or fewer underlying observations for at least one of the variables needed to compute the metric.",
   zero: "A displayed value of 0.00 means that sufficient data is available, but the value is less than 0.005.",
-  d_gap: "No disparity gap per prior event information is available for arrests.",
+  pep: "No rate per prior event information is available for arrests because arrests are the beginning of the process.",
 }
 
 const SCALE = {
@@ -118,7 +118,7 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
   let disclaimers = {
     n_a: false,
     zero: false,
-    d_gap: measurement.indexOf("Disparity gap per prior") > -1,
+    pep: measurement.indexOf("prior event point") > -1,
   };
 
   let scale = 1;
