@@ -62,7 +62,7 @@ const PersonIcon = ({
           <div className="icon-chart-data-point">
             <div className="icon-person icon-person-placeholder" />
             <span className="icon-chart-data-point-mask">
-              <div className="icon-chart-data-label">0.00</div>
+              <div className="icon-chart-data-label">{formatNumber(label)}</div>
             </span>
           </div>
         ) : (
@@ -169,7 +169,7 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
         }
         const _scaled = (yd.items[k] / scale).toFixed(2);
 
-        if (Math.ceil(_scaled) === 0) {
+        if (_origin < 0.005) {
           if (_origin > 0) {
             disclaimers.zero = true;
           } else {
