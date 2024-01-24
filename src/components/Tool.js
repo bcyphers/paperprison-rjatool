@@ -113,7 +113,7 @@ export default function App() {
   //const [gendersAvailable, setGendersAvailable] = useState([]);
   //const [genders, setGenders] = useState([]);
   const [races, setRaces] = useState(Object.keys(RACES));
-  const [racesAvailable, setracesAvailable] = useState([]);
+  const [racesAvailable, setRacesAvailable] = useState([]);
   const [measurement, setMeasurement] = useState("Raw numbers");
   const [chartConfig, setChartConfig] = useState({
     ratio: 1,
@@ -238,7 +238,7 @@ export default function App() {
 
   // https://docs.google.com/spreadsheets/d/1nJ3k0KXVrhXm8La-lOTpw8U7xL7Cc-GioANxxH5KsXE/edit#gid=0
   // Make sure share this link to the public, so anyone who has the link can open this spreedsheet
-  const fetchData = async (sheet) => {
+  const fetchData = async (sheet, useDefaults = false) => {
     setLoading(true);
     const parser = new PublicGoogleSheetsParser();
     parser
@@ -263,7 +263,7 @@ export default function App() {
             : item.rate_per_100_pop;
           item["Rate per prior event point"] = isNaN(item.rate_cond_previous)
             ? 0
-            : item.rate_cond_previous / 100;
+            : item.rate_cond_previous / 100;  // divide by 100 since this is a percentage
           item["Disparity gap per population"] = isNaN(item.disparity_gap_pop_w)
             ? 0
             : item.disparity_gap_pop_w;
@@ -278,7 +278,7 @@ export default function App() {
           }
           /*  if (_genders.indexOf(item["Gender"]) === -1) {
              _genders.push(item["Gender"]);
-             }*/
+          }*/
           if (_decisionPoints.indexOf(item["Event Point"]) === -1) {
             _decisionPoints.push(item["Event Point"]);
           }
@@ -298,29 +298,45 @@ export default function App() {
             return b - a;
           }
         });
-        //const defaultGender = _genders[0];
-        const mostRecentYear = _years[0];
-        //const defaultOffense = _offenses[0];
-        setYears([mostRecentYear]);
-        setYearsAvailable(_years);
-        //setGendersAvailable(_genders);
-        //setGenders([defaultGender]);
-        setDecisionPointsAvailable(_decisionPoints);
-        setDecisionPoints(_decisionPoints);
-        setOffenses(["459 PC-BURGLARY"]);
-        setOffensesAvailable(_offenses);
         setFullRecords(items);
-        setracesAvailable(_races);
-        setRaces(_races);
+
+        const mostRecentYear = _years[0];
+        const defaultOffense = "459 PC-BURGLARY";
+        //const defaultGender = _genders[0];
+
+        setYearsAvailable(_years);
+        setDecisionPointsAvailable(_decisionPoints);
+        setOffensesAvailable(_offenses);
+        setRacesAvailable(_races);
+        //setGendersAvailable(_genders);
+
+        if (useDefaults) {
+          setYears([mostRecentYear]);
+          setDecisionPoints(_decisionPoints);
+          setOffenses([defaultOffense]);
+          setRaces(_races);
+          //setGenders([defaultGender]);
+        } else {
+          // Update filters: choose all items which were selected by the user AND
+          // are present in the dataset
+          setYears(years.filter((y) => _years.includes(y)));
+          setDecisionPoints(decisionPoints.filter((d) =>
+                            _decisionPoints.includes(d)));
+          setOffenses(_offenses.includes(offenses[0]) ?
+                      [offenses[0]] : [defaultOffense]);
+          setRaces(races.filter((r) => _races.includes(r)));
+        }
+
         setLoading(false);
+
         filter(
           {
-            races: _races,
-            // genders: [defaultGender],
             decisionPoints: decisionPoints,
-            offenses: ["459 PC-BURGLARY"],
-            years: [mostRecentYear],
-            measurement,
+            races: races,
+            offenses: offenses,
+            years: years,
+            measurement: measurement,
+            //genders: genders,
           },
           items,
         );
@@ -329,7 +345,7 @@ export default function App() {
 
   useEffect(() => {
     const sheet = getURLQueryParameterByName("sheet") || "All Counties";
-    fetchData(sheet).catch((e) => {});
+    fetchData(sheet, true).catch((e) => {});
   }, []);
 
   const onCountyChange = async (value) => {
