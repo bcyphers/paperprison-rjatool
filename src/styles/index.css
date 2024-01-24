@@ -17,6 +17,7 @@
   --re-unknown-hover: #a35d82;
   --re-white: #bfbfbf;
   --re-white-hover: #d5d5d5;
+  --re-null: #b320d4;
 }
 
 *,
@@ -54,9 +55,12 @@
 }
 
 .re-White,
-.re-white,
-.re-null {
+.re-white {
   color: var(--re-white);
+}
+
+.re-null {
+  color: var(--re-null);
 }
 
 .re-Hispanic {
