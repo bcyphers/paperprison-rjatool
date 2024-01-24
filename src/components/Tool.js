@@ -551,7 +551,6 @@ export default function App() {
             }))}
           />
         </div>
-
         <div className="filter">
           <PrivateSelect
             label="Offenses"
@@ -606,22 +605,28 @@ export default function App() {
           <div className="loading-animation-centered">
             <Grid />
           </div>
-        ) : decisionPoints.length === 0 ? (
-          <div style={{ textAlign: "center", fontWeight: "bold" }}>
-            Select an Event Point.
-          </div>
-        ) : filteredRecords.chart.length === 0 ? (
-          <div style={{ textAlign: "center", fontWeight: "bold" }}>
-            Unable to display due to insufficient data.
-          </div>
-        ) : (
-          <IconCharts
-            data={filteredRecords.chart}
-            races={Object.fromEntries(Object.entries(RACES).filter(([key]) => races.includes(key)))}
-            base={chartConfig.base}
-            measurement={measurement}
-          />
-        )}
+        ) : (filteredRecords.chart.length > 0 ? (
+            <IconCharts
+              data={filteredRecords.chart}
+              races={Object.fromEntries(Object.entries(RACES).filter(([key]) =>
+                                        races.includes(key)))}
+              base={chartConfig.base}
+              measurement={measurement}
+            />
+          ) : (
+            <div style={{ textAlign: "center", fontWeight: "bold" }}>
+              <p>Unable to display due to insufficient data.</p>
+              {years.length === 0 && (
+                <p>Select at least one year.</p>
+              )}
+              {decisionPoints.length === 0 && (
+                <p>Select at least one event point.</p>
+              )}
+              {races.length === 0 && (
+                <p>Select at least one race.</p>
+              )}
+            </div>
+        ))}
       </div>
 
       {/* <pre>{JSON.stringify(filteredRecords, null, 4)}</pre> */}
