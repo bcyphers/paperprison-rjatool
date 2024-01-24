@@ -15,7 +15,7 @@ const PersonIcon = ({
   race = "",
   scale = 1,
   curDisclaimers = [],
-  onDisclaimerChange = () => {},
+  onDisclaimersChange = () => {},
 }) => {
   const valueRoof = Math.ceil(value);
   const maskHeight = {
