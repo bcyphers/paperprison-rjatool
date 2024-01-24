@@ -127,9 +127,27 @@ export default function App() {
     utils.book_append_sheet(wb, ws, "Data");
     writeFileXLSX(wb, "PaperPrison - Data.xlsx");
   };
+
   const onDataTableDisplayToggled = () => {
     setShowTable(!showTable);
   };
+
+  const getRaces = (chart) => {
+    let _races = [];
+
+    for (let year of chart) {
+      for (let ep of year.data) {
+        for (let race in ep.items) {
+          if (!_races.includes(race)) {
+            _races.push(race)
+          }
+        }
+      }
+    }
+
+    return Object.fromEntries(Object.entries(RACES).filter(([key]) => _races.includes(key)));
+  };
+
   const filter = (
     { decisionPoints, races, offenses, years, measurement, genders },
     records = fullRecords,
@@ -155,6 +173,7 @@ export default function App() {
       }
       return true;
     });
+
     const filtered = raw.reduce((acc, item) => {
       if (!acc[item.Year]) {
         acc[item.Year] = {
@@ -186,6 +205,7 @@ export default function App() {
       }
       return acc;
     }, {});
+
     setFilteredRecords({
       raw,
       chart: Object.values(filtered).map((item) => {
@@ -193,6 +213,9 @@ export default function App() {
           d.items = Object.values(d.items).reduce(
             (acc, dd) => {
               Object.keys(dd.items).forEach((k) => {
+                if (!(k in acc)) {
+                  acc[k] = 0;
+                }
                 let temp = acc[k] + (dd.items[k] || 0);
                 if (measurement === "Raw numbers") {
                   temp = Math.ceil(temp);
@@ -204,8 +227,7 @@ export default function App() {
               });
 
               return acc;
-            },
-            { AAPI: 0, Black: 0, Hispanic: 0, White: 0, "Native American": 0 },
+            }, {},
           );
           return d;
         });
@@ -606,7 +628,7 @@ export default function App() {
         ) : (
           <IconCharts
             data={filteredRecords.chart}
-            races={RACES}
+            races={getRaces(filteredRecords.chart)}
             base={chartConfig.base}
             measurement={measurement}
           />
