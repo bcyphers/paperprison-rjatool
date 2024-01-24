@@ -42,7 +42,6 @@ export default function App() {
   const [countiesAvailable, _] = useState([
     "All Counties",
     "Alameda",
-    "Alpine",
     "Amador",
     "Butte",
     "Calaveras",
@@ -105,8 +104,8 @@ export default function App() {
   const [decisionPoints, setDecisionPoints] = useState([]);
   const [offensesAvailable, setOffensesAvailable] = useState([]);
   const [offenses, setOffenses] = useState([]);
-  const [gendersAvailable, setgendersAvailable] = useState([]);
-  const [genders, setgenders] = useState([]);
+  //const [gendersAvailable, setGendersAvailable] = useState([]);
+  //const [genders, setGenders] = useState([]);
   const [races, setRaces] = useState(Object.keys(RACES));
   const [racesAvailable, setracesAvailable] = useState([]);
   const [measurement, setMeasurement] = useState("Raw numbers");
@@ -134,7 +133,20 @@ export default function App() {
     { decisionPoints, races, offenses, years, measurement, genders },
     records = fullRecords,
   ) => {
+    const allowedEventPoints = [
+      "Charge",
+      "Conviction",
+      "Prison sentence",
+      "Felony conviction",
+    ];
     const raw = records.filter((r) => {
+      if (
+        measurement === "Rate per prior event point" &&
+        !allowedEventPoints.includes(r["Event Point"])
+      ) {
+        // Exclude records with measurement "Rate per prior event point" and other event points
+        return false;
+      }
       if (races.length > 0 && !races.includes(r.Race)) {
         return false;
       }
@@ -147,9 +159,9 @@ export default function App() {
       if (offenses.length > 0 && !offenses.includes(r.Offenses)) {
         return false;
       }
-      if (genders.length > 0 && !genders.includes(r.Gender)) {
+      /* if (genders.length > 0 && !genders.includes(r.Gender)) {
         return false;
-      }
+      }*/
       if (!years.includes(r.Year)) {
         return false;
       }
@@ -226,13 +238,13 @@ export default function App() {
         const _decisionPoints = [];
         const _offenses = [];
         const _races = [];
-        const _genders = [];
+        //const _genders = [];
 
         const items = originItems.map((item) => {
           item.Offenses = item.PC_offense;
           item.Race = item.race;
-          item.Gender = item.gender;
-          item.Year = item.year || "All years";
+          //item.Gender = item.gender;
+          item.Year = item.year;
           item["Event Point"] = item.decision;
           item["Raw numbers"] = item.number;
           item["Rate per population"] = isNaN(item.rate_per_100_pop)
@@ -256,9 +268,9 @@ export default function App() {
           if (_years.indexOf(item["Year"]) === -1) {
             _years.push(item["Year"]);
           }
-          if (_genders.indexOf(item["Gender"]) === -1) {
-            _genders.push(item["Gender"]);
-          }
+          /*  if (_genders.indexOf(item["Gender"]) === -1) {
+             _genders.push(item["Gender"]);
+             }*/
           if (_decisionPoints.indexOf(item["Event Point"]) === -1) {
             _decisionPoints.push(item["Event Point"]);
           }
@@ -278,14 +290,16 @@ export default function App() {
             return b - a;
           }
         });
+        //const defaultGender = _genders[0];
         const mostRecentYear = _years[0];
+        // const defaultOffense = _offenses[0];
         setYears([mostRecentYear]);
         setYearsAvailable(_years);
-        setgendersAvailable(_genders);
-        setgenders(_genders);
+        // setGendersAvailable(_genders);
+        //setGenders([defaultGender]);
         setDecisionPointsAvailable(_decisionPoints);
         setDecisionPoints(_decisionPoints);
-        setOffenses(_offenses);
+        setOffenses(["459 PC-BURGLARY"]);
         setOffensesAvailable(_offenses);
         setFullRecords(items);
         setracesAvailable(_races);
@@ -294,9 +308,9 @@ export default function App() {
         filter(
           {
             races: _races,
-            genders: _genders,
+            // genders: [defaultGender],
             decisionPoints: decisionPoints,
-            offenses: _offenses,
+            offenses: ["459 PC-BURGLARY"],
             years: [mostRecentYear],
             measurement,
           },
@@ -315,7 +329,7 @@ export default function App() {
     await fetchData(value);
     filter({
       races,
-      genders,
+      //genders,
       decisionPoints,
       years,
       offenses,
@@ -328,7 +342,7 @@ export default function App() {
     filter({
       races,
       decisionPoints,
-      genders,
+      // genders,
       years: values,
       offenses,
       measurement,
@@ -347,7 +361,7 @@ export default function App() {
         races,
         decisionPoints: values,
         offenses,
-        genders,
+        // genders,
         years,
         measurement,
       });
@@ -365,7 +379,7 @@ export default function App() {
       filter({
         races: values,
         decisionPoints,
-        genders,
+        // genders,
         offenses,
         years,
         measurement,
@@ -373,8 +387,11 @@ export default function App() {
     }
   };
 
-  const onGendersChange = (values) => {
-    setgenders(values);
+  /*const onGendersChange = (values) => {
+    if (!values || values.length === 0) {
+      return;
+    }
+    setGenders(values);
     if (values.length === 0) {
       setFilteredRecords({
         raw: [],
@@ -390,12 +407,15 @@ export default function App() {
         measurement,
       });
     }
-  };
+  };*/
   const onOffensesChange = (values) => {
+    if (!values || values.length === 0) {
+      return;
+    }
     setOffenses(values);
     filter({
       races,
-      genders,
+      // genders,
       decisionPoints,
       offenses: values,
       years,
@@ -428,7 +448,7 @@ export default function App() {
 
       filter({
         races,
-        genders,
+        //genders,
         decisionPoints,
         offenses,
         years,
@@ -527,7 +547,7 @@ export default function App() {
           <PrivateSelect
             label="Offenses"
             value={offenses}
-            multiple={true}
+            multiple={false}
             onChange={onOffensesChange}
             options={offensesAvailable.map((o) => ({
               text: o,
@@ -546,19 +566,6 @@ export default function App() {
             }))}
           />
         </div>
-
-        <div className="filter">
-          <PrivateSelect
-            label="Gender"
-            value={genders}
-            multiple={true}
-            onChange={onGendersChange}
-            options={gendersAvailable.map((g) => ({
-              text: g,
-              value: g,
-            }))}
-          />
-        </div>
       </div>
       <div className="chart-selected">
         <h2>
@@ -568,21 +575,16 @@ export default function App() {
           dangerouslySetInnerHTML={{
             __html: [
               MEASUREMENTS_MAP[measurement],
-              years.length === yearsAvailable.length
-                ? "All Years"
-                : years.join(", "),
               decisionPoints.length === decisionPointsAvailable.length
                 ? "All Event Points"
                 : decisionPoints.join(", "),
+              years.length === yearsAvailable.length
+                ? "All Years"
+                : years.join(", "),
               races.length === racesAvailable.length
                 ? "All Races"
                 : races.join(", "),
-              offenses.length === offensesAvailable.length
-                ? "All Offenses"
-                : offenses.join(", "),
-              genders.length === gendersAvailable.length
-                ? "All Genders"
-                : genders.join(", "),
+              `${offenses}`,
             ]
               .filter((item) => !!item)
               .map((item) => `<span>${item}</span>`)
@@ -601,7 +603,7 @@ export default function App() {
           </div>
         ) : filteredRecords.chart.length === 0 ? (
           <div style={{ textAlign: "center", fontWeight: "bold" }}>
-            No Records Found.
+            Unable to display due to insufficient data.
           </div>
         ) : (
           <IconCharts
