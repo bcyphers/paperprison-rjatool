@@ -112,8 +112,8 @@ export default function App() {
   const [offenses, setOffenses] = useState([]);
   //const [gendersAvailable, setGendersAvailable] = useState([]);
   //const [genders, setGenders] = useState([]);
-  const [races, setRaces] = useState(Object.keys(RACES));
   const [racesAvailable, setRacesAvailable] = useState([]);
+  const [races, setRaces] = useState(Object.keys(RACES));
   const [measurement, setMeasurement] = useState("Raw numbers");
   const [chartConfig, setChartConfig] = useState({
     ratio: 1,
@@ -138,7 +138,7 @@ export default function App() {
   };
 
   const filter = (
-    { decisionPoints, races, offenses, years, measurement, genders },
+    { decisionPoints, races, offenses, years, measurement /*, genders*/ },
     records = fullRecords,
   ) => {
     const allowedEventPoints = [
@@ -238,7 +238,7 @@ export default function App() {
 
   // https://docs.google.com/spreadsheets/d/1nJ3k0KXVrhXm8La-lOTpw8U7xL7Cc-GioANxxH5KsXE/edit#gid=0
   // Make sure share this link to the public, so anyone who has the link can open this spreedsheet
-  const fetchData = async (sheet, useDefaults = false) => {
+  const fetchData = async (sheet, useDefaults) => {
     setLoading(true);
     const parser = new PublicGoogleSheetsParser();
     parser
@@ -246,9 +246,9 @@ export default function App() {
       .parse("1qFsF5ivZUHDRsst4sHZYt_eMZypO93eYUpXT1XBQYYQ", sheet)
       .then((originItems) => {
         let _years = [];
-        const _decisionPoints = [];
-        const _offenses = [];
-        const _races = [];
+        let _decisionPoints = [];
+        let _offenses = [];
+        let _races = [];
         //const _genders = [];
 
         const items = originItems.map((item) => {
@@ -304,42 +304,44 @@ export default function App() {
         const defaultOffense = "459 PC-BURGLARY";
         //const defaultGender = _genders[0];
 
-        setYearsAvailable(_years);
-        setDecisionPointsAvailable(_decisionPoints);
-        setOffensesAvailable(_offenses);
-        setRacesAvailable(_races);
-        //setGendersAvailable(_genders);
+        setYearsAvailable([..._years]);
+        setDecisionPointsAvailable([..._decisionPoints]);
+        setOffensesAvailable([..._offenses]);
+        setRacesAvailable([..._races]);
+        //setGendersAvailable([..._genders]);
 
         if (useDefaults) {
-          setYears([mostRecentYear]);
-          setDecisionPoints(_decisionPoints);
-          setOffenses([defaultOffense]);
-          setRaces(_races);
-          //setGenders([defaultGender]);
+          _years = [mostRecentYear];
+          _offenses = [defaultOffense];
         } else {
           // Update filters: choose all items which were selected by the user AND
           // are present in the dataset
-          setYears(years.filter((y) => _years.includes(y)));
-          setDecisionPoints(decisionPoints.filter((d) =>
-                            _decisionPoints.includes(d)));
-          setOffenses(_offenses.includes(offenses[0]) ?
-                      [offenses[0]] : [defaultOffense]);
-          setRaces(races.filter((r) => _races.includes(r)));
+          _years = years.filter((y) => _years.includes(y));
+          _decisionPoints = decisionPoints.filter((d) =>
+                              _decisionPoints.includes(d));
+          _offenses = _offenses.includes(offenses[0]) ?
+                      [offenses[0]] : [defaultOffense];
+          _races = races.filter((r) => _races.includes(r));
         }
 
-        setLoading(false);
+        setYears([..._years]);
+        setDecisionPoints([..._decisionPoints]);
+        setOffenses([..._offenses]);
+        setRaces([..._races]);
 
         filter(
           {
-            decisionPoints: decisionPoints,
-            races: races,
-            offenses: offenses,
-            years: years,
+            decisionPoints: _decisionPoints,
+            races: _races,
+            offenses: _offenses,
+            years: _years,
             measurement: measurement,
             //genders: genders,
           },
           items,
         );
+
+        setLoading(false);
       });
   };
 
@@ -350,7 +352,7 @@ export default function App() {
 
   const onCountyChange = async (value) => {
     setCounty(value);
-    await fetchData(value);
+    await fetchData(value, false);
     filter({
       decisionPoints: decisionPoints,
       races: races,
