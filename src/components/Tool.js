@@ -147,21 +147,17 @@ export default function App() {
       "Prison sentence",
       "Felony conviction",
     ];
+
     const raw = records.filter((r) => {
-      if (
-        measurement.indexOf("prior event point") > -1 &&
-        !allowedEventPoints.includes(r["Event Point"])
-      ) {
-        // Exclude arrest data from "prior event point" metrics
+      if (measurement.indexOf("prior event point") > -1 &&
+          !allowedEventPoints.includes(r["Event Point"])) {
         return false;
       }
       if (races.length > 0 && !races.includes(r.Race)) {
         return false;
       }
-      if (
-        decisionPoints.length > 0 &&
-        !decisionPoints.includes(r["Event Point"])
-      ) {
+      if (decisionPoints.length > 0 &&
+          !decisionPoints.includes(r["Event Point"])) {
         return false;
       }
       if (offenses.length > 0 && !offenses.includes(r.Offenses)) {
@@ -628,6 +624,7 @@ export default function App() {
               data={filteredRecords.chart}
               races={Object.fromEntries(Object.entries(RACES).filter(([key]) =>
                                         races.includes(key)))}
+              eventPoints={decisionPoints}
               base={chartConfig.base}
               measurement={measurement}
             />

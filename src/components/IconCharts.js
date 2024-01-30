@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 const formatNumber = (n) => {
   const number = Number(n);
@@ -22,7 +22,6 @@ const PersonIcon = ({
   value = 0,
   label = 0,
   race = "",
-  scale = 1,
 }) => {
   const valueRoof = Math.ceil(value);
   const maskHeight = {
@@ -127,7 +126,7 @@ const scaleUp = (data) => {
   return SCALE[`${list[list.sort((a,b) => a - b).indexOf(max) + 1]}`];
 }
 
-const IconCharInner = ({ chartData, races, base, measurement }) => {
+const IconChartInner = ({ yearData, races, eventPoints, base, measurement }) => {
   let disclaimers = {
     n_a: false,
     zero: false,
@@ -137,41 +136,62 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
   let scale = 1;
 
   if (measurement === MEASUREMENTS.RAW) {
-    scale = scaleUp(chartData.data);
+    scale = scaleUp(yearData.data);
   } else if (measurement === MEASUREMENTS.RATE) {
-    scale = scaleDown(chartData.data);
+    scale = scaleDown(yearData.data);
   }
 
   const filteredRaces = Object.keys(races).filter(
     (raceItem) => raceItem.toLowerCase() !== base);
 
-  const scaledYearData = chartData.data.map((yd) => {
-    return {
-      label: yd.label,
-      items: filteredRaces.reduce((acc, k) => {
-        if (!(k in yd.items)) {
-          disclaimers.n_a = true;
-          acc[k] = {scaled: 0, origin: 0, scale: 1};
-          return acc;
-        }
+  // yearData.data is an array of objects; each object corresponds to an event
+  // point and contains a list of records for each race.
+  // We're going to unpack it and construct an object of the form:
+  // scaledData = {
+  //   eventPoint: {
+  //     race: {
+  //       scaled: Number,
+  //       origin: Number
+  //     }
+  //   }
+  // }
+  const scaledData = {};
+  eventPoints.forEach((ep) => {
+    const eventData = yearData.data.filter((d) => d.label == ep);
 
-        let _origin = yd.items[k];
-        if (scale < 1) {
-          _origin /= scale;
-        }
-        const _scaled = (yd.items[k] / scale).toFixed(2);
-
-        if (_origin < 0.005 && _origin > 0) {
-          disclaimers.zero = true;
-        }
-
-        acc[k] = {
-          scaled: _scaled,
-          origin: _origin,
-        };
+    if (eventData.length === 0) {
+      disclaimers.n_a = true;
+      scaledData[ep] = filteredRaces.reduce((acc, k) => {
+        acc[k] = {scaled: 0, origin: 0};
         return acc;
-      }, {}),
-    };
+      }, {});
+      return;
+    }
+
+    const d = eventData[0];
+    scaledData[ep] = filteredRaces.reduce((acc, k) => {
+      if (!(k in d.items)) {
+        disclaimers.n_a = true;
+        acc[k] = {scaled: 0, origin: 0};
+        return acc;
+      }
+
+      let _origin = d.items[k];
+      if (scale < 1) {
+        _origin /= scale;
+      }
+      const _scaled = (d.items[k] / scale).toFixed(2);
+
+      if (_origin < 0.005 && _origin > 0) {
+        disclaimers.zero = true;
+      }
+
+      acc[k] = {
+        scaled: _scaled,
+        origin: _origin,
+      };
+      return acc;
+    }, {})
   });
 
   let scaleString = scale.toLocaleString();
@@ -183,12 +203,12 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
   }
 
   return (
-    <div className="icon-chart" key={chartData.year}>
+    <div className="icon-chart" key={yearData.year}>
       <h3>
-        {chartData.year}
+        {yearData.year}
         <div className="chart-meta">
           <div className="chart-scale">
-            <PersonIcon value={1} race={base} scale={1} /> {scaleString}{" "}
+            <PersonIcon value={1} race={base} /> {scaleString}{" "}
             {base ? "White Adult" : (scale > 1 ? "Adults" : "Adult")} {postScaleString}
           </div>
         </div>
@@ -201,18 +221,17 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
                 <div className="icon-chart-rows">
                   {base && (
                     <div className="icon-chart-row">
-                      <PersonIcon value={1} race={base} scale={1} label={1}/>
+                      <PersonIcon value={1} race={base} label={1}/>
                     </div>
                   )}
-                  {scaledYearData.map((raceData, raceDataIndex) => {
+                  {eventPoints.map((ep, ix) => {
                     return (
-                      <div className="icon-chart-row" key={raceDataIndex}>
-                        <div className="icon-chart-label">{raceData.label}</div>
+                      <div className="icon-chart-row" key={ix}>
+                        <div className="icon-chart-label">{ep}</div>
                         <PersonIcon
-                          value={raceData?.items[raceItem]?.scaled}
+                          value={scaledData[ep][raceItem]?.scaled}
                           race={raceItem}
-                          scale={scale}
-                          label={raceData?.items[raceItem]?.origin}
+                          label={scaledData[ep][raceItem]?.origin}
                         />
                       </div>
                     );
@@ -225,21 +244,21 @@ const IconCharInner = ({ chartData, races, base, measurement }) => {
       <div>
         {Object.keys(disclaimers)
           .filter((d) => disclaimers[d])
-          .map((d) => <p className="icon-chart-disclaimer">{CHART_DISCLAIMER[d]}</p>
-        )}
+          .map((d) => <p className="icon-chart-disclaimer">{CHART_DISCLAIMER[d]}</p>)
+        }
       </div>
     </div>
   );
 };
 
-const IconCharts = ({ data, races, base, measurement }) => {
+const IconCharts = ({ data, races, eventPoints, base, measurement }) => {
   return (
     <div className="icon-charts">
       {data.map((yd, idx) => (
-        <IconCharInner
-          key={idx}
-          chartData={yd}
+        <IconChartInner
+          yearData={yd}
           races={races}
+          eventPoints={eventPoints}
           base={base}
           measurement={measurement}
         />
