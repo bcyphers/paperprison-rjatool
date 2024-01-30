@@ -144,6 +144,10 @@ const IconChartInner = ({ yearData, races, eventPoints, base, measurement }) => 
   const filteredRaces = Object.keys(races).filter(
     (raceItem) => raceItem.toLowerCase() !== base);
 
+  const filteredEventPoints = eventPoints.filter(
+    (ep) => !([MEASUREMENTS.R_PEP, MEASUREMENTS.DG_PEP].includes(measurement) &&
+              ep === "Arrest"));
+
   // yearData.data is an array of objects; each object corresponds to an event
   // point and contains a list of records for each race.
   // We're going to unpack it and construct an object of the form:
@@ -156,7 +160,7 @@ const IconChartInner = ({ yearData, races, eventPoints, base, measurement }) => 
   //   }
   // }
   const scaledData = {};
-  eventPoints.forEach((ep) => {
+  filteredEventPoints.forEach((ep) => {
     const eventData = yearData.data.filter((d) => d.label == ep);
 
     if (eventData.length === 0) {
@@ -224,7 +228,7 @@ const IconChartInner = ({ yearData, races, eventPoints, base, measurement }) => 
                       <PersonIcon value={1} race={base} label={1}/>
                     </div>
                   )}
-                  {eventPoints.map((ep, ix) => {
+                  {filteredEventPoints.map((ep, ix) => {
                     return (
                       <div className="icon-chart-row" key={ix}>
                         <div className="icon-chart-label">{ep}</div>
