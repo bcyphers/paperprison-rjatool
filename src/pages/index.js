@@ -4,6 +4,8 @@ import dynamic from "next/dynamic";
 import GenericPage from "@/components/GenericPage";
 import BackToTopButton from "@/components/BackToTopButton";
 
+import "@fontsource/ibm-plex-sans";
+
 const DynamicTool = dynamic(() => import("@/components/Tool"), {
   ssr: false,
 });
