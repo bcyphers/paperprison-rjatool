@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && next export -o docs/",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "next export",
+    "start": "next start"
   },
   "dependencies": {
     "@fontsource/ibm-plex-sans": "^5.0.18",
