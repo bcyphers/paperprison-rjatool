@@ -11,11 +11,9 @@ const Header = () => {
             className="logo"
           />
         </a>
-        <p className="website-name">
-          <span className="large-initial">R</span>acial{" "}
-          <span className="large-initial">J</span>ustice{" "}
-          <span className="large-initial">A</span>ct Tool
-        </p>
+      </div>
+      <div className="center">
+        <p className="website-name">Racial Justice Act Tool</p>
       </div>
       <div className="right">
         <a href="https://paperprisons.org/about.html">About</a>

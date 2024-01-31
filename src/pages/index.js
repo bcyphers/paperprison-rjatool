@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 
 import GenericPage from "@/components/GenericPage";
 import BackToTopButton from "@/components/BackToTopButton";
-
 import "@fontsource/ibm-plex-sans";
 
 const DynamicTool = dynamic(() => import("@/components/Tool"), {
@@ -109,19 +108,28 @@ export default function App() {
           arrests, charges, convictions, and sentences in California (Criminal
           Offender Record Information (CORI)), available to researchers through
           the California Department of Justice Automated Criminal History System
-          (ACHS) through a data sharing agreement. The Paper Prison Initiative
-          requested these data through public records act requests. Our records
+          (ACHS) through the CA DOJ Research Data Request process. Our records
           were downloaded between 9/23/2021 and 9/29/2021; the data we present
-          therefore ranges from 2010 through most of 2021.* Among its known
-          disadvantages are that it does not include information on legal
-          representation, plea-bargaining, or the conditions of the arrest (such
-          as whether or not a weapon was present) which might legitimately be
-          taken into account by the prosecution in deciding to characterize a
-          crime as a felony or misdemeanor. Two additional shortcomings of our
+          therefore ranges from 2010 through (nearly) the first nine months of
+          2021.* Among known disadvantages of the CORI data are that it does not
+          include information on legal representation, plea-bargaining, or the
+          conditions of the arrest (such as whether or not a weapon was present)
+          which might legitimately be taken into account by the prosecution in
+          deciding to characterize an alleged crime as a particular offense, or
+          as a felony or misdemeanor. Two additional shortcomings of our
           database are that it does not include juvenile records or out-of-state
           records. Errors in underlying data are due to reporting errors and/or
           fundamental limitations to the Automated Criminal History System set
           up and maintained by CA DOJ.
+        </p>
+        <p>
+          The CORI source data used for the tool are anonymous, with names
+          removed and separate individuals identified only by an internal ID
+          code. Personally identifying information, such as date of birth or
+          social security number, has been removed. The tool reports summaries
+          of the CORI data that have been processed to calculate counts (raw
+          numbers) or rates for the specified user query. These summaries are
+          never reported at the level of a particular individual.
         </p>
 
         <p>
@@ -134,138 +142,64 @@ export default function App() {
       <GenericPage id="methodology">
         <h2>Methodology</h2>
         <p>
-          On the "Paper Prison Initiative Tool" page, you can customize the data
-          in various ways. This methodology section presents important
-          information about the data provided throughout this website and how
-          you can use them for your own analysis.
+          On the "Paper Prisons Racial Justice Act Tool" page, you can customize
+          the data in various ways. This methodology section presents important
+          information about the data provided in this website and how you can
+          use it for your own analysis.
         </p>
         <h3>Customization</h3>
         <p>
-          You can customize the data provided by year, counties, event points,
-          measurement, and offenses. Data you see will depend upon your
-          customization for each category. For arrest events, the year is
-          conveyed as the minimum (first) year for the cycle, where a cycle is
-          defined as the series of events in the criminal justice system that
-          flow from a specific initial incident for an individual, usually
-          beginning with an arrest. For court events (all non-arrest events),
-          the year is conveyed as the maximum (last) year for the cycle. Note
-          that this is a simplifying assumption to deal with the fact that
-          someone might be arrested on a charge in one year and go to court in a
-          subsequent year.
+          You can customize the data presented by year, county, event point,
+          race/ethnicity, measurement (metric), and offense. Data you see will
+          depend upon your customization for each category. The event points
+          include arrests, charges filed in court, convictions, felony
+          convictions, and prison sentences. We explain the different
+          measurements available and how they were calculated, as well as some
+          limitations of the data, below.
+        </p>
+        <h3>Incidents & Lifecycle of a Case </h3>
+        <p>
+          The source (CORI) data set records each of the events associated with
+          a given cycle of an individual’s involvement with the criminal justice
+          system, where a cycle is defined as the series of events in the
+          criminal justice system that flow from a specific initial incident for
+          an individual. A cycle typically begins with an arrest, in which a
+          person may be charged with one or more offenses. The arrest step may
+          be followed by a prosecutor filing charges in court on one or more
+          offenses. Offenses filed in court may be the same as or different from
+          those charged at arrest, with changes occurring because of plea deals
+          or prosecutorial discretion. The offenses charged at court lead to a
+          disposition on each offense, such as a conviction, dismissal,
+          acquittal, or other outcome. A conviction results in a sentence, which
+          may include incarceration. The CORI data come from the courts, not
+          from the corrections system, so we do not have information on actual
+          incarcerations or terms served, only sentences to incarceration.
+        </p>
+        <p>
+          In our tool, we count the number of incidents for which a given
+          offense was charged. An incident is associated with a specific offense
+          charged in a specific cycle. Multiple counts of the same offense
+          charged for the same incident are only counted once in the tool. For
+          example, suppose that following a particular arrest, a person ended up
+          convicted in court on three counts of PC 242 (battery) and two counts
+          of PC 148(A)(1) (obstructing/ resisting). For this cycle, we would
+          count one incident of conviction for PC 242 and one incident of
+          conviction for PC 148(A)(1).{" "}
+        </p>
+        <p>
+          For arrest events, the year of the incident recorded in the tool is
+          the minimum (first) year for the cycle. For court events (all
+          non-arrest events), the year is the maximum (last) year for the cycle.
+          We count any event that occurs in a cycle up to the last event. We
+          assign years this way to take account of the fact that someone might
+          be arrested on a charge in one year and go to court in a subsequent
+          year.
         </p>
         <p>
           The tool allows you to walk through the offenses’ different stages and
           observe how they play out throughout the event points.
         </p>
-        <h3>Offense Data</h3>
-        <p>
-          By default, you will see data about all offenses at the selected event
-          point(s). Offense data include all criminal offenses; however, there
-          are very small sample sizes for many offenses and populations,
-          especially at the county-specific level. Due to confidentiality
-          concerns, our website does not display data for counties in which the
-          metric of interest is constructed from selections of the data that
-          contain fewer than 10 observations. Our charts and tables will show
-          gaps and/or "N/A" when data are not available. Each Penal Code
-          subsection is treated as a distinct offense. Users should be aware
-          that identifying offenses with PC subsections lumps together some
-          charges that come under a single subsection but have different
-          consequences. Examples would include so-called “wobbler” offenses that
-          may be charged as felonies or misdemeanors under some conditions. Some
-          common offenses are for probation violations (e.g., Penal Code section
-          1203.2), and their only corresponding event point is arrest. For any
-          given incident, the offense charged at court and disposition may be
-          different from the offense charged at arrest. So, the probability of a
-          particular outcome conditional on the prior event point may reflect
-          imprecision going from arrest to court event.
-        </p>
 
-        <table>
-          <tr>
-            <td>PC_code section</td>
-            <td>PC_offense</td>
-          </tr>
-          <tr>
-            <td>459</td>
-            <td>459 PC-BURGLARY</td>
-          </tr>
-          <tr>
-            <td>148(a)(1)</td>
-            <td>148(A)(1) PC-OBSTRUCT/ETC PUBLIC OFFICER/ETC</td>
-          </tr>
-          <tr>
-            <td>273.5(a)</td>
-            <td>273.5(A) PC-INFL CRPL INJ:SPOUSE/COHAB/DATE</td>
-          </tr>
-          <tr>
-            <td>243(e)(1)</td>
-            <td>243(E)(1) PC-BAT:SPOUSE/EX SP/DATE/ETC</td>
-          </tr>
-          <tr>
-            <td>647(f)</td>
-            <td>647(F) PC-DISORDERLY CONDUCT:UNDER INFL DRUG</td>
-          </tr>
-          <tr>
-            <td>3056</td>
-            <td>3056 PC-VIOLATION OF PAROLE:FELONY</td>
-          </tr>
-          <tr>
-            <td>484(a)</td>
-            <td>484(A) PC-THEFT</td>
-          </tr>
-          <tr>
-            <td>496(a)</td>
-            <td>496(A) PC-RECEIVE/ETC KNOWN STOLEN PROPERTY</td>
-          </tr>
-          <tr>
-            <td>1203.2</td>
-            <td>1203.2 PC-PROBATION VIOL:REARREST/REVOKE</td>
-          </tr>
-          <tr>
-            <td>245(a)(1)</td>
-            <td>245(A)(1) PC-ASSAULT W/DEADLY WEAPON:NOT F/ARM</td>
-          </tr>
-          <tr>
-            <td>853.7</td>
-            <td>853.7 PC-FAIL TO APPEAR AFTER WRITTEN PROMISE</td>
-          </tr>
-          <tr>
-            <td>242</td>
-            <td>242 PC-BATTERY</td>
-          </tr>
-          <tr>
-            <td>211</td>
-            <td>211 PC-ROBBERY</td>
-          </tr>
-          <tr>
-            <td>422</td>
-            <td>422 PC-THREATEN CRIME WITH INTENT TO TERRORIZE</td>
-          </tr>
-          <tr>
-            <td>3455</td>
-            <td>3455 PC-POST RELEASE COMMUNITY SUPV VIOLATION</td>
-          </tr>
-          <tr>
-            <td>487(a)</td>
-            <td>487(A) PC-GRAND THEFT:MONEY/LABOR/PROP</td>
-          </tr>
-          <tr>
-            <td>148.9(a)</td>
-            <td>148.9(A) PC-FALSE ID TO SPECIFIC PEACE OFICERS</td>
-          </tr>
-          <tr>
-            <td>273.6(a)</td>
-            <td>273.6(A) PC-VIO CRT ORD TO PREVNT DOMESTC VIOL</td>
-          </tr>
-          <tr>
-            <td>182(a)(1)</td>
-            <td>182(A)(1) PC-CONSPIRACY:COMMIT CRIME</td>
-          </tr>
-          <tr>
-            <td>1203.2(a)</td>
-            <td>1203.2(A) PC-PROBATION VIOL:REARREST/REVOKE</td>
-          </tr>
-        </table>
         <p>
           Wobblers account for just under a third of the penal-code dispositions
           in our criminal records data. Wobbler charging (misdemeanor vs.
@@ -318,26 +252,47 @@ export default function App() {
         <ul>
           <li>Arrest</li>
           <li>Charge filed at court</li>
-          <li>Conviction</li>
+          <li>Conviction (including misdemeanors and felonies)</li>
           <li>Felony conviction</li>
           <li>Prison sentence</li>
         </ul>
+        <h3>Offenses</h3>
         <p>
-          Because each step represents a event point where discretion is
-          exercised, the steps reveal disparities in outcomes for individuals
-          who arguably are more similarly situated, in the specific sense of
-          having gotten to that stage in the process. You can select event
-          points to view the rate at which each race experiences the indicated
-          step in the process, conditional on reaching the step that precedes
-          it, from arrest to court decision, conviction, and sentence. The
-          conditional racial gap shows the relative chances that a person of the
-          given race experiences a certain outcome or decision, relative to the
-          chances of a non-Hispanic White adult, given that they have reached a
-          specific event point. For example, suppose that in a particular
-          county, of 100 Black adults charged with a specific offense in court,
-          50 are convicted, whereas 40 per 100 White non-Hispanic adults charged
-          with the same offense are convicted. Then the disparity gap for Black
-          relative to White is 50/40 = 1.25.
+          The CORI data set used for the tool includes information on a large
+          number of criminal (California Penal Code) offenses; however, there
+          are very small sample sizes for many offenses and populations,
+          especially at the county-specific level. Due to confidentiality
+          concerns, our website does not display data for any selections for
+          which the metric of interest is constructed from samples of the data
+          that contain 10 or fewer observations. Our charts and tables will show
+          gaps and/or "N/A" when data are not available. This restriction
+          results in very limited coverage of offenses in the smallest counties–
+          in fact, we cannot report data for any offenses in California’s least
+          populous county, Alpine County. Even in larger counties, the tool may
+          not be able to display results for offenses that are relatively
+          uncommon.
+        </p>
+        <p>
+          Each Penal Code subsection is treated as a distinct offense (for
+          example, PC 148(A) is treated as a distinct offense from PC 148(B)).
+          Despite this level of detail, users should be aware that identifying
+          offenses with PC subsections lumps together some charges that come
+          under a single subsection but have different consequences. Examples
+          would include so-called “wobbler” offenses that are felonies by
+          default but may be charged as misdemeanors under some conditions.
+          Burglary, which is PC 459, may be charged as first-degree or
+          second-degree burglary, but the source data do not always distinguish
+          the degree, so these charges are combined into a single offense code.
+          Some common offenses are for probation violations (e.g., Penal Code
+          section 1203.2), and their only corresponding event point is an
+          arrest. For any given incident, the offense charged at court may be
+          different from the offense cited at arrest, given prosecutorial
+          decisions and plea bargaining. As a result, the probability of a
+          particular outcome conditional on the prior event point may reflect
+          imprecision going from arrest to court events. To ease searching, we
+          include not just the PC code section number but the offense
+          description (such as “PC 148(A) PC-OBSTRUCTS/RESISTS PUBLIC
+          OFFICER/ETC”) most commonly attached to that offense in the CORI data.
         </p>
         <h3>Measurements</h3>
         <p>
@@ -347,22 +302,29 @@ export default function App() {
           of the data are described below.
         </p>
         <p>
-          <b>Raw numbers</b> counts the actual number of incidents in that
-          category. For example, for a specific offense, county, year, and race,
-          there might have been 450 charges filed at court. Note that the tool
-          counts incidents, not individuals. The 450 charges might represent
-          fewer than 450 individuals, because a given individual might have been
-          charged on multiple counts of the same offense for a given arrest, or
-          might have been charged with the same offense on more than one
-          occasion.
+          <b>Raw numbers</b> is a count of the actual number of incidents in the
+          selected category defined by county, offense, year, race, and event
+          point. For example, a query of the tool for convictions in Alameda
+          County in 2016 for Black persons on the offense PC 148(A)(1) returns a
+          raw number of 58. This means there were 58 incidents involving
+          convictions of Black persons on the charge of PC 148(A)(1) recorded in
+          Alameda County in 2016. The tool counts incidents, not individuals, so
+          58 conviction incidents might represent fewer than 58 individuals,
+          because a given individual might have been charged with the same
+          offense on more than one occasion.
         </p>
         <p>
-          <b>Rates and disparity gaps per population</b> are calculated using
-          population data from the American Community Survey (ACS), which is a
-          large national survey run by the U.S. Census. All of our population
-          estimates for different ethnicities use the 5-year ACS sample for the
-          combined period 2016-2020. ACS summary tables were accessed through
-          the Census Bureau API interface (see{" "}
+          <b>Rates per population</b> measures the rate at which a given event
+          or decision occurs for a selected racial or ethnic group, relative to
+          that group’s total population in the county. Specifically, it is the
+          raw number of criminal justice decisions of the requested type for the
+          requested ethnic group during the requested year, per 100 individuals
+          of that group in the county population. Population data come from the
+          American Community Survey (ACS), which is a large national survey run
+          by the U.S. Census Bureau. All of our population estimates for
+          different ethnicities use the 5-year ACS sample for the combined
+          period 2016-2020. ACS summary tables were accessed through the Census
+          Bureau API interface (see{" "}
           <a href="https://www.census.gov/programs-surveys/acs/data/data-via-api.html">
             {" "}
             https://www.census.gov/programs-surveys/acs/data/data-via-api.html
@@ -371,7 +333,7 @@ export default function App() {
           <a href="https://walker-data.com/tidycensus/">
             https://walker-data.com/tidycensus/
           </a>
-          ).Census data can be accessed{" "}
+          ).You can download the Census data at{" "}
           <a
             href="https://docs.google.com/spreadsheets/d/1acKdr3w9NlALgfUt8nLbtSWDqEfVxyQLKuz3r_pGkes/edit#gid=840124101"
             target="_blank"
@@ -380,99 +342,18 @@ export default function App() {
           </a>
           {"."}
         </p>
-        <table>
-          <tr>
-            <td>Data Notes</td>
-            <td>Description</td>
-            <td>Notes</td>
-            <td>Dimension</td>
-          </tr>
-          <tr>
-            <td>PC_code</td>
-            <td>Penal Code section and subsection (top 20 PC offenses)</td>
-            <td></td>
-            <td>Offenses</td>
-          </tr>
-          <tr>
-            <td>PC_offense</td>
-            <td>Offense description in for this PC code in CORI data</td>
-            <td></td>
-            <td>Offenses</td>
-          </tr>
-          <tr>
-            <td>race</td>
-            <td>Race: Only AAPI, Black, Hispanic, and White (non-Hispanic)</td>
-            <td></td>
-            <td>Race</td>
-          </tr>
-          <tr>
-            <td>year</td>
-            <td>2010-2021: the span of records used here</td>
-            <td></td>
-            <td>Year</td>
-          </tr>
-          <tr>
-            <td>decision</td>
-            <td>
-              The event point: arrest, court decision, conviction, felony
-              conviction, prison sentence
-            </td>
-            <td></td>
-            <td>Event Points</td>
-          </tr>
-          <tr>
-            <td>previous_decision</td>
-            <td>
-              The previous step, which is the number in the denominator of
-              conditional rates
-            </td>
-            <td></td>
-            <td>[new]</td>
-          </tr>
-          <tr>
-            <td>number</td>
-            <td>Number of decisions (at incident level)</td>
-            <td>Number of incidents with that decision</td>
-            <td>Raw numbers</td>
-          </tr>
-          <tr>
-            <td>rate_per_100_pop</td>
-            <td>Number of decisions / county population (race-specific)</td>
-            <td>Number of incidents per 100 population</td>
-            <td>Rate per population</td>
-          </tr>
-          <tr>
-            <td>disparity_gap_pop_w</td>
-            <td>
-              Representation ratio relative to whites = rate_per_100_pop /
-              rate_per_100_pop (white)
-            </td>
-            <td>Ratio: 1.00 means parity with whites</td>
-            <td>Disparity gap per population</td>
-          </tr>
-          <tr>
-            <td>rate_cond_previous</td>
-            <td>
-              Rate of this decision conditional on previous step = Number of
-              this decision / number of previous step decision
-            </td>
-            <td>Percent</td>
-            <td>Rate per prior event point</td>
-          </tr>
-          <tr>
-            <td>disparity_gap_cond_w</td>
-            <td>
-              Relative risk of conditional decision, relative to whites =
-              rate_cond_previous / rate_cond_previous (white)
-            </td>
-            <td>Ratio: 1.00 means parity with whites</td>
-            <td>Disparity gap per prior event point</td>
-          </tr>
-        </table>
+        <p>
+          Example: If there were 350 incidents in which Hispanic individuals had
+          been arrested in county X on a charge of PC 459 (burglary) during the
+          year in question, and the Hispanic population of county X was 100,000,
+          the rate per 100 population would be 350/(100,000/100) = 0.35 per 100
+          population.
+        </p>
+
         <p>Definitions of key metrics:</p>
         <p>
-          <b>Rate per population measures</b> the rate at which a given event or
-          decision occurs for a selected racial or ethnic group, relative to
+          <b>Rate per population </b> measures the rate at which a given event
+          or decision occurs for a selected racial or ethnic group, relative to
           that group’s population in the county. Specifically, it is the number
           of criminal justice decisions of the requested type for the requested
           ethnic group during the requested year, per 100 individuals of that
@@ -483,16 +364,19 @@ export default function App() {
           would be 350/1000 = 0.35 per 100 population.{" "}
         </p>
         <p>
-          <b>Rate per prior event point</b> measures the rate at which a given
-          event or decision occurs for a selected racial or ethnic group,
-          relative to the number of people in that group at risk of that event.
-          Specifically, it is the number of criminal justice decisions of the
-          requested type for the requested ethnic group during the requested
+          <b>Rate per prior event point</b> measures the rate (in percent) at
+          which a given event or decision occurs for a selected racial or ethnic
+          group, relative to the number of people in that group at risk of that
+          event. Specifically, it is the number of criminal justice decisions of
+          the requested type for the requested ethnic group during the requested
           year, divided by the number of individuals of that group who had
           reached the immediately prior step or event point in the criminal
-          justice process and were thus “at risk” of this decision. For example,
-          suppose 100 Hispanic individuals in a particular county and year were
-          charged in court with burglary (PC 459), and 60 were convicted of
+          justice process and were thus “at risk” of this decision.
+        </p>
+        <p>
+          Example: Suppose there were 100 incidents in a particular county and
+          year in which Hispanic individuals were charged in court with burglary
+          (PC 459), and in 60 of those incidents they were convicted of
           burglary. Then the rate of conviction per prior event point (charge in
           court) would be 60/100 = 0.6 or 60%.
         </p>
@@ -502,25 +386,81 @@ export default function App() {
           individuals. The racial gap can be considered the relative chance that
           a person of the given race experiences a certain outcome or decision,
           relative to the chances of a non-Hispanic White adult, given
-          underlying populations. For example, suppose that in a particular
-          county in a particular year, 2 Black adults experienced felony
-          convictions for burglary for every 100 Black adults in the population,
-          whereas only 1 per 100 non-Hispanic White adults experienced a felony
-          conviction for burglary. Then the disparity gap for Black relative to
-          White is 2/1 = 2.{" "}
+          underlying populations.
+        </p>
+        <p>
+          For example, suppose that in a particular county in a particular year,
+          2 Black adults experienced felony convictions for burglary for every
+          100 Black adults in the population, whereas only 1 per 100
+          non-Hispanic White adults experienced a felony conviction for
+          burglary. Then the disparity gap for Black relative to White is 2/1 =
+          2.{" "}
         </p>
         <p>
           <b>Disparity gap per prior event point</b> compares the rate per prior
           event point of a given racial/ethnic group with that of non-Hispanic
-          White individuals. It shows the relative chances that a person of the
-          given race experiences a certain outcome or decision, relative to the
-          chances of a non-Hispanic White adult, given that they have reached a
-          specific prior event point. For example, suppose that in a particular
-          county in a particular year, of 100 Black adults charged with burglary
-          in court, 50 are convicted, whereas 40 per 100 White non-Hispanic
-          adults charged with the same offense are convicted. Then the disparity
-          gap for Black relative to White is 50/40 = 1.25.
+          White individuals. It shows the chances that a person of the given
+          race/ethnicity experiences a certain outcome or decision, given that
+          they have reached a specific prior event point, relative to the
+          chances of a non-Hispanic White adult, given that they have reached
+          the same prior event point.
         </p>
+        <p>
+          For example, suppose that in a particular county in a particular year,
+          of 100 Black adults charged with burglary in court, 50 are convicted,
+          whereas 40 per 100 White non-Hispanic adults charged with the same
+          offense are convicted. Then the disparity gap for Black relative to
+          White is 50/40 = 1.25.
+        </p>
+        <h3>Racial Classifications</h3>
+        <p>
+          The DOJ CORI data source indicates the racial/ethnic identity of each
+          individual with a single mutually exclusive “race” identifier. The
+          classifications include Black, Hispanic, Native American, White, a
+          number of Asian/Pacific Islander identities, as well as “other” and
+          unknown categories. Multiple racial identities are not recorded. The
+          tool collapses the various CORI categories into five groups: Asian
+          American/Pacific Islander, Black, Hispanic, Native American, and
+          White. Other groups are not included in the tool. How racial/ethnic
+          groups are assigned in the CORI data (whether self-identified or
+          assigned by authorities) is not indicated in the source.
+        </p>
+        <p>
+          The racial/ethnic classifications used by the Census Bureau (ACS),
+          from which we obtain population numbers, do not correspond directly to
+          the CORI data categories. In particular, the ACS asks separate
+          questions about racial identity and Hispanic/Latino identity, and
+          allows individuals to belong to more than one race. For our
+          comparisons, we use the following correspondences. The ACS categories
+          we use are not mutually exclusive, but in our judgment are likely to
+          correspond reasonably well to the CORI mutually exclusive categories.
+        </p>
+        <table>
+          <tr>
+            <td>CORI race</td>
+            <td>ACS race and Hispanic identity</td>
+          </tr>
+          <tr>
+            <td>AAPI (combination of Asian and PI groups)</td>
+            <td>Asian American or Pacific Islander race alone</td>
+          </tr>
+          <tr>
+            <td>Black</td>
+            <td>Black or African American race alone</td>
+          </tr>
+          <tr>
+            <td>Hispanic</td>
+            <td>Hispanic or Latin American, any race</td>
+          </tr>
+          <tr>
+            <td>Native American</td>
+            <td>Native American alone or in combination with other race(s)</td>
+          </tr>
+          <tr>
+            <td>White</td>
+            <td>White race alone, not Hispanic</td>
+          </tr>
+        </table>
         <h3>Confidentiality Protections</h3>
         <p>
           Due to confidentiality concerns, our website does not display data for
@@ -546,10 +486,10 @@ export default function App() {
           , whom we thank.
         </p>
         <p>
-          This tool is the creation of Colleen Chien, Bill Sundstrom, Yabo Du,
-          and Nathan Hoffman. Contributors include Arthi Kundadka, Navid
-          Shaghaghi, Yangxier Sui, and Lukas Pinkston and Paper Prisons web and
-          tools team advisor Navid Shaghaghi.
+          This tool represents the collaboration of many dedicated volunteers
+          and Paper Prisons team members including Bill Sundstrom, Yabo Du,
+          Bennett Cyphers, Rayna Saron, Akhil Raj, Arthi Kundadka, Yangxier Sui,
+          Lukas Pinkston, Navid Shaghaghi and Colleen Chien.
         </p>
         <p>
           For more information about the RJA, please see:

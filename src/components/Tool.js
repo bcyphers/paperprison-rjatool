@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PublicGoogleSheetsParser from "public-google-sheets-parser";
 import { utils, writeFileXLSX } from "xlsx";
-
 import { IconCharts } from "@/components/IconCharts";
 import DataTable from "@/components/DataTable";
 import PrivateSelect from "@/components/Select";
@@ -23,7 +22,6 @@ const MEASUREMENTS_MAP = {
   "Disparity gap per prior event point":
     "Disparity gap per prior decision point",
 };
-
 const RACES = {
   White: "White",
   Black: "Black",
@@ -31,7 +29,6 @@ const RACES = {
   AAPI: "Asian / Pacific Islander",
   "Native American": "Native American",
 };
-
 const getURLQueryParameterByName = (name, url = window.location.href) => {
   const sanitizedName = name.replace(/[[]]/g, "\\$&");
   const regex = new RegExp(`[?&]${sanitizedName}(=([^&#]*)|&|#|$)`);
@@ -40,7 +37,6 @@ const getURLQueryParameterByName = (name, url = window.location.href) => {
   if (!results[2]) return "";
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
-
 export default function App() {
   const [yearsAvailable, setYearsAvailable] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -125,14 +121,12 @@ export default function App() {
     chart: [],
   });
   const [showTable, setShowTable] = useState(false);
-
   const onDataDownload = () => {
     const ws = utils.json_to_sheet(filteredRecords.raw);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Data");
     writeFileXLSX(wb, "PaperPrison - Data.xlsx");
   };
-
   const onDataTableDisplayToggled = () => {
     setShowTable(!showTable);
   };
@@ -142,22 +136,26 @@ export default function App() {
     records = fullRecords,
   ) => {
     const allowedEventPoints = [
-      "Court",
+      "Charge",
       "Conviction",
       "Prison sentence",
       "Felony conviction",
     ];
 
     const raw = records.filter((r) => {
-      if (measurement.indexOf("prior event point") > -1 &&
-          !allowedEventPoints.includes(r["Event Point"])) {
+      if (
+        measurement.indexOf("prior event point") > -1 &&
+        !allowedEventPoints.includes(r["Event Point"])
+      ) {
         return false;
       }
       if (races.length > 0 && !races.includes(r.Race)) {
         return false;
       }
-      if (decisionPoints.length > 0 &&
-          !decisionPoints.includes(r["Event Point"])) {
+      if (
+        decisionPoints.length > 0 &&
+        !decisionPoints.includes(r["Event Point"])
+      ) {
         return false;
       }
       if (offenses.length > 0 && !offenses.includes(r.Offenses)) {
@@ -171,7 +169,6 @@ export default function App() {
       }
       return true;
     });
-
     const filtered = raw.reduce((acc, item) => {
       if (!acc[item.Year]) {
         acc[item.Year] = {
@@ -195,7 +192,6 @@ export default function App() {
       acc[item.Year].data[item["Event Point"]].items[item["Offenses"]].items[
         item["Race"]
       ] = item[measurement] || 0;
-
       if (!acc[item.Year].data[item["Event Point"]].records[item["Race"]]) {
         acc[item.Year].data[item["Event Point"]].records[item["Race"]] = 1;
       } else {
@@ -203,28 +199,24 @@ export default function App() {
       }
       return acc;
     }, {});
-
     setFilteredRecords({
       raw,
       chart: Object.values(filtered).map((item) => {
         item.data = Object.values(item.data).map((d) => {
-          d.items = Object.values(d.items).reduce(
-            (acc, dd) => {
-              Object.keys(dd.items).forEach((k) => {
-                if (!(k in acc)) {
-                  acc[k] = 0;
-                }
-                let temp = acc[k] + (dd.items[k] || 0);
-                if (measurement === "Raw numbers") {
-                  temp = Math.ceil(temp);
-                }
-                acc[k] = temp;
-                return acc;
-              });
-
+          d.items = Object.values(d.items).reduce((acc, dd) => {
+            Object.keys(dd.items).forEach((k) => {
+              if (!(k in acc)) {
+                acc[k] = 0;
+              }
+              let temp = acc[k] + (dd.items[k] || 0);
+              if (measurement === "Raw numbers") {
+                temp = Math.ceil(temp);
+              }
+              acc[k] = temp;
               return acc;
-            }, {},
-          );
+            });
+            return acc;
+          }, {});
           return d;
         });
         return item;
@@ -238,8 +230,7 @@ export default function App() {
     setLoading(true);
     const parser = new PublicGoogleSheetsParser();
     parser
-      //.parse("1j9YBu-u-5tTgEAUy7uP9NmHdSLEwDVKWZJsMDTvAPXQ", sheet)
-      .parse("1qFsF5ivZUHDRsst4sHZYt_eMZypO93eYUpXT1XBQYYQ", sheet)
+      .parse("16ljbmxFiYFSd8YcODRg5jg2yjJ2tOwjQxvURj7O3E18", sheet)
       .then((originItems) => {
         let _years = [];
         let _decisionPoints = [];
@@ -259,11 +250,13 @@ export default function App() {
             : item.rate_per_100_pop;
           item["Rate per prior event point"] = isNaN(item.rate_cond_previous)
             ? 0
-            : item.rate_cond_previous / 100;  // divide by 100 since this is a percentage
+            : item.rate_cond_previous / 100; // divide by 100 since this is a percentage
           item["Disparity gap per population"] = isNaN(item.disparity_gap_pop_w)
             ? 0
             : item.disparity_gap_pop_w;
-          item["Disparity gap per prior event point"] = isNaN(item.disparity_gap_cond_w)
+          item["Disparity gap per prior event point"] = isNaN(
+            item.disparity_gap_cond_w,
+          )
             ? 0
             : item.disparity_gap_cond_w;
           return item;
@@ -286,7 +279,11 @@ export default function App() {
           }
         });
         _years = _years.reverse().sort((a, b) => {
-          if (a === "2010-2021") {
+          if (a === "All Years (2010-2021)") {
+            return -1;
+          } else if (b === "All Years (2010-2021)") {
+            return 1;
+          } else if (a === "2010-2021") {
             return -1;
           } else if (b === "2010-2021") {
             return 1;
@@ -314,9 +311,11 @@ export default function App() {
           // are present in the dataset
           _years = years.filter((y) => _years.includes(y));
           _decisionPoints = decisionPoints.filter((d) =>
-                              _decisionPoints.includes(d));
-          _offenses = _offenses.includes(offenses[0]) ?
-                      [offenses[0]] : [defaultOffense];
+            _decisionPoints.includes(d),
+          );
+          _offenses = _offenses.includes(offenses[0])
+            ? [offenses[0]]
+            : [defaultOffense];
           _races = races.filter((r) => _races.includes(r));
         }
 
@@ -389,7 +388,6 @@ export default function App() {
       });
     }
   };
-
   const onRacesChange = (values) => {
     setRaces(values);
     if (values.length === 0) {
@@ -408,7 +406,6 @@ export default function App() {
       });
     }
   };
-
   /*const onGendersChange = (values) => {
     if (!values || values.length === 0) {
       return;
@@ -449,10 +446,7 @@ export default function App() {
   const onMeasurementsChange = (value) => {
     if (value) {
       setMeasurement(value);
-      if (
-        value === MEASUREMENTS.DG ||
-        value === MEASUREMENTS.DG_PEP
-      ) {
+      if (value === MEASUREMENTS.DG || value === MEASUREMENTS.DG_PEP) {
         setChartConfig({
           base: "white",
           ratio: 0.01,
@@ -494,7 +488,6 @@ export default function App() {
       });
     }
   };
-
   return (
     <div className="tool" id="tool">
       <p className="generic-page">
@@ -619,29 +612,26 @@ export default function App() {
           <div className="loading-animation-centered">
             <Grid />
           </div>
-        ) : (filteredRecords.chart.length > 0 ? (
-            <IconCharts
-              data={filteredRecords.chart}
-              races={Object.fromEntries(Object.entries(RACES).filter(([key]) =>
-                                        races.includes(key)))}
-              eventPoints={decisionPoints}
-              base={chartConfig.base}
-              measurement={measurement}
-            />
-          ) : (
-            <div style={{ textAlign: "center", fontWeight: "bold" }}>
-              <p>Unable to display due to insufficient data.</p>
-              {years.length === 0 && (
-                <p>Select at least one year.</p>
-              )}
-              {decisionPoints.length === 0 && (
-                <p>Select at least one event point.</p>
-              )}
-              {races.length === 0 && (
-                <p>Select at least one race.</p>
-              )}
-            </div>
-        ))}
+        ) : filteredRecords.chart.length > 0 ? (
+          <IconCharts
+            data={filteredRecords.chart}
+            races={Object.fromEntries(
+              Object.entries(RACES).filter(([key]) => races.includes(key)),
+            )}
+            eventPoints={decisionPoints}
+            base={chartConfig.base}
+            measurement={measurement}
+          />
+        ) : (
+          <div style={{ textAlign: "center", fontWeight: "bold" }}>
+            <p>Unable to display due to insufficient data.</p>
+            {years.length === 0 && <p>Select at least one year.</p>}
+            {decisionPoints.length === 0 && (
+              <p>Select at least one event point.</p>
+            )}
+            {races.length === 0 && <p>Select at least one race.</p>}
+          </div>
+        )}
       </div>
 
       {/* <pre>{JSON.stringify(filteredRecords, null, 4)}</pre> */}
