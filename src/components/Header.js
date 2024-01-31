@@ -18,9 +18,9 @@ const Header = () => {
       <div className="right">
         <a href="https://paperprisons.org/about.html">About</a>
         <a href="https://paperprisons.org/states.html">State Reports</a>
-        <a href="https://paperprisons.org/news.html">News</a>
-        <a href="https://paperprisons.org/blog.html">Blog</a>
+        <a href="https://paperprisons.org/news_blog.html">News/Blog</a>
         <a href="https://paperprisons.org/diary.html">Diary</a>
+        <a href="https://paperprisons.org/RJA.html">RJA</a>
       </div>
     </div>
   );
