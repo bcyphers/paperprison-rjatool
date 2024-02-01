@@ -12,7 +12,8 @@ It will generate everything under ./docs folder. Please follow https://docs.gith
 
 ## Exporting site to paperprisons.org
 
-1. Build and export the site
+1. Uncomment `basePath` & `assetPrefix` in `next.config.js`
+2. Build and export the site
    `next build && next export`
-2. Copy the contents of the `out` folder to the `paperprisons.org` repo's `/rja` folder
-3. Copy the images from `public/images` to the `paperprisons.org` repo's `/images` folder (not the `/rja/images` folder)
+3. Copy the contents of the `out` folder to the `paperprisons.org` repo's `/rja` folder
+4. Copy the images from `public/images` to the `paperprisons.org` repo's `/images` folder (not the `/rja/images` folder)
