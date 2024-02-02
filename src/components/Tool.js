@@ -122,7 +122,30 @@ export default function App() {
   });
   const [showTable, setShowTable] = useState(false);
   const onDataDownload = () => {
-    const ws = utils.json_to_sheet(filteredRecords.raw);
+    const selectedKeys = [
+      "county",
+      "PC_code",
+      "PC_offense",
+      "Race",
+      "Year",
+      "Event Point",
+      "Raw numbers",
+      "Rate per population",
+      "Rate per prior event point",
+      "Disparity gap per population",
+      "Disparity gap per prior event point",
+    ];
+    let jsonList = filteredRecords.raw;
+    const filteredJsonList = jsonList.map((obj) => {
+      const filteredObj = {};
+      selectedKeys.forEach((key) => {
+        if (obj.hasOwnProperty(key)) {
+          filteredObj[key] = obj[key];
+        }
+      });
+      return filteredObj;
+    });
+    const ws = utils.json_to_sheet(filteredJsonList);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Data");
     writeFileXLSX(wb, "PaperPrison - Data.xlsx");
@@ -494,7 +517,7 @@ export default function App() {
         This site provides summary data representing the raw numbers, rates per
         population, and disparity gaps by race of adults in the California
         criminal justice system using data provided by the California Department
-        of Justice as well as by Census Department. Access the Census data{" "}
+        of Justice as well as by the Census Department. Access the Census data{" "}
         <a
           href="https://docs.google.com/spreadsheets/d/1acKdr3w9NlALgfUt8nLbtSWDqEfVxyQLKuz3r_pGkes/edit#gid=840124101"
           target="_blank"
@@ -502,10 +525,21 @@ export default function App() {
           here
         </a>
         {". "}
-        For question or comments, please email us at{" "}
+        For questions or comments, please email us at{" "}
         <a href="mailto:rja@paperprisons.org?subject=Feedback%20for%20Your%20App">
           rja@paperprisons.org
+        </a>{" "}
+        (See also{" "}
+        <a
+          href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4392014"
+          target="_blank"
+        >
+          <i>
+            Proving Actionable Racial Disparity Under the California Racial
+            Justice Act
+          </i>
         </a>
+        , 76 UC L. Journal 1 (2023))
       </p>
       <div className="filters">
         <div>Customize: </div>
