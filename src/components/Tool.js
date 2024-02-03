@@ -22,6 +22,7 @@ const MEASUREMENTS_MAP = {
   "Disparity gap per prior event point":
     "Disparity gap per prior decision point",
 };
+
 const RACES = {
   White: "White",
   Black: "Black",
@@ -29,6 +30,24 @@ const RACES = {
   AAPI: "Asian / Pacific Islander",
   "Native American": "Native American",
 };
+
+const DECISION_POINTS = {
+  "Arrest": "Arrest",
+  "Court": "Charge",
+  "Conviction": "Conviction",
+  "Felony conviction": "Felony conviction",
+  "Prison sentence": "Prison sentence",
+};
+
+const DEFAULTS = {
+  years: ["All Years"],
+  county: "All Counties",
+  decisionPoints: Object.keys(DECISION_POINTS),
+  offense: "459 PC-BURGLARY",
+  races: Object.keys(RACES),
+  measurement: "Raw numbers",
+}
+
 const getURLQueryParameterByName = (name, url = window.location.href) => {
   const sanitizedName = name.replace(/[[]]/g, "\\$&");
   const regex = new RegExp(`[?&]${sanitizedName}(=([^&#]*)|&|#|$)`);
@@ -37,90 +56,30 @@ const getURLQueryParameterByName = (name, url = window.location.href) => {
   if (!results[2]) return "";
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
+
 export default function App() {
-  const [yearsAvailable, setYearsAvailable] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [years, setYears] = useState([]);
-  const [countiesAvailable, _] = useState([
-    "All Counties",
-    "Alameda",
-    "Amador",
-    "Butte",
-    "Calaveras",
-    "Colusa",
-    "Contra Costa",
-    "Del Norte",
-    "El Dorado",
-    "Fresno",
-    "Glenn",
-    "Humboldt",
-    "Imperial",
-    "Inyo",
-    "Kern",
-    "Kings",
-    "Lake",
-    "Lassen",
-    "Los Angeles",
-    "Madera",
-    "Marin",
-    "Mariposa",
-    "Mendocino",
-    "Merced",
-    "Modoc",
-    "Mono",
-    "Monterey",
-    "Napa",
-    "Nevada",
-    "Orange",
-    "Placer",
-    "Plumas",
-    "Riverside",
-    "Sacramento",
-    "San Benito",
-    "San Bernardino",
-    "San Diego",
-    "San Francisco",
-    "San Joaquin",
-    "San Luis Obispo",
-    "San Mateo",
-    "Santa Barbara",
-    "Santa Clara",
-    "Santa Cruz",
-    "Shasta",
-    "Sierra",
-    "Siskiyou",
-    "Solano",
-    "Sonoma",
-    "Stanislaus",
-    "Sutter",
-    "Tehama",
-    "Trinity",
-    "Tulare",
-    "Tuolumne",
-    "Ventura",
-    "Yolo",
-    "Yuba",
-  ]);
-  const [county, setCounty] = useState("All Counties");
+  const [showTable, setShowTable] = useState(false);
+
+  const [yearsAvailable, setYearsAvailable] = useState([]);
+  const [countiesAvailable, setCountiesAvailable] = useState([]);
   const [decisionPointsAvailable, setDecisionPointsAvailable] = useState([]);
-  const [decisionPoints, setDecisionPoints] = useState([]);
   const [offensesAvailable, setOffensesAvailable] = useState([]);
-  const [offenses, setOffenses] = useState([]);
-  //const [gendersAvailable, setGendersAvailable] = useState([]);
-  //const [genders, setGenders] = useState([]);
   const [racesAvailable, setRacesAvailable] = useState([]);
-  const [races, setRaces] = useState(Object.keys(RACES));
-  const [measurement, setMeasurement] = useState("Raw numbers");
-  const [chartConfig, setChartConfig] = useState({
-    ratio: 1,
-    base: null,
-  });
-  const [fullRecords, setFullRecords] = useState([]);
+  //const [gendersAvailable, setGendersAvailable] = useState([]);
+
+  const [years, setYears] = useState(DEFAULTS.years);
+  const [county, setCounty] = useState(DEFAULTS.county);
+  const [decisionPoints, setDecisionPoints] = useState(DEFAULTS.decisionPoints);
+  const [offense, setOffense] = useState(DEFAULTS.offense);
+  const [races, setRaces] = useState(DEFAULTS.races);
+  //const [genders, setGenders] = useState([]);
+  const [measurement, setMeasurement] = useState(DEFAULTS.measurement);
   const [filteredRecords, setFilteredRecords] = useState({
     raw: [],
-    chart: [],
+    chart: {},
   });
-  const [showTable, setShowTable] = useState(false);
+
   const onDataDownload = () => {
     const selectedKeys = [
       "county",
@@ -148,233 +107,60 @@ export default function App() {
     const ws = utils.json_to_sheet(filteredJsonList);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Data");
-    writeFileXLSX(wb, "PaperPrison - Data.xlsx");
+    writeFileXLSX(wb, "PaperPrison - RJA Data.xlsx");
   };
+
   const onDataTableDisplayToggled = () => {
     setShowTable(!showTable);
   };
 
-  const filter = (
-    { decisionPoints, races, offenses, years, measurement /*, genders*/ },
-    records = fullRecords,
-  ) => {
-    const allowedEventPoints = [
-      "Charge",
-      "Conviction",
-      "Prison sentence",
-      "Felony conviction",
-    ];
-
-    const raw = records.filter((r) => {
-      if (
-        measurement.indexOf("prior event point") > -1 &&
-        !allowedEventPoints.includes(r["Event Point"])
-      ) {
-        return false;
-      }
-      if (races.length > 0 && !races.includes(r.Race)) {
-        return false;
-      }
-      if (
-        decisionPoints.length > 0 &&
-        !decisionPoints.includes(r["Event Point"])
-      ) {
-        return false;
-      }
-      if (offenses.length > 0 && !offenses.includes(r.Offenses)) {
-        return false;
-      }
-      /* if (genders.length > 0 && !genders.includes(r.Gender)) {
-        return false;
-      }*/
-      if (!years.includes(r.Year)) {
-        return false;
-      }
-      return true;
-    });
-    const filtered = raw.reduce((acc, item) => {
-      if (!acc[item.Year]) {
-        acc[item.Year] = {
-          year: item.Year,
-          data: {},
-        };
-      }
-      if (!acc[item.Year].data[item["Event Point"]]) {
-        acc[item.Year].data[item["Event Point"]] = {
-          label: item["Event Point"],
-          items: {},
-          records: {},
-        };
-      }
-      if (!acc[item.Year].data[item["Event Point"]].items[item["Offenses"]]) {
-        acc[item.Year].data[item["Event Point"]].items[item["Offenses"]] = {
-          label: item["Offenses"],
-          items: {},
-        };
-      }
-      acc[item.Year].data[item["Event Point"]].items[item["Offenses"]].items[
-        item["Race"]
-      ] = item[measurement] || 0;
-      if (!acc[item.Year].data[item["Event Point"]].records[item["Race"]]) {
-        acc[item.Year].data[item["Event Point"]].records[item["Race"]] = 1;
-      } else {
-        acc[item.Year].data[item["Event Point"]].records[item["Race"]]++;
-      }
-      return acc;
-    }, {});
-    setFilteredRecords({
-      raw,
-      chart: Object.values(filtered).map((item) => {
-        item.data = Object.values(item.data).map((d) => {
-          d.items = Object.values(d.items).reduce((acc, dd) => {
-            Object.keys(dd.items).forEach((k) => {
-              if (!(k in acc)) {
-                acc[k] = 0;
-              }
-              let temp = acc[k] + (dd.items[k] || 0);
-              if (measurement === "Raw numbers") {
-                temp = Math.ceil(temp);
-              }
-              acc[k] = temp;
-              return acc;
-            });
-            return acc;
-          }, {});
-          return d;
-        });
-        return item;
-      }),
-    });
-  };
-
-  // https://docs.google.com/spreadsheets/d/1nJ3k0KXVrhXm8La-lOTpw8U7xL7Cc-GioANxxH5KsXE/edit#gid=0
-  // Make sure share this link to the public, so anyone who has the link can open this spreedsheet
-  const fetchData = async (sheet, useDefaults) => {
+  const fetchDataAvailable = async () => {
     setLoading(true);
-    const parser = new PublicGoogleSheetsParser();
-    parser
-      .parse("16ljbmxFiYFSd8YcODRg5jg2yjJ2tOwjQxvURj7O3E18", sheet)
-      .then((originItems) => {
-        let _years = [];
-        let _decisionPoints = [];
-        let _offenses = [];
-        let _races = [];
-        //const _genders = [];
+    fetch("/rja/api/metadata")
+      .then(res => res.json())
+      .then((result) => {
+        setYearsAvailable(result.years);
+        setCountiesAvailable(result.counties);
+        setDecisionPointsAvailable(result.decisionPoints);
+        setOffensesAvailable(result.offenses);
+        setRacesAvailable(result.races);
+    }).then(fetchData({
+      county: county,
+      decisionPoints: decisionPoints,
+      races: races,
+      offense: offense,
+      years: years,
+      measurement: measurement,
+    }));
+  }
 
-        const items = originItems.map((item) => {
-          item.Offenses = item.PC_offense;
-          item.Race = item.race;
-          //item.Gender = item.gender;
-          item.Year = item.year;
-          item["Event Point"] = item.decision;
-          item["Raw numbers"] = item.number;
-          item["Rate per population"] = isNaN(item.rate_per_100_pop)
-            ? 0
-            : item.rate_per_100_pop;
-          item["Rate per prior event point"] = isNaN(item.rate_cond_previous)
-            ? 0
-            : item.rate_cond_previous / 100; // divide by 100 since this is a percentage
-          item["Disparity gap per population"] = isNaN(item.disparity_gap_pop_w)
-            ? 0
-            : item.disparity_gap_pop_w;
-          item["Disparity gap per prior event point"] = isNaN(
-            item.disparity_gap_cond_w,
-          )
-            ? 0
-            : item.disparity_gap_cond_w;
-          return item;
-        });
-        items.forEach((item) => {
-          if (_years.indexOf(item["Year"]) === -1) {
-            _years.push(item["Year"]);
-          }
-          /*  if (_genders.indexOf(item["Gender"]) === -1) {
-             _genders.push(item["Gender"]);
-          }*/
-          if (_decisionPoints.indexOf(item["Event Point"]) === -1) {
-            _decisionPoints.push(item["Event Point"]);
-          }
-          if (_offenses.indexOf(item["Offenses"]) === -1) {
-            _offenses.push(item["Offenses"]);
-          }
-          if (_races.indexOf(item["Race"]) === -1) {
-            _races.push(item["Race"]);
-          }
-        });
-        _years = _years.reverse().sort((a, b) => {
-          if (a === "All Years (2010-2021)") {
-            return -1;
-          } else if (b === "All Years (2010-2021)") {
-            return 1;
-          } else if (a === "2010-2021") {
-            return -1;
-          } else if (b === "2010-2021") {
-            return 1;
-          } else {
-            return b - a;
-          }
-        });
-        setFullRecords(items);
-
-        const mostRecentYear = _years[0];
-        const defaultOffense = "459 PC-BURGLARY";
-        //const defaultGender = _genders[0];
-
-        setYearsAvailable([..._years]);
-        setDecisionPointsAvailable([..._decisionPoints]);
-        setOffensesAvailable([..._offenses]);
-        setRacesAvailable([..._races]);
-        //setGendersAvailable([..._genders]);
-
-        if (useDefaults) {
-          _years = [mostRecentYear];
-          _offenses = [defaultOffense];
-        } else {
-          // Update filters: choose all items which were selected by the user AND
-          // are present in the dataset
-          _years = years.filter((y) => _years.includes(y));
-          _decisionPoints = decisionPoints.filter((d) =>
-            _decisionPoints.includes(d),
-          );
-          _offenses = _offenses.includes(offenses[0])
-            ? [offenses[0]]
-            : [defaultOffense];
-          _races = races.filter((r) => _races.includes(r));
-        }
-
-        setYears([..._years]);
-        setDecisionPoints([..._decisionPoints]);
-        setOffenses([..._offenses]);
-        setRaces([..._races]);
-
-        filter(
-          {
-            decisionPoints: _decisionPoints,
-            races: _races,
-            offenses: _offenses,
-            years: _years,
-            measurement: measurement,
-            //genders: genders,
-          },
-          items,
-        );
-
-        setLoading(false);
-      });
+  const fetchData = async (query) => {
+    setLoading(true);
+    fetch("/rja/api/data", {
+      method: "POST",
+      body: JSON.stringify(query),
+    }).then(res => res.json())
+      .then((result) => {
+      console.log(result);
+      setFilteredRecords(result);
+      setLoading(false);
+    });
   };
 
   useEffect(() => {
-    const sheet = getURLQueryParameterByName("sheet") || "All Counties";
-    fetchData(sheet, true).catch((e) => {});
+    fetchDataAvailable().catch((e) => {});
   }, []);
 
   const onCountyChange = async (value) => {
+    if (!value) {
+      return;
+    }
     setCounty(value);
-    await fetchData(value, false);
-    filter({
+    fetchData({
+      county: value,
       decisionPoints: decisionPoints,
       races: races,
-      offenses: offenses,
+      offense: offense,
       years: years,
       measurement: measurement,
       //genders: genders,
@@ -383,14 +169,22 @@ export default function App() {
 
   const onYearChange = (values) => {
     setYears(values);
-    filter({
-      decisionPoints: decisionPoints,
-      races: races,
-      offenses: offenses,
-      years: values,
-      measurement: measurement,
-      //genders: genders,
-    });
+    if (values.length === 0) {
+      setFilteredRecords({
+        raw: [],
+        chart: {},
+      });
+    } else {
+      fetchData({
+        county: county,
+        decisionPoints: decisionPoints,
+        races: races,
+        offense: offense,
+        years: values,
+        measurement: measurement,
+        //genders: genders,
+      });
+    }
   };
 
   const onDecisionPointChange = (values) => {
@@ -398,37 +192,41 @@ export default function App() {
     if (values.length === 0) {
       setFilteredRecords({
         raw: [],
-        chart: [],
+        chart: {},
       });
     } else {
-      filter({
+      fetchData({
+        county: county,
         decisionPoints: values,
         races: races,
-        offenses: offenses,
+        offense: offense,
         years: years,
         measurement: measurement,
         //genders: genders,
       });
     }
   };
+
   const onRacesChange = (values) => {
     setRaces(values);
     if (values.length === 0) {
       setFilteredRecords({
         raw: [],
-        chart: [],
+        chart: {},
       });
     } else {
-      filter({
+      fetchData({
+        county: county,
         decisionPoints: decisionPoints,
         races: values,
-        offenses: offenses,
+        offense: offense,
         years: years,
         measurement: measurement,
         //genders: genders,
       });
     }
   };
+
   /*const onGendersChange = (values) => {
     if (!values || values.length === 0) {
       return;
@@ -437,29 +235,30 @@ export default function App() {
     if (values.length === 0) {
       setFilteredRecords({
         raw: [],
-        chart: [],
+        chart: {},
       });
     } else {
-      filter({
+      fetchData({
         genders: values,
         races,
         decisionPoints,
-        offenses,
+        offense,
         years,
         measurement,
       });
     }
   };*/
 
-  const onOffensesChange = (values) => {
-    if (!values || values.length === 0) {
+  const onOffenseChange = (value) => {
+    if (!value) {
       return;
     }
-    setOffenses(values);
-    filter({
+    setOffense(value);
+    fetchData({
+      county: county,
       decisionPoints: decisionPoints,
       races: races,
-      offenses: values,
+      offense: value,
       years: years,
       measurement: measurement,
       //genders: genders,
@@ -467,50 +266,21 @@ export default function App() {
   };
 
   const onMeasurementsChange = (value) => {
-    if (value) {
-      setMeasurement(value);
-      if (value === MEASUREMENTS.DG || value === MEASUREMENTS.DG_PEP) {
-        setChartConfig({
-          base: "white",
-          ratio: 0.01,
-        });
-      } else if (value === MEASUREMENTS.RAW) {
-        setChartConfig({
-          base: null,
-          ratio: 1,
-        });
-      } else {
-        setChartConfig({
-          base: null,
-          ratio: 0.1,
-        });
-      }
-
-      filter({
-        decisionPoints: decisionPoints,
-        races: races,
-        offenses: offenses,
-        years: years,
-        measurement: value,
-        //genders: genders,
-      });
-    } else {
-      setMeasurement(MEASUREMENTS.RAW);
-      setChartConfig({
-        base: null,
-        ratio: 1,
-      });
-
-      filter({
-        decisionPoints: decisionPoints,
-        races: races,
-        offenses: offenses,
-        years: years,
-        measurement: MEASUREMENTS.RAW,
-        //genders: genders,
-      });
+    if (!value) {
+      return;
     }
+    setMeasurement(value);
+    fetchData({
+      county: county,
+      decisionPoints: decisionPoints,
+      races: races,
+      offense: offense,
+      years: years,
+      measurement: value,
+      //genders: genders,
+    });
   };
+
   return (
     <div className="tool" id="tool">
       <p className="generic-page">
@@ -559,7 +329,7 @@ export default function App() {
         <div className="filter">
           <PrivateSelect
             label="Counties"
-            value={county}
+            svalue={county}
             multiple={false}
             onChange={onCountyChange}
             options={countiesAvailable.map((county) => ({
@@ -594,10 +364,10 @@ export default function App() {
         </div>
         <div className="filter">
           <PrivateSelect
-            label="Offenses"
-            value={offenses}
+            label="Offense"
+            value={offense}
             multiple={false}
-            onChange={onOffensesChange}
+            onChange={onOffenseChange}
             options={offensesAvailable.map((o) => ({
               text: o,
               value: o,
@@ -633,7 +403,7 @@ export default function App() {
               races.length === racesAvailable.length
                 ? "All Races"
                 : races.join(", "),
-              `${offenses}`,
+              `${offense}`,
             ]
               .filter((item) => !!item)
               .map((item) => `<span>${item}</span>`)
@@ -646,14 +416,13 @@ export default function App() {
           <div className="loading-animation-centered">
             <Grid />
           </div>
-        ) : filteredRecords.chart.length > 0 ? (
+        ) : Object.keys(filteredRecords.chart).length > 0 ? (
           <IconCharts
             data={filteredRecords.chart}
             races={Object.fromEntries(
               Object.entries(RACES).filter(([key]) => races.includes(key)),
             )}
             eventPoints={decisionPoints}
-            base={chartConfig.base}
             measurement={measurement}
           />
         ) : (
