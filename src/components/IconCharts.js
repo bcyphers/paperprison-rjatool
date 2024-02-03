@@ -140,7 +140,8 @@ const IconChartInner = ({
     scale = scaleDown(data);
   }
 
-  const base = (measurement in [MEASUREMENTS.DG, MEASUREMENTS.DG_PEP]) ? "white" : null;
+  const base = (measurement === MEASUREMENTS.DG || measurement === MEASUREMENTS.DG_PEP) ? "white" : null;
+  console.log(measurement, base);
   const filteredRaces = Object.keys(races).filter(
     (raceItem) => raceItem.toLowerCase() !== base,
   );

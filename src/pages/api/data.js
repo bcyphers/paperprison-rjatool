@@ -69,7 +69,11 @@ export default async function handler(req, res) {
       chart[r.year][r.race] = {};
     }
 
-    chart[r.year][r.race][r.decision] = r[measurement];
+    let value = r[measurement];
+    if (measurement === "rate_cond_previous") {
+      value /= 100;
+    }
+    chart[r.year][r.race][r.decision] = value;
   }
 
   console.log("Returning!");
