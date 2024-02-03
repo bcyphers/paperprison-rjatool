@@ -63,15 +63,15 @@ export default function App() {
 
   const [yearsAvailable, setYearsAvailable] = useState([]);
   const [countiesAvailable, setCountiesAvailable] = useState([]);
-  const [decisionPointsAvailable, setDecisionPointsAvailable] = useState([]);
   const [offensesAvailable, setOffensesAvailable] = useState([]);
-  const [racesAvailable, setRacesAvailable] = useState([]);
+  const [decisionPointsAvailable, setDecisionPointsAvailable] = useState(Object.keys(DECISION_POINTS));
+  const [racesAvailable, setRacesAvailable] = useState(Object.keys(RACES));
   //const [gendersAvailable, setGendersAvailable] = useState([]);
 
   const [years, setYears] = useState(DEFAULTS.years);
   const [county, setCounty] = useState(DEFAULTS.county);
-  const [decisionPoints, setDecisionPoints] = useState(DEFAULTS.decisionPoints);
   const [offense, setOffense] = useState(DEFAULTS.offense);
+  const [decisionPoints, setDecisionPoints] = useState(DEFAULTS.decisionPoints);
   const [races, setRaces] = useState(DEFAULTS.races);
   //const [genders, setGenders] = useState([]);
   const [measurement, setMeasurement] = useState(DEFAULTS.measurement);
@@ -114,16 +114,30 @@ export default function App() {
     setShowTable(!showTable);
   };
 
+  const sortYears = (a, b) => {
+    if (a.indexOf("All") > -1) { return -1; }
+    if (b.indexOf("All") > -1) { return 1; }
+    return b - a;
+  };
+
+  const sortCounties = (a, b) => {
+    if (a.indexOf("All") > -1) { return -1; }
+    if (b.indexOf("All") > -1) { return 1; }
+    return a.localeCompare(b);
+  };
+
+  const sortOffenses = (a, b) => {
+    return a.localeCompare(b);
+  };
+
   const fetchDataAvailable = async () => {
     setLoading(true);
     fetch("/rja/api/metadata")
       .then(res => res.json())
       .then((result) => {
-        setYearsAvailable(result.years);
-        setCountiesAvailable(result.counties);
-        setDecisionPointsAvailable(result.decisionPoints);
-        setOffensesAvailable(result.offenses);
-        setRacesAvailable(result.races);
+        setYearsAvailable(result.years.sort(sortYears));
+        setCountiesAvailable(result.counties.sort(sortCounties));
+        setOffensesAvailable(result.offenses.sort(sortOffenses));
     }).then(fetchData({
       county: county,
       decisionPoints: decisionPoints,
@@ -328,8 +342,8 @@ export default function App() {
         </div>
         <div className="filter">
           <PrivateSelect
-            label="Counties"
-            svalue={county}
+            label="County"
+            value={county}
             multiple={false}
             onChange={onCountyChange}
             options={countiesAvailable.map((county) => ({

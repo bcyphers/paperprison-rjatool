@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 
   for (const [key, col] of Object.entries(columns)) {
     const rows = await db.all(`SELECT DISTINCT ${col} FROM data;`);
-    out[key] = rows.map((r) => r[col] );
+    out[key] = rows.map((r) => r[col]);
   }
 
   res.status(200).json(out);

@@ -119,13 +119,7 @@ const scaleUp = (data) => {
   return SCALE[`${list[list.sort((a, b) => a - b).indexOf(max) + 1]}`];
 };
 
-const IconChartInner = ({
-  year,
-  data,
-  races,
-  eventPoints,
-  measurement,
-}) => {
+const IconChartInner = ({ year, data, races, eventPoints, measurement, }) => {
   let disclaimers = {
     n_a: false,
     zero: false,
