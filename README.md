@@ -1,4 +1,4 @@
-# [PaperPrison RJATool](https://codesandbox.io/p/sandbox/github/blessdyb/paperprison-rjatool/tree/main)
+# [PaperPrison RJATool](https://paperprison-rjatool-lilac.vercel.app)
 
 ## How to run it in your local
 
