@@ -2,7 +2,9 @@ import React from "react";
 
 const formatNumber = (n) => {
   const number = Number(n);
-  if (number > 1000) {
+  if (number > 1000000) {
+    return (number / 1000000).toPrecision(3) + "M";
+  } else if (number > 1000) {
     // we want three sig figs
     return (number / 1000).toPrecision(3) + "k";
   } else if (Number.isInteger(number)) {
@@ -35,7 +37,7 @@ const PersonIcon = ({ value = 0, label = 0, race = "" }) => {
                   className={`icon-person re-${race}`}
                   title={valueRoof}
                 >
-                  <use href="/rja/images/sprites.svg#person"></use>
+                  <use href="/images/sprites.svg#person"></use>
                 </svg>
                 <span
                   className="icon-chart-data-point-mask"
@@ -119,7 +121,7 @@ const scaleUp = (data) => {
   return SCALE[`${list[list.sort((a, b) => a - b).indexOf(max) + 1]}`];
 };
 
-const IconChartInner = ({ year, data, races, eventPoints, measurement, }) => {
+const IconChartInner = ({ years, data, races, eventPoints, measurement, }) => {
   let disclaimers = {
     n_a: false,
     zero: false,
@@ -178,13 +180,15 @@ const IconChartInner = ({ year, data, races, eventPoints, measurement, }) => {
   let postScaleString = "";
   if (scale < 1) {
     scaleString = "1";
-    postScaleString = "per " + ((1 / scale) * 100).toLocaleString();
+    postScaleString = "per " + (1 / scale).toLocaleString();
   }
 
+  const years_label = years.includes("All Years") ? "All Years" : years.join(", ");
+
   return (
-    <div className="icon-chart" key={year}>
+    <div className="icon-chart" key={years_label}>
       <h3>
-        {year}
+        {years_label}
         <div className="chart-meta">
           <div className="chart-scale">
             <PersonIcon value={1} race={base} /> {scaleString}{" "}
@@ -232,19 +236,17 @@ const IconChartInner = ({ year, data, races, eventPoints, measurement, }) => {
   );
 };
 
-const IconCharts = ({ data, races, eventPoints, measurement }) => {
+const IconCharts = ({ data, years, races, eventPoints, measurement }) => {
   console.log(data);
   return (
     <div className="icon-charts">
-      {Object.keys(data).map((year) => (
-        <IconChartInner
-          year={year}
-          data={data[year]}
-          races={races}
-          eventPoints={eventPoints}
-          measurement={measurement}
-        />
-      ))}
+      <IconChartInner
+        years={years}
+        data={data}
+        races={races}
+        eventPoints={eventPoints}
+        measurement={measurement}
+      />
     </div>
   );
 };

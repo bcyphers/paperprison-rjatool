@@ -5,6 +5,8 @@ const http = require("http"),
 
 const filepath = "./rja.db";
 
+const ALLOW_NA = true;
+
 const MEASUREMENT_MAP = {
   "Raw numbers": "number",
   "Rate per population": "rate_per_pop",
@@ -12,7 +14,6 @@ const MEASUREMENT_MAP = {
   "Disparity gap per population": "disparity_gap_pop_w",
   //"Disparity gap per prior event point": "disparity_gap_cond_w",
 };
-
 
 const DEFAULTS = {
   county: "All Counties",
@@ -36,7 +37,7 @@ export default async function handler(req, res) {
   let vars = [county];
 
   const offenses = ('offenses' in body ? body.offenses : DEFAULTS.offenses);
-  query += ` AND offense in (${"?,".repeat(offenses.length - 1) + "?"})`;
+  query += ` AND PC_offense in (${"?,".repeat(offenses.length - 1) + "?"})`;
   vars.push(...offenses);
 
   const years = ('years' in body ? body.years : DEFAULTS.year);
@@ -64,7 +65,7 @@ export default async function handler(req, res) {
 
   let data = {};
   for (const r of rows) {
-    let pop = r.race_pop;
+    let pop = r.pop;
     if (r.year === 'All') {
       pop *= 11.75;
     } else if (r.year === '2021') {
@@ -72,7 +73,11 @@ export default async function handler(req, res) {
     }
 
     if (!(r.race in data)) {
-      data[r.race] = {num: 0, pop: 0, num_white: 0, pop_white: 0};
+      data[r.race] = {};
+    }
+
+    if (!(r.decision in data[r.race])) {
+      data[r.race][r.decision] = {num: 0, pop: 0, num_w: 0, pop_w: 0};
     }
 
     if (ALLOW_NA) {
@@ -81,38 +86,44 @@ export default async function handler(req, res) {
         if (isNaN(r.number_white)) {
           continue;
         }
-        data[r.race].num_w += r.number_white;
-        data[r.race].pop_w += r.pop_white;
+        data[r.race][r.decision].num_w += r.number_white;
+        data[r.race][r.decision].pop_w += r.pop_white;
       }
 
       if (isNaN(r.number)) {
         continue;
       }
-      data[r.race].num += r.number;
-      data[r.race].pop += r.pop;
+      data[r.race][r.decision].num += r.number;
+      data[r.race][r.decision].pop += r.pop;
     } else {
       // if one NAN is too many, just allow it to poison the value
-      data[r.race].num += r.number;
-      data[r.race].pop += r.pop;
+      data[r.race][r.decision].num += r.number;
+      data[r.race][r.decision].pop += r.pop;
 
       if (measurement == 'disparity_gap_pop_w') {
-        data[r.race].num_w += r.number_white;
-        data[r.race].pop_w += r.pop_white;
+        data[r.race][r.decision].num_w += r.number_white;
+        data[r.race][r.decision].pop_w += r.pop_white;
       }
     }
   }
 
+  console.log(data);
+
   let out = {};
-  for (const [r, data] of Object.entries(data)) {
-    if (measurement === "number") {
-      out[r.race] = data.num;
-    } elif (measurement === "rate_per_pop") {
-      out[r.race] = data.num / data.pop;
-    } elif (measurement === "disparity_gap_pop_w") {
-      out[r.race] = (data.num / data.pop) / (data.num_w / data.pop_w);
+  for (const [r, v1] of Object.entries(data)) {
+    console.log(v1);
+    out[r] = {};
+    for (const [d, v2] of Object.entries(v1)) {
+      if (measurement === "number") {
+        out[r][d] = v2.num;
+      } else if (measurement === "rate_per_pop") {
+        out[r][d] = v2.num / v2.pop;
+      } else if (measurement === "disparity_gap_pop_w") {
+        out[r][d] = (v2.num / v2.pop) / (v2.num_w / v2.pop_w);
+      }
     }
   }
 
   console.log("Returning!");
-  res.status(200).json({raw: rows, chart: chart});
+  res.status(200).json({raw: rows, chart: out});
 }

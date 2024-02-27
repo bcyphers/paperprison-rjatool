@@ -133,7 +133,7 @@ export default function App() {
 
   const fetchDataAvailable = async () => {
     setLoading(true);
-    fetch("/rja/api/metadata")
+    fetch("/api/metadata")
       .then(res => res.json())
       .then((result) => {
         setYearsAvailable(result.years.sort(sortYears));
@@ -151,7 +151,7 @@ export default function App() {
 
   const fetchData = async (query) => {
     setLoading(true);
-    fetch("/rja/api/data", {
+    fetch("/api/data", {
       method: "POST",
       body: JSON.stringify(query),
     }).then(res => res.json())
@@ -265,7 +265,7 @@ export default function App() {
   };*/
 
   const onOffensesChange = (values) => {
-    if (!value || value.length < 1) {
+    if (!values || values.length < 1) {
       return;
     }
     setOffenses(values);
@@ -436,6 +436,7 @@ export default function App() {
         ) : Object.keys(filteredRecords.chart).length > 0 ? (
           <IconCharts
             data={filteredRecords.chart}
+            years={years}
             races={Object.fromEntries(
               Object.entries(RACES).filter(([key]) => races.includes(key)),
             )}
