@@ -17,7 +17,7 @@ const MEASUREMENT_MAP = {
 const DEFAULTS = {
   county: "All Counties",
   years: ["All Years"],
-  offense: "459 PC-BURGLARY",
+  offenses: ["459 PC-BURGLARY"],
   measurement: "number",
 };
 
@@ -31,50 +31,64 @@ export default async function handler(req, res) {
   console.log(req.body);
   const body = JSON.parse(req.body);
 
-  let query = "SELECT * FROM data WHERE county = ? AND PC_offense = ? ";
   const county = ('county' in body ? body.county : DEFAULTS.county);
-  const offense = ('offense' in body ? body.offense : DEFAULTS.offense);
-  const measurement = ('measurement' in body ?
-    MEASUREMENT_MAP[body.measurement] : DEFAULTS.measurement);
+  let query = "SELECT * FROM data WHERE county = ?";
+  let vars = [county];
 
-  let vars = [county, offense];
+  const offenses = ('offenses' in body ? body.offenses : DEFAULTS.offenses);
+  query += ` AND offense in (${"?,".repeat(offenses.length - 1) + "?"})`;
+  vars.push(...offenses);
 
-  let years = ('years' in body ? body.years : DEFAULTS.year);
+  const years = ('years' in body ? body.years : DEFAULTS.year);
   query += ` AND year in (${"?,".repeat(years.length - 1) + "?"})`;
   vars.push(...years);
 
   if ('races' in body) {
-    let races = body.races;
+    const races = body.races;
     query += ` AND race in (${"?,".repeat(races.length - 1) + "?"})`;
     vars.push(...races);
   }
 
   if ('decisionPoints' in body) {
-    let decisions = body.decisionPoints;
+    const decisions = body.decisionPoints;
     query += ` AND decision in (${"?,".repeat(decisions.length - 1) + "?"})`;
     vars.push(...decisions);
   }
 
   query += ";";
 
+  const measurement = ('measurement' in body ?
+    MEASUREMENT_MAP[body.measurement] : DEFAULTS.measurement);
+
   const rows = await db.all(query, vars);
 
   let chart = {};
   for (const r of rows) {
+    if (!(r.offense in chart)) {
+      chart[r.offense] = {};
+    }
+
     if (!(r.year in chart)) {
-      chart[r.year] = {};
+      chart[r.offense][r.year] = {};
     }
 
     if (!(r.race in chart[r.year])) {
-      chart[r.year][r.race] = {};
+      chart[r.offense][r.year][r.race] = r;
     }
-
-    let value = r[measurement];
-    if (measurement === "rate_cond_previous") {
-      value /= 100;
-    }
-    chart[r.year][r.race][r.decision] = value;
   }
+
+  for (const [off, v1] of Object.entries(chart)) {
+    for (const [year, v2] of Object.entries(v1)) {
+      for (dp of decisions) {
+
+      }
+    }
+  }
+
+  // aggregate years
+
+  // aggregate offenses
+
 
   console.log("Returning!");
   res.status(200).json({raw: rows, chart: chart});

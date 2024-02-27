@@ -9,18 +9,18 @@ import Grid from "@/components/Grid";
 const MEASUREMENTS = {
   RAW: "Raw numbers",
   RATE: "Rate per population",
-  R_PEP: "Rate per prior event point",
+  //R_PEP: "Rate per prior event point",
   DG: "Disparity gap per population",
-  DG_PEP: "Disparity gap per prior event point",
+  //DG_PEP: "Disparity gap per prior event point",
 };
 
 const MEASUREMENTS_MAP = {
   "Raw numbers": "Raw numbers",
   "Rate per population": "Rate per unit population",
-  "Rate per prior event point": "Rate per prior decision point",
+  //"Rate per prior event point": "Rate per prior decision point",
   "Disparity gap per population": "Disparity gap vs. white adults",
-  "Disparity gap per prior event point":
-    "Disparity gap per prior decision point",
+  //"Disparity gap per prior event point":
+    //"Disparity gap per prior decision point",
 };
 
 const RACES = {
@@ -43,7 +43,7 @@ const DEFAULTS = {
   years: ["All Years"],
   county: "All Counties",
   decisionPoints: Object.keys(DECISION_POINTS),
-  offense: "459 PC-BURGLARY",
+  offenses: ["459 PC-BURGLARY"],
   races: Object.keys(RACES),
   measurement: "Raw numbers",
 }
@@ -70,7 +70,7 @@ export default function App() {
 
   const [years, setYears] = useState(DEFAULTS.years);
   const [county, setCounty] = useState(DEFAULTS.county);
-  const [offense, setOffense] = useState(DEFAULTS.offense);
+  const [offenses, setOffenses] = useState(DEFAULTS.offenses);
   const [decisionPoints, setDecisionPoints] = useState(DEFAULTS.decisionPoints);
   const [races, setRaces] = useState(DEFAULTS.races);
   //const [genders, setGenders] = useState([]);
@@ -84,15 +84,16 @@ export default function App() {
     const selectedKeys = [
       "county",
       "PC_code",
-      "PC_offense",
+      "PC_offenses",
       "Race",
       "Year",
       "Event Point",
       "Raw numbers",
-      "Rate per population",
-      "Rate per prior event point",
+      "Population",
+      //"Rate per population",
+      //"Rate per prior event point",
       "Disparity gap per population",
-      "Disparity gap per prior event point",
+      //"Disparity gap per prior event point",
     ];
     let jsonList = filteredRecords.raw;
     const filteredJsonList = jsonList.map((obj) => {
@@ -142,7 +143,7 @@ export default function App() {
       county: county,
       decisionPoints: decisionPoints,
       races: races,
-      offense: offense,
+      offenses: offenses,
       years: years,
       measurement: measurement,
     }));
@@ -174,7 +175,7 @@ export default function App() {
       county: value,
       decisionPoints: decisionPoints,
       races: races,
-      offense: offense,
+      offenses: offenses,
       years: years,
       measurement: measurement,
       //genders: genders,
@@ -193,7 +194,7 @@ export default function App() {
         county: county,
         decisionPoints: decisionPoints,
         races: races,
-        offense: offense,
+        offenses: offenses,
         years: values,
         measurement: measurement,
         //genders: genders,
@@ -213,7 +214,7 @@ export default function App() {
         county: county,
         decisionPoints: values,
         races: races,
-        offense: offense,
+        offenses: offenses,
         years: years,
         measurement: measurement,
         //genders: genders,
@@ -233,7 +234,7 @@ export default function App() {
         county: county,
         decisionPoints: decisionPoints,
         races: values,
-        offense: offense,
+        offenses: offenses,
         years: years,
         measurement: measurement,
         //genders: genders,
@@ -256,23 +257,23 @@ export default function App() {
         genders: values,
         races,
         decisionPoints,
-        offense,
+        offenses,
         years,
         measurement,
       });
     }
   };*/
 
-  const onOffenseChange = (value) => {
-    if (!value) {
+  const onOffensesChange = (values) => {
+    if (!value || value.length < 1) {
       return;
     }
-    setOffense(value);
+    setOffenses(values);
     fetchData({
       county: county,
       decisionPoints: decisionPoints,
       races: races,
-      offense: value,
+      offenses: values,
       years: years,
       measurement: measurement,
       //genders: genders,
@@ -288,7 +289,7 @@ export default function App() {
       county: county,
       decisionPoints: decisionPoints,
       races: races,
-      offense: offense,
+      offenses: offenses,
       years: years,
       measurement: value,
       //genders: genders,
@@ -378,10 +379,10 @@ export default function App() {
         </div>
         <div className="filter">
           <PrivateSelect
-            label="Offense"
-            value={offense}
-            multiple={false}
-            onChange={onOffenseChange}
+            label="Offenses"
+            value={offenses}
+            multiple={true}
+            onChange={onOffensesChange}
             options={offensesAvailable.map((o) => ({
               text: o,
               value: o,
@@ -417,7 +418,9 @@ export default function App() {
               races.length === racesAvailable.length
                 ? "All Races"
                 : races.join(", "),
-              `${offense}`,
+              offenses.length === offensesAvailable.length
+                ? "All Offenses"
+                : offenses.join(", "),
             ]
               .filter((item) => !!item)
               .map((item) => `<span>${item}</span>`)
