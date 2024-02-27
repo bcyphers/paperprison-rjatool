@@ -7,10 +7,10 @@ const filepath = "./rja.db";
 
 const MEASUREMENT_MAP = {
   "Raw numbers": "number",
-  "Rate per population": "rate_per_100_pop",
-  "Rate per prior event point": "rate_cond_previous",
+  "Rate per population": "rate_per_pop",
+  //"Rate per prior event point": "rate_cond_previous",
   "Disparity gap per population": "disparity_gap_pop_w",
-  "Disparity gap per prior event point": "disparity_gap_cond_w",
+  //"Disparity gap per prior event point": "disparity_gap_cond_w",
 };
 
 
@@ -62,33 +62,56 @@ export default async function handler(req, res) {
 
   const rows = await db.all(query, vars);
 
-  let chart = {};
+  let data = {};
   for (const r of rows) {
-    if (!(r.offense in chart)) {
-      chart[r.offense] = {};
+    let pop = r.race_pop;
+    if (r.year === 'All') {
+      pop *= 11.75;
+    } else if (r.year === '2021') {
+      pop *= 0.75;
     }
 
-    if (!(r.year in chart)) {
-      chart[r.offense][r.year] = {};
+    if (!(r.race in data)) {
+      data[r.race] = {num: 0, pop: 0, num_white: 0, pop_white: 0};
     }
 
-    if (!(r.race in chart[r.year])) {
-      chart[r.offense][r.year][r.race] = r;
-    }
-  }
+    if (ALLOW_NA) {
+      // if we're treating NANs like zeroes, just skip over this data point
+      if (measurement == 'disparity_gap_pop_w') {
+        if (isNaN(r.number_white)) {
+          continue;
+        }
+        data[r.race].num_w += r.number_white;
+        data[r.race].pop_w += r.pop_white;
+      }
 
-  for (const [off, v1] of Object.entries(chart)) {
-    for (const [year, v2] of Object.entries(v1)) {
-      for (dp of decisions) {
+      if (isNaN(r.number)) {
+        continue;
+      }
+      data[r.race].num += r.number;
+      data[r.race].pop += r.pop;
+    } else {
+      // if one NAN is too many, just allow it to poison the value
+      data[r.race].num += r.number;
+      data[r.race].pop += r.pop;
 
+      if (measurement == 'disparity_gap_pop_w') {
+        data[r.race].num_w += r.number_white;
+        data[r.race].pop_w += r.pop_white;
       }
     }
   }
 
-  // aggregate years
-
-  // aggregate offenses
-
+  let out = {};
+  for (const [r, data] of Object.entries(data)) {
+    if (measurement === "number") {
+      out[r.race] = data.num;
+    } elif (measurement === "rate_per_pop") {
+      out[r.race] = data.num / data.pop;
+    } elif (measurement === "disparity_gap_pop_w") {
+      out[r.race] = (data.num / data.pop) / (data.num_w / data.pop_w);
+    }
+  }
 
   console.log("Returning!");
   res.status(200).json({raw: rows, chart: chart});
