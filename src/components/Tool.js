@@ -182,8 +182,16 @@ export default function App() {
     });
   };
 
-  const onYearChange = (values) => {
+  const onYearsChange = (values) => {
+    if (values[values.length-1] === "All Years") {
+      values = ["All Years"];
+    } else if (values.includes("All Years")) {
+      values = values.filter((w) => w != "All Years");
+    }
+
+    values.sort();
     setYears(values);
+
     if (values.length === 0) {
       setFilteredRecords({
         raw: [],
@@ -202,8 +210,12 @@ export default function App() {
     }
   };
 
-  const onDecisionPointChange = (values) => {
+  const onDecisionPointsChange = (values) => {
+    // make sure these are sorted correctly
+    values = Object.keys(DECISION_POINTS).filter(
+      (k) => values.includes(k));
     setDecisionPoints(values);
+
     if (values.length === 0) {
       setFilteredRecords({
         raw: [],
@@ -284,7 +296,7 @@ export default function App() {
     }
   };
 
-  const onMeasurementsChange = (value) => {
+  const onMeasurementChange = (value) => {
     if (!value) {
       return;
     }
@@ -338,7 +350,7 @@ export default function App() {
             multiple={true}
             disableAll={true}
             value={years}
-            onChange={onYearChange}
+            onChange={onYearsChange}
             options={yearsAvailable.map((y) => ({
               text: y,
               value: y,
@@ -362,7 +374,7 @@ export default function App() {
             label="Event Point"
             multiple={true}
             value={decisionPoints}
-            onChange={onDecisionPointChange}
+            onChange={onDecisionPointsChange}
             options={decisionPointsAvailable.map((dp) => ({
               text: dp,
               value: dp,
@@ -397,7 +409,7 @@ export default function App() {
           <PrivateSelect
             label="Measurement"
             value={measurement}
-            onChange={onMeasurementsChange}
+            onChange={onMeasurementChange}
             options={Object.keys(MEASUREMENTS_MAP).map((m) => ({
               text: m,
               value: m,

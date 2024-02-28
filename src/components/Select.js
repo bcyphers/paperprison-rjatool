@@ -14,15 +14,17 @@ const Select = ({
   const wrapperRef = useRef(null);
   const labelId = label.toLowerCase().replace(/\s+/g, "-");
 
+  const isAll = () => {
+    const vals = [...value].sort().join(".");
+    const all = options.map((o) => o.value).sort().join(".");
+    if (multiple && vals === all) {
+      return true;
+    }
+    return false;
+  };
+
   const toggleModal = () => {
-    setAll(
-      multiple &&
-        value.sort().join(".") ===
-          options
-            .map((o) => o.value)
-            .sort()
-            .join("."),
-    );
+    setAll(isAll());
     setShow(!show);
   };
 
@@ -46,14 +48,7 @@ const Select = ({
     } else {
       newValue = value === v ? null : v;
     }
-    setAll(
-      multiple &&
-        newValue.sort().join(".") ===
-          options
-            .map((o) => o.value)
-            .sort()
-            .join("."),
-    );
+    setAll(isAll);
     onChange(newValue);
   };
 
