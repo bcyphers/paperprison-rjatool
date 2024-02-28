@@ -14,8 +14,8 @@ const Select = ({
   const wrapperRef = useRef(null);
   const labelId = label.toLowerCase().replace(/\s+/g, "-");
 
-  const isAll = () => {
-    const vals = [...value].sort().join(".");
+  const isAll = (val) => {
+    const vals = [...val].sort().join(".");
     const all = options.map((o) => o.value).sort().join(".");
     if (multiple && vals === all) {
       return true;
@@ -24,7 +24,7 @@ const Select = ({
   };
 
   const toggleModal = () => {
-    setAll(isAll());
+    setAll(isAll(value));
     setShow(!show);
   };
 
@@ -32,7 +32,7 @@ const Select = ({
     if (all) {
       onChange([]);
     } else {
-      onChange(options.map((o) => o.value));
+      onChange(options.map((o) => o.value), true);
     }
     setAll(!all);
   };
@@ -48,8 +48,9 @@ const Select = ({
     } else {
       newValue = value === v ? null : v;
     }
-    setAll(isAll);
-    onChange(newValue);
+    const _all = isAll(newValue);
+    setAll(_all);
+    onChange(newValue, _all);
   };
 
   useEffect(() => {

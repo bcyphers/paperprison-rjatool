@@ -276,8 +276,12 @@ export default function App() {
     }
   };*/
 
-  const onOffensesChange = (values) => {
+  const onOffensesChange = (values, all) => {
     setOffenses(values);
+    if (all) {
+      values = ["All Offenses"];
+    }
+
     if (values.length === 0) {
       setFilteredRecords({
         raw: [],
@@ -436,7 +440,12 @@ export default function App() {
                 : races.join(", "),
               offenses.length === offensesAvailable.length
                 ? "All Offenses"
-                : offenses.join(", "),
+                : (offenses.length <= 4
+                  ? offenses.join(", ")
+                  : (offenses.length + " offenses: "
+                     + offenses[0] + ", ..., "
+                     + offenses[offenses.length-1])
+                ),
             ]
               .filter((item) => !!item)
               .map((item) => `<span>${item}</span>`)

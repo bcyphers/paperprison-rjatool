@@ -37,8 +37,10 @@ export default async function handler(req, res) {
   let vars = [county];
 
   const offenses = ('offenses' in body ? body.offenses : DEFAULTS.offenses);
-  query += ` AND PC_offense in (${"?,".repeat(offenses.length - 1) + "?"})`;
-  vars.push(...offenses);
+  if (offenses[0] !== "All Offenses") {
+    query += ` AND PC_offense in (${"?,".repeat(offenses.length - 1) + "?"})`;
+    vars.push(...offenses);
+  }
 
   const years = ('years' in body ? body.years : DEFAULTS.year);
   query += ` AND year in (${"?,".repeat(years.length - 1) + "?"})`;
