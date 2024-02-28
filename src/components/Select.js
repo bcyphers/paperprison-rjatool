@@ -86,7 +86,7 @@ const Select = ({
       {show && (
         <div ref={wrapperRef} className="modal-wrapper">
           <h3>{label}</h3>
-          {label === "Offenses" && (
+          {label === "Offense" && (
             <div className="search-bar-container">
               <input
                 type="text"

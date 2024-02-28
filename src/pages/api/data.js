@@ -65,64 +65,65 @@ export default async function handler(req, res) {
 
   let data = {};
   for (const r of rows) {
-    let pop = r.pop;
-    if (r.year === 'All') {
-      pop *= 11.75;
-    } else if (r.year === '2021') {
-      pop *= 0.75;
-    }
-
     if (!(r.race in data)) {
       data[r.race] = {};
     }
 
     if (!(r.decision in data[r.race])) {
-      data[r.race][r.decision] = {num: 0, pop: 0, num_w: 0, pop_w: 0};
+      data[r.race][r.decision] = {};
     }
 
-    if (ALLOW_NA) {
-      // if we're treating NANs like zeroes, just skip over this data point
-      if (measurement == 'disparity_gap_pop_w') {
-        if (isNaN(r.number_white)) {
-          continue;
-        }
-        data[r.race][r.decision].num_w += r.number_white;
-        data[r.race][r.decision].pop_w += r.pop_white;
+    if (!(r.year in data[r.race][r.decision])) {
+      let pop_mult = 1;
+      if (r.year === 'All Years') {
+        pop_mult *= 11.75;
+      } else if (r.year === '2021') {
+        pop_mult *= 0.75;
       }
 
-      if (isNaN(r.number)) {
-        continue;
-      }
-      data[r.race][r.decision].num += r.number;
-      data[r.race][r.decision].pop += r.pop;
-    } else {
-      // if one NAN is too many, just allow it to poison the value
-      data[r.race][r.decision].num += r.number;
-      data[r.race][r.decision].pop += r.pop;
+      data[r.race][r.decision][r.year] = {
+        num: 0,
+        pop: r.pop * pop_mult,
+        num_w: 0,
+        pop_w: r.pop_white * pop_mult,
+      };
+    }
 
-      if (measurement == 'disparity_gap_pop_w') {
-        data[r.race][r.decision].num_w += r.number_white;
-        data[r.race][r.decision].pop_w += r.pop_white;
-      }
+    data[r.race][r.decision][r.year].num += r.number;
+
+    if (measurement == 'disparity_gap_pop_w') {
+      data[r.race][r.decision][r.year].num_w += r.number_white;
     }
   }
-
-  console.log(data);
 
   let out = {};
-  for (const [r, v1] of Object.entries(data)) {
-    console.log(v1);
+  for (const [r, race_data] of Object.entries(data)) {
     out[r] = {};
-    for (const [d, v2] of Object.entries(v1)) {
+    for (const [d, decision_data] of Object.entries(race_data)) {
+      let agg = {num: 0, pop: 0, num_w: 0, pop_w: 0};
+
+      for (const [y, year_data] of Object.entries(decision_data)) {
+        agg.num += year_data.num;
+        agg.num_w += year_data.num_w;
+        agg.pop += year_data.pop;
+        agg.pop_w += year_data.pop_w;
+      }
+
+      console.log(r);
+      console.log(d);
+      console.log(agg);
+
       if (measurement === "number") {
-        out[r][d] = v2.num;
+        out[r][d] = agg.num;
       } else if (measurement === "rate_per_pop") {
-        out[r][d] = v2.num / v2.pop;
+        out[r][d] = agg.num / agg.pop;
       } else if (measurement === "disparity_gap_pop_w") {
-        out[r][d] = (v2.num / v2.pop) / (v2.num_w / v2.pop_w);
+        out[r][d] = (agg.num / agg.pop) / (agg.num_w / agg.pop_w);
       }
     }
   }
+
+  console.log(out);
 
   console.log("Returning!");
   res.status(200).json({raw: rows, chart: out});

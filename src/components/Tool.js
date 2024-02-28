@@ -330,7 +330,7 @@ export default function App() {
         <div>Customize: </div>
         <div className="filter">
           <PrivateSelect
-            label="Years"
+            label="Year"
             multiple={true}
             disableAll={true}
             value={years}
@@ -379,9 +379,9 @@ export default function App() {
         </div>
         <div className="filter">
           <PrivateSelect
-            label="Offenses"
-            value={offenses}
+            label="Offense"
             multiple={true}
+            value={offenses}
             onChange={onOffensesChange}
             options={offensesAvailable.map((o) => ({
               text: o,

@@ -11,9 +11,9 @@ const DATA_DATA_COLUMNS = [
   "Event Point",
   "Raw numbers",
   "Rate per population",
-  "Rate per prior event point",
+  //"Rate per prior event point",
   "Disparity gap per population",
-  "Disparity gap per prior event point",
+  //"Disparity gap per prior event point",
 ];
 
 const DataTable = ({ data }) => {
@@ -59,7 +59,7 @@ const DataTable = ({ data }) => {
                   } else if (
                     [
                       "Rate per population",
-                      "Rate per prior event point",
+                      //"Rate per prior event point",
                       "Disparity gap per population",
                       "Disparity gap per prior event point",
                     ].indexOf(k) > -1
