@@ -6,21 +6,46 @@ import DataTable from "@/components/DataTable";
 import PrivateSelect from "@/components/Select";
 import Grid from "@/components/Grid";
 
+export const DATA_COLUMNS = {
+  county: "County",
+  code: "Penal Code Section",
+  offense: "Offense",
+  race: "Race",
+  //gender: "Gender",
+  year: "Year",
+  decision: "Event Point",
+  number: "Number",
+  pop: "Population",
+  rate_pop: "Rate per 1,000 Population",
+  //dg_pop: "Disparity Gap per Population",
+};
+
+const DATA_COLUMN_MAP = {
+  "county": DATA_COLUMNS.county,
+  "PC_code": DATA_COLUMNS.code,
+  "PC_offense": DATA_COLUMNS.offense,
+  "race": DATA_COLUMNS.race,
+  //"gender": "Gender",
+  "year": DATA_COLUMNS.year,
+  "decision": DATA_COLUMNS.decision,
+  "number": DATA_COLUMNS.number,
+  "pop": DATA_COLUMNS.pop,
+};
+
 const MEASUREMENTS = {
   RAW: "Raw numbers",
   RATE: "Rate per population",
-  //R_PEP: "Rate per prior event point",
   DG: "Disparity gap per population",
+  //R_PEP: "Rate per prior event point",
   //DG_PEP: "Disparity gap per prior event point",
 };
 
 const MEASUREMENTS_MAP = {
-  "Raw numbers": "Raw numbers",
-  "Rate per population": "Rate per unit population",
-  //"Rate per prior event point": "Rate per prior decision point",
-  "Disparity gap per population": "Disparity gap vs. white adults",
-  //"Disparity gap per prior event point":
-    //"Disparity gap per prior decision point",
+  [MEASUREMENTS.RAW]: "Raw numbers",
+  [MEASUREMENTS.RATE]: "Rate per unit population",
+  [MEASUREMENTS.DG]: "Disparity gap vs. white adults",
+  //MEASUREMENTS.R_PEP: "Rate per prior decision point",
+  //MEASUREMENTS.DG_PEP: "Disparity gap per prior decision point",
 };
 
 const RACES = {
@@ -45,7 +70,7 @@ const DEFAULTS = {
   decisionPoints: Object.keys(DECISION_POINTS),
   offenses: ["459 PC-BURGLARY"],
   races: Object.keys(RACES),
-  measurement: "Raw numbers",
+  measurement: MEASUREMENTS.RAW,
 }
 
 const getURLQueryParameterByName = (name, url = window.location.href) => {
@@ -80,31 +105,29 @@ export default function App() {
     chart: {},
   });
 
-  const onDataDownload = () => {
-    const selectedKeys = [
-      "county",
-      "PC_code",
-      "PC_offenses",
-      "Race",
-      "Year",
-      "Event Point",
-      "Raw numbers",
-      "Population",
-      //"Rate per population",
-      //"Rate per prior event point",
-      "Disparity gap per population",
-      //"Disparity gap per prior event point",
-    ];
-    let jsonList = filteredRecords.raw;
-    const filteredJsonList = jsonList.map((obj) => {
-      const filteredObj = {};
-      selectedKeys.forEach((key) => {
-        if (obj.hasOwnProperty(key)) {
-          filteredObj[key] = obj[key];
+  const prepTableData = () => {
+    const data = filteredRecords.raw.map((r) => {
+      let row = {};
+      for (let [k, v] of Object.entries(r)) {
+        if (k === "PC_offense") {
+          v = v.slice(v.indexOf("PC-") + 3);
         }
-      });
-      return filteredObj;
+        if (k in DATA_COLUMN_MAP) {
+          row[DATA_COLUMN_MAP[k]] = v;
+        }
+      };
+      row[DATA_COLUMNS.rate_pop] = 1000 * r["number"] / r["pop"];
+      //row[DATA_COLUMNS.dg_pop] = (
+        //(r["number"] / r["pop"]) / (r["number_white"] / r["pop_white"])
+      //);
+      return row;
     });
+
+    return data;
+  };
+
+  const onDataDownload = () => {
+    const filteredJsonList = prepTableData();
     const ws = utils.json_to_sheet(filteredJsonList);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Data");
@@ -494,7 +517,7 @@ export default function App() {
         </div>
       </div>
       {showTable && filteredRecords.raw.length > 0 && (
-        <DataTable data={filteredRecords.raw} />
+        <DataTable data={prepTableData()} />
       )}
     </div>
   );

@@ -136,8 +136,8 @@ const IconChartInner = ({ years, data, races, eventPoints, measurement, }) => {
     scale = scaleDown(data);
   }
 
-  const base = (measurement === MEASUREMENTS.DG || measurement === MEASUREMENTS.DG_PEP) ? "white" : null;
-  console.log(measurement, base);
+  const base = (measurement === MEASUREMENTS.DG ||
+                measurement === MEASUREMENTS.DG_PEP) ? "white" : null;
   const filteredRaces = Object.keys(races).filter(
     (raceItem) => raceItem.toLowerCase() !== base,
   );
@@ -237,7 +237,6 @@ const IconChartInner = ({ years, data, races, eventPoints, measurement, }) => {
 };
 
 const IconCharts = ({ data, years, races, eventPoints, measurement }) => {
-  console.log(data);
   return (
     <div className="icon-charts">
       <IconChartInner
