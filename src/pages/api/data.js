@@ -109,10 +109,6 @@ export default async function handler(req, res) {
         agg.pop_w += year_data.pop_w;
       }
 
-      console.log(r);
-      console.log(d);
-      console.log(agg);
-
       if (measurement === "number") {
         out[r][d] = agg.num;
       } else if (measurement === "rate_per_pop") {
@@ -123,8 +119,5 @@ export default async function handler(req, res) {
     }
   }
 
-  console.log(out);
-
-  console.log("Returning!");
   res.status(200).json({raw: rows, chart: out});
 }

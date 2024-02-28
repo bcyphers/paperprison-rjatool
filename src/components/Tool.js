@@ -265,19 +265,23 @@ export default function App() {
   };*/
 
   const onOffensesChange = (values) => {
-    if (!values || values.length < 1) {
-      return;
-    }
     setOffenses(values);
-    fetchData({
-      county: county,
-      decisionPoints: decisionPoints,
-      races: races,
-      offenses: values,
-      years: years,
-      measurement: measurement,
-      //genders: genders,
-    });
+    if (values.length === 0) {
+      setFilteredRecords({
+        raw: [],
+        chart: {},
+      });
+    } else {
+      fetchData({
+        county: county,
+        decisionPoints: decisionPoints,
+        races: races,
+        offenses: values,
+        years: years,
+        measurement: measurement,
+        //genders: genders,
+      });
+    }
   };
 
   const onMeasurementsChange = (value) => {
@@ -451,6 +455,7 @@ export default function App() {
               <p>Select at least one event point.</p>
             )}
             {races.length === 0 && <p>Select at least one race.</p>}
+            {offenses.length === 0 && <p>Select at least one offense.</p>}
           </div>
         )}
       </div>
