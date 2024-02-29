@@ -66,7 +66,7 @@ const DECISION_POINTS = {
 
 const DEFAULTS = {
   years: ["All Years"],
-  county: "All Counties",
+  counties: ["All Counties"],
   decisionPoints: Object.keys(DECISION_POINTS),
   offenses: ["459 PC-BURGLARY"],
   races: Object.keys(RACES),
@@ -94,7 +94,7 @@ export default function App() {
   //const [gendersAvailable, setGendersAvailable] = useState([]);
 
   const [years, setYears] = useState(DEFAULTS.years);
-  const [county, setCounty] = useState(DEFAULTS.county);
+  const [counties, setCounties] = useState(DEFAULTS.counties);
   const [offenses, setOffenses] = useState(DEFAULTS.offenses);
   const [decisionPoints, setDecisionPoints] = useState(DEFAULTS.decisionPoints);
   const [races, setRaces] = useState(DEFAULTS.races);
@@ -163,7 +163,7 @@ export default function App() {
         setCountiesAvailable(result.counties.sort(sortCounties));
         setOffensesAvailable(result.offenses.sort(sortOffenses));
     }).then(fetchData({
-      county: county,
+      counties: counties,
       decisionPoints: decisionPoints,
       races: races,
       offenses: offenses,
@@ -174,6 +174,12 @@ export default function App() {
 
   const fetchData = async (query) => {
     setLoading(true);
+
+    // save a little bit of bandwidth
+    if ('offenses' in query && query.offenses.length === offensesAvailable.length) {
+      query.offenses = ["All Offenses"];
+    }
+
     fetch("/api/data", {
       method: "POST",
       body: JSON.stringify(query),
@@ -189,20 +195,32 @@ export default function App() {
     fetchDataAvailable().catch((e) => {});
   }, []);
 
-  const onCountyChange = async (value) => {
-    if (!value) {
-      return;
+  const onCountiesChange = async (values) => {
+    if (values[values.length-1] === "All Counties") {
+      values = ["All Counties"];
+    } else if (values.includes("All Counties")) {
+      values = values.filter((w) => w != "All Counties");
     }
-    setCounty(value);
-    fetchData({
-      county: value,
-      decisionPoints: decisionPoints,
-      races: races,
-      offenses: offenses,
-      years: years,
-      measurement: measurement,
-      //genders: genders,
-    });
+
+    values.sort();
+    setCounties(values);
+
+    if (values.length === 0) {
+      setFilteredRecords({
+        raw: [],
+        chart: {},
+      });
+    } else {
+      fetchData({
+        counties: values,
+        decisionPoints: decisionPoints,
+        races: races,
+        offenses: offenses,
+        years: years,
+        measurement: measurement,
+        //genders: genders,
+      });
+    }
   };
 
   const onYearsChange = (values) => {
@@ -222,7 +240,7 @@ export default function App() {
       });
     } else {
       fetchData({
-        county: county,
+        counties: counties,
         decisionPoints: decisionPoints,
         races: races,
         offenses: offenses,
@@ -246,7 +264,7 @@ export default function App() {
       });
     } else {
       fetchData({
-        county: county,
+        counties: counties,
         decisionPoints: values,
         races: races,
         offenses: offenses,
@@ -266,7 +284,7 @@ export default function App() {
       });
     } else {
       fetchData({
-        county: county,
+        counties: counties,
         decisionPoints: decisionPoints,
         races: values,
         offenses: offenses,
@@ -299,11 +317,8 @@ export default function App() {
     }
   };*/
 
-  const onOffensesChange = (values, all) => {
+  const onOffensesChange = (values) => {
     setOffenses(values);
-    if (all) {
-      values = ["All Offenses"];
-    }
 
     if (values.length === 0) {
       setFilteredRecords({
@@ -312,7 +327,7 @@ export default function App() {
       });
     } else {
       fetchData({
-        county: county,
+        counties: counties,
         decisionPoints: decisionPoints,
         races: races,
         offenses: values,
@@ -329,7 +344,7 @@ export default function App() {
     }
     setMeasurement(value);
     fetchData({
-      county: county,
+      counties: counties,
       decisionPoints: decisionPoints,
       races: races,
       offenses: offenses,
@@ -387,9 +402,10 @@ export default function App() {
         <div className="filter">
           <PrivateSelect
             label="County"
-            value={county}
-            multiple={false}
-            onChange={onCountyChange}
+            multiple={true}
+            disableAll={true}
+            value={counties}
+            onChange={onCountiesChange}
             options={countiesAvailable.map((county) => ({
               text: county,
               value: county,
@@ -446,7 +462,7 @@ export default function App() {
       </div>
       <div className="chart-selected">
         <h2>
-          <h2>{county}</h2>
+          <h2>{counties.join(", ")}</h2>
         </h2>
         <p
           dangerouslySetInnerHTML={{
@@ -455,9 +471,7 @@ export default function App() {
               decisionPoints.length === decisionPointsAvailable.length
                 ? "All Event Points"
                 : decisionPoints.join(", "),
-              years.length === yearsAvailable.length
-                ? "All Years"
-                : years.join(", "),
+              years.join(", "),
               races.length === racesAvailable.length
                 ? "All Races"
                 : races.join(", "),

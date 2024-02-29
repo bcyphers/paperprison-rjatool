@@ -16,7 +16,7 @@ const MEASUREMENT_MAP = {
 };
 
 const DEFAULTS = {
-  county: "All Counties",
+  counties: ["All Counties"],
   years: ["All Years"],
   offenses: ["459 PC-BURGLARY"],
   measurement: "number",
@@ -32,9 +32,9 @@ export default async function handler(req, res) {
   console.log(req.body);
   const body = JSON.parse(req.body);
 
-  const county = ('county' in body ? body.county : DEFAULTS.county);
-  let query = "SELECT * FROM data WHERE county = ?";
-  let vars = [county];
+  const counties = ('counties' in body ? body.counties : DEFAULTS.counties);
+  let query = `SELECT * FROM data WHERE county in (${"?,".repeat(counties.length - 1) + "?"})`;
+  let vars = [...counties];
 
   const offenses = ('offenses' in body ? body.offenses : DEFAULTS.offenses);
   if (offenses[0] !== "All Offenses") {
@@ -76,6 +76,10 @@ export default async function handler(req, res) {
     }
 
     if (!(r.year in data[r.race][r.decision])) {
+      data[r.race][r.decision][r.year] = {};
+    }
+
+    if (!(r.county in data[r.race][r.decision][r.year])) {
       let pop_mult = 1;
       if (r.year === 'All Years') {
         pop_mult *= 11.75;
@@ -83,7 +87,7 @@ export default async function handler(req, res) {
         pop_mult *= 0.75;
       }
 
-      data[r.race][r.decision][r.year] = {
+      data[r.race][r.decision][r.year][r.county] = {
         num: 0,
         pop: r.pop * pop_mult,
         num_w: 0,
@@ -91,10 +95,10 @@ export default async function handler(req, res) {
       };
     }
 
-    data[r.race][r.decision][r.year].num += r.number;
+    data[r.race][r.decision][r.year][r.county].num += r.number;
 
     if (measurement == 'disparity_gap_pop_w') {
-      data[r.race][r.decision][r.year].num_w += r.number_white;
+      data[r.race][r.decision][r.year][r.county].num_w += r.number_white;
     }
   }
 
@@ -105,10 +109,12 @@ export default async function handler(req, res) {
       let agg = {num: 0, pop: 0, num_w: 0, pop_w: 0};
 
       for (const [y, year_data] of Object.entries(decision_data)) {
-        agg.num += year_data.num;
-        agg.num_w += year_data.num_w;
-        agg.pop += year_data.pop;
-        agg.pop_w += year_data.pop_w;
+        for (const [c, cty_data] of Object.entries(year_data)) {
+          agg.num += cty_data.num;
+          agg.num_w += cty_data.num_w;
+          agg.pop += cty_data.pop;
+          agg.pop_w += cty_data.pop_w;
+        }
       }
 
       if (measurement === "number") {

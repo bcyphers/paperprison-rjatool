@@ -15,12 +15,9 @@ const Select = ({
   const labelId = label.toLowerCase().replace(/\s+/g, "-");
 
   const isAll = (val) => {
+    if (!multiple) { return false; }
     const vals = [...val].sort().join(".");
-    const all = options.map((o) => o.value).sort().join(".");
-    if (multiple && vals === all) {
-      return true;
-    }
-    return false;
+    return vals === options.map((o) => o.value).sort().join(".");
   };
 
   const toggleModal = () => {
@@ -48,9 +45,8 @@ const Select = ({
     } else {
       newValue = value === v ? null : v;
     }
-    const _all = isAll(newValue);
-    setAll(_all);
-    onChange(newValue, _all);
+    setAll(isAll(newValue));
+    onChange(newValue);
   };
 
   useEffect(() => {
