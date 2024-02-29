@@ -509,6 +509,7 @@ export default function App() {
           <div style={{ textAlign: "center", fontWeight: "bold" }}>
             <p>Unable to display due to insufficient data.</p>
             {years.length === 0 && <p>Select at least one year.</p>}
+            {counties.length === 0 && <p>Select at least one county.</p>}
             {decisionPoints.length === 0 && (
               <p>Select at least one event point.</p>
             )}
