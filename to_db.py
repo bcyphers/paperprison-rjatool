@@ -33,6 +33,7 @@ def main():
     df = df.drop(['rate_per_100_pop', 'disparity_gap_pop_w'], axis=1)
     df = df.assign(county=df.county.replace('California', 'All Counties'))
     df = df.assign(year=df.year.replace('All', 'All Years'))
+    df = df.assign(decision=df.decision.replace('Court', 'Charge'))
 
     return df
 

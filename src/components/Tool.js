@@ -56,18 +56,18 @@ const RACES = {
   "Native American": "Native American",
 };
 
-const DECISION_POINTS = {
-  "Arrest": "Arrest",
-  "Court": "Charge",
-  "Conviction": "Conviction",
-  "Felony conviction": "Felony conviction",
-  "Prison sentence": "Prison sentence",
-};
+const DECISION_POINTS = [
+  "Arrest",
+  "Charge",
+  "Conviction",
+  "Felony conviction",
+  "Prison sentence",
+];
 
 const DEFAULTS = {
   years: ["All Years"],
   counties: ["All Counties"],
-  decisionPoints: Object.keys(DECISION_POINTS),
+  decisionPoints: [...DECISION_POINTS],
   offenses: ["459 PC-BURGLARY"],
   races: Object.keys(RACES),
   measurement: MEASUREMENTS.RAW,
@@ -89,7 +89,7 @@ export default function App() {
   const [yearsAvailable, setYearsAvailable] = useState([]);
   const [countiesAvailable, setCountiesAvailable] = useState([]);
   const [offensesAvailable, setOffensesAvailable] = useState([]);
-  const [decisionPointsAvailable, setDecisionPointsAvailable] = useState(Object.keys(DECISION_POINTS));
+  const [decisionPointsAvailable, setDecisionPointsAvailable] = useState(DECISION_POINTS);
   const [racesAvailable, setRacesAvailable] = useState(Object.keys(RACES));
   //const [gendersAvailable, setGendersAvailable] = useState([]);
 
@@ -253,8 +253,7 @@ export default function App() {
 
   const onDecisionPointsChange = (values) => {
     // make sure these are sorted correctly
-    values = Object.keys(DECISION_POINTS).filter(
-      (k) => values.includes(k));
+    values = DECISION_POINTS.filter((k) => values.includes(k));
     setDecisionPoints(values);
 
     if (values.length === 0) {
