@@ -8,26 +8,26 @@ import Grid from "@/components/Grid";
 
 export const DATA_COLUMNS = {
   county: "County",
+  year: "Year",
   code: "Penal Code Section",
   offense: "Offense",
+  decision: "Event Point",
   race: "Race",
   //gender: "Gender",
-  year: "Year",
-  decision: "Event Point",
   number: "Number",
   pop: "Population",
-  rate_pop: "Rate per 1,000 Population",
+  rate_pop: "Rate per 1,000 Population per Year",
   //dg_pop: "Disparity Gap per Population",
 };
 
 const DATA_COLUMN_MAP = {
   "county": DATA_COLUMNS.county,
+  "year": DATA_COLUMNS.year,
   "PC_code": DATA_COLUMNS.code,
   "PC_offense": DATA_COLUMNS.offense,
+  "decision": DATA_COLUMNS.decision,
   "race": DATA_COLUMNS.race,
   //"gender": "Gender",
-  "year": DATA_COLUMNS.year,
-  "decision": DATA_COLUMNS.decision,
   "number": DATA_COLUMNS.number,
   "pop": DATA_COLUMNS.pop,
 };
@@ -116,7 +116,9 @@ export default function App() {
           row[DATA_COLUMN_MAP[k]] = v;
         }
       };
-      row[DATA_COLUMNS.rate_pop] = 1000 * r["number"] / r["pop"];
+      const pop_mul = r["year"] === "All Years" ? 11.75 : (
+          r["year"] == 2021 ? 0.75 : 1);
+      row[DATA_COLUMNS.rate_pop] = 1000 * r["number"] / (r["pop"] * pop_mul);
       //row[DATA_COLUMNS.dg_pop] = (
         //(r["number"] / r["pop"]) / (r["number_white"] / r["pop_white"])
       //);
