@@ -1,20 +1,6 @@
 import React from "react";
 import { useState } from "react";
-
-const DATA_DATA_COLUMNS = [
-  "county",
-  "PC_code",
-  "PC_offense",
-  "Race",
-  //"Gender",
-  "Year",
-  "Event Point",
-  "Raw numbers",
-  "Rate per population",
-  "Rate per prior event point",
-  "Disparity gap per population",
-  "Disparity gap per prior event point",
-];
+import { DATA_COLUMNS } from "@/components/Tool";
 
 const DataTable = ({ data }) => {
   const itemsPerPage = 20;
@@ -25,8 +11,9 @@ const DataTable = ({ data }) => {
     }
   };
 
+  const totalPages = Math.ceil(data.length / itemsPerPage);
   const goToNextPage = () => {
-    if (currentPage < Math.ceil(data.length / itemsPerPage)) {
+    if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -35,12 +22,14 @@ const DataTable = ({ data }) => {
   const endIndex = startIndex + itemsPerPage;
   const visibleData = data.slice(startIndex, endIndex);
 
+  console.log(DATA_COLUMNS);
+
   return (
     <div className="table-container">
       <table className="ui celled table">
         <thead>
           <tr>
-            {DATA_DATA_COLUMNS.map((r) => (
+            {Object.values(DATA_COLUMNS).map((r) => (
               <th key={r}>{r}</th>
             ))}
           </tr>
@@ -49,22 +38,12 @@ const DataTable = ({ data }) => {
           {visibleData.map((row, rIndex) => {
             return (
               <tr key={rIndex}>
-                {DATA_DATA_COLUMNS.map((k) => {
-                  if (k === "county") {
-                    console.log(row[k]);
-                  }
+                {Object.values(DATA_COLUMNS).map((k) => {
                   let value = row[k];
-                  if (k === "Raw numbers" && value < 10) {
+                  if (k === DATA_COLUMNS.number && value < 10) {
                     value = "N/A";
-                  } else if (
-                    [
-                      "Rate per population",
-                      "Rate per prior event point",
-                      "Disparity gap per population",
-                      "Disparity gap per prior event point",
-                    ].indexOf(k) > -1
-                  ) {
-                    value = parseFloat(value).toFixed(2);
+                  } else if ([DATA_COLUMNS.rate_pop].includes(k)) {
+                    value = parseFloat(value).toPrecision(3);
                   }
                   return <td key={k}>{value}</td>;
                 })}
@@ -81,11 +60,11 @@ const DataTable = ({ data }) => {
         >
           Previous
         </button>
-        <span>Page {currentPage}</span>
+        <span>Page {currentPage} of {totalPages}</span>
         <button
           className="pagination-button"
           onClick={goToNextPage}
-          disabled={currentPage === Math.ceil(data.length / itemsPerPage)}
+          disabled={currentPage === totalPages}
         >
           Next
         </button>

@@ -6,15 +6,15 @@ const nextConfig = {
   //   domains: ["paperprisons.org"],
   //   path: "/RJA/_next/image",
   // },
-  async rewrites() {
-    return [
-      // Rewrite everything to `pages/index`
-      {
-        source: "/:any*",
-        destination: "/",
-      },
-    ];
-  },
+  //async rewrites() {
+    //return [
+      //// Rewrite everything to `pages/index`
+      //{
+        //source: "/:any*",
+        //destination: "/",
+      //},
+    //];
+  //},
 };
 
 module.exports = nextConfig;

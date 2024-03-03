@@ -14,15 +14,14 @@ const Select = ({
   const wrapperRef = useRef(null);
   const labelId = label.toLowerCase().replace(/\s+/g, "-");
 
+  const isAll = (val) => {
+    if (!multiple) { return false; }
+    const vals = [...val].sort().join(".");
+    return vals === options.map((o) => o.value).sort().join(".");
+  };
+
   const toggleModal = () => {
-    setAll(
-      multiple &&
-        value.sort().join(".") ===
-          options
-            .map((o) => o.value)
-            .sort()
-            .join("."),
-    );
+    setAll(isAll(value));
     setShow(!show);
   };
 
@@ -30,7 +29,7 @@ const Select = ({
     if (all) {
       onChange([]);
     } else {
-      onChange(options.map((o) => o.value));
+      onChange(options.map((o) => o.value), true);
     }
     setAll(!all);
   };
@@ -46,14 +45,7 @@ const Select = ({
     } else {
       newValue = value === v ? null : v;
     }
-    setAll(
-      multiple &&
-        newValue.sort().join(".") ===
-          options
-            .map((o) => o.value)
-            .sort()
-            .join("."),
-    );
+    setAll(isAll(newValue));
     onChange(newValue);
   };
 
@@ -86,7 +78,7 @@ const Select = ({
       {show && (
         <div ref={wrapperRef} className="modal-wrapper">
           <h3>{label}</h3>
-          {label === "Offenses" && (
+          {label === "Offense" && (
             <div className="search-bar-container">
               <input
                 type="text"
