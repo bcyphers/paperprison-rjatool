@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     driver: sqlite3.Database,
   });
 
-  console.log("DB connection established");
+  console.log("API request at " + new Date(Date.now()));
   console.log(req.body);
   const body = JSON.parse(req.body);
 
@@ -127,5 +127,6 @@ export default async function handler(req, res) {
     }
   }
 
+  console.log("Returning " + rows.length + " rows.");
   res.status(200).json({raw: rows, chart: out});
 }
