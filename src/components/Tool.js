@@ -5,6 +5,15 @@ import { IconCharts } from "@/components/IconCharts";
 import DataTable from "@/components/DataTable";
 import PrivateSelect from "@/components/Select";
 import Grid from "@/components/Grid";
+import {Popover, PopoverTrigger, PopoverContent, Button} from "@nextui-org/react";
+
+const QUERY_PARAMS = [
+  "years",
+  "counties",
+  "offenses",
+  "decisionPoints",
+  "races",
+];
 
 export const DATA_COLUMNS = {
   county: "County",
@@ -86,13 +95,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [showTable, setShowTable] = useState(false);
 
-  const [yearsAvailable, setYearsAvailable] = useState([]);
-  const [countiesAvailable, setCountiesAvailable] = useState([]);
-  const [offensesAvailable, setOffensesAvailable] = useState([]);
-  const [decisionPointsAvailable, setDecisionPointsAvailable] = useState(DECISION_POINTS);
-  const [racesAvailable, setRacesAvailable] = useState(Object.keys(RACES));
-  //const [gendersAvailable, setGendersAvailable] = useState([]);
-
   const [years, setYears] = useState(DEFAULTS.years);
   const [counties, setCounties] = useState(DEFAULTS.counties);
   const [offenses, setOffenses] = useState(DEFAULTS.offenses);
@@ -100,10 +102,26 @@ export default function App() {
   const [races, setRaces] = useState(DEFAULTS.races);
   //const [genders, setGenders] = useState([]);
   const [measurement, setMeasurement] = useState(DEFAULTS.measurement);
+
+  const [urlQueryString, setUrlQueryString] = useState("");
   const [filteredRecords, setFilteredRecords] = useState({
     raw: [],
     chart: {},
   });
+
+  const [available, setAvailable] = useState({
+    years: [],
+    counties: [],
+    offenses: [],
+    decisionPoints: Object.keys(DECISION_POINTS),
+    races: Object.keys(RACES),
+  });
+
+  //const [yearsAvailable, setYearsAvailable] = useState([]);
+  //const [countiesAvailable, setCountiesAvailable] = useState([]);
+  //const [offensesAvailable, setOffensesAvailable] = useState([]);
+  //const [decisionPointsAvailable, setDecisionPointsAvailable] = useState(available.decisionPoints);
+  //const [racesAvailable, setRacesAvailable] = useState(available.races);
 
   const prepTableData = () => {
     const data = filteredRecords.raw.map((r) => {
@@ -140,6 +158,10 @@ export default function App() {
     setShowTable(!showTable);
   };
 
+  const onCopyLink = () => {
+
+  }
+
   const sortYears = (a, b) => {
     if (a.indexOf("All") > -1) { return -1; }
     if (b.indexOf("All") > -1) { return 1; }
@@ -156,29 +178,142 @@ export default function App() {
     return a.localeCompare(b);
   };
 
+  const B32_CHR = 'abcdefghijklmnopqrstuvwxyzABCDEF'.split('');
+
+  const encode = (vals, valsAvailable) => {
+    console.log("encoding " + JSON.stringify(vals));
+    console.log("Values available: " + valsAvailable);
+    let out = "";
+    let chr = 0;
+    for (let i = 0; i < valsAvailable.length; i++) {
+      if (vals.includes(valsAvailable[i])) {
+        chr |= 1 << (i % 5);
+      }
+      if ((i + 1) % 5 == 0) {
+        out += B32_CHR[chr];
+        chr = 0;
+      }
+    }
+    out += B32_CHR[chr];
+    console.log(out);
+    return out;
+  };
+
+  const decode = (coded, valsAvailable) => {
+    console.log("Decoding " + coded);
+    let bits;
+    let vals = [];
+    for (let i = 0; i < valsAvailable.length; i++) {
+      if (i % 5 == 0) {
+        bits = B32_CHR.indexOf(coded[0]);
+        coded = coded.slice(1);
+      }
+      if (bits & 1 == 1) {
+        vals.push(valsAvailable[i]);
+      };
+      bits >>= 1;
+    }
+    console.log(vals);
+    return vals;
+  };
+
+  const compress = (str) => {
+		let out = "";
+		for (let i = 0; i < str.length; i++) {
+			let j = i;
+			while (j < str.length - 1 && str[i] === str[j + 1]) {
+				j++;
+			}
+			out += str[i] + (j + 1 - i);
+      i = j;
+		}
+		return out;
+  };
+
+  const decompress = (str) => {
+    let out = "";
+    const splits = [...str.matchAll(/([a-zA-F]+)(\d+)?/g)];
+		for (let [_, s, num] of splits) {
+      if (num) {
+        out += s.slice(0, -1);
+        out += s.slice(-1).repeat(parseInt(num));
+      } else {
+        out += s;
+      }
+    }
+    return out;
+  };
+
+  const encodeQueryString = () => {
+    const searchParams = new URLSearchParams();
+    const queryParams = {
+      years: [years, available.years],
+      counties: [counties, available.counties],
+      offenses: [offenses, available.offenses],
+      decisionPoints: [decisionPoints, available.decisionPoints],
+      races: [races, available.races],
+    };
+    for (const [k, [v, available]] of Object.entries(queryParams)) {
+      let encoded = encode(v, available);
+      const compressed = compress(encoded);
+      if (compressed.length < encoded.length) {
+        encoded = compressed;
+      }
+      searchParams.append(k, encoded);
+    }
+    console.log("Setting query string");
+    setUrlQueryString(window.location.pathname + "?" + searchParams.toString());
+  };
+
+  const decodeQueryParams = (_available) => {
+    const queryParams = new URLSearchParams(window.location.search);
+    let query = {};
+
+    for (const [k, v] of queryParams) {
+      if (QUERY_PARAMS.includes(k)) {
+        const vals = decode(decompress(v), _available[k]);
+        onChange(k, vals);
+        query[k] = vals;
+      }
+    }
+    console.log(query);
+    return query;
+  };
+
   const fetchDataAvailable = async () => {
     setLoading(true);
+
     fetch("/api/metadata")
       .then(res => res.json())
       .then((result) => {
-        setYearsAvailable(result.years.sort(sortYears));
-        setCountiesAvailable(result.counties.sort(sortCounties));
-        setOffensesAvailable(result.offenses.sort(sortOffenses));
-    }).then(fetchData({
-      counties: counties,
-      decisionPoints: decisionPoints,
-      races: races,
-      offenses: offenses,
-      years: years,
-      measurement: measurement,
-    }));
+        const _available = {
+          ...available,
+          years: result.years.sort(sortYears),
+          counties: result.counties.sort(sortCounties),
+          offenses: result.offenses.sort(sortOffenses),
+        };
+        setAvailable(_available);
+        return decodeQueryParams(_available);
+      }).then((urlParams) => {
+      let query = {
+        counties: counties,
+        decisionPoints: decisionPoints,
+        races: races,
+        offenses: offenses,
+        years: years,
+        measurement: measurement,
+        ...urlParams,
+      };
+
+      fetchData(query);
+    });
   }
 
   const fetchData = async (query) => {
     setLoading(true);
 
     // save a little bit of bandwidth
-    if ('offenses' in query && query.offenses.length === offensesAvailable.length) {
+    if ('offenses' in query && query.offenses.length === available.offenses.length) {
       query.offenses = ["All Offenses"];
     }
 
@@ -196,6 +331,26 @@ export default function App() {
   useEffect(() => {
     fetchDataAvailable().catch((e) => {});
   }, []);
+
+  const onChange = async (key, val) => {
+    if (key === "counties") {
+      setCounties(val);
+    } else if (key === "decisionPoints") {
+      setDecisionPoints(val);
+    } else if (key === "races") {
+      setRaces(val);
+    } else if (key === "offenses") {
+      if (val.includes("All Offenses")) {
+        setOffenses(available.offenses);
+      } else {
+        setOffenses(val);
+      }
+    } else if (key === "years") {
+      setYears(val);
+    } else if (key === "measurement") {
+      setMeasurement(val);
+    }
+  };
 
   const onCountiesChange = async (values) => {
     if (values[values.length-1] === "All Counties") {
@@ -394,7 +549,7 @@ export default function App() {
             disableAll={true}
             value={years}
             onChange={onYearsChange}
-            options={yearsAvailable.map((y) => ({
+            options={available.years.map((y) => ({
               text: y,
               value: y,
             }))}
@@ -407,7 +562,7 @@ export default function App() {
             disableAll={true}
             value={counties}
             onChange={onCountiesChange}
-            options={countiesAvailable.map((county) => ({
+            options={available.counties.map((county) => ({
               text: county,
               value: county,
             }))}
@@ -419,7 +574,7 @@ export default function App() {
             multiple={true}
             value={decisionPoints}
             onChange={onDecisionPointsChange}
-            options={decisionPointsAvailable.map((dp) => ({
+            options={available.decisionPoints.map((dp) => ({
               text: dp,
               value: dp,
             }))}
@@ -431,7 +586,7 @@ export default function App() {
             multiple={true}
             value={races}
             onChange={onRacesChange}
-            options={racesAvailable.map((r) => ({
+            options={available.races.map((r) => ({
               text: r,
               value: r,
             }))}
@@ -443,7 +598,7 @@ export default function App() {
             multiple={true}
             value={offenses}
             onChange={onOffensesChange}
-            options={offensesAvailable.map((o) => ({
+            options={available.offenses.map((o) => ({
               text: o,
               value: o,
             }))}
@@ -469,14 +624,14 @@ export default function App() {
           dangerouslySetInnerHTML={{
             __html: [
               MEASUREMENTS_MAP[measurement],
-              decisionPoints.length === decisionPointsAvailable.length
+              decisionPoints.length === available.decisionPoints.length
                 ? "All Event Points"
                 : decisionPoints.join(", "),
               years.join(", "),
-              races.length === racesAvailable.length
+              races.length === available.races.length
                 ? "All Races"
                 : races.join(", "),
-              offenses.length === offensesAvailable.length
+              offenses.length === available.offenses.length
                 ? "All Offenses"
                 : (offenses.length <= 4
                   ? offenses.join(", ")
@@ -522,9 +677,17 @@ export default function App() {
 
       {/* <pre>{JSON.stringify(filteredRecords, null, 4)}</pre> */}
       <div className="buttons">
-        <div className="button" onClick={() => window && window.print()}>
+				<Popover placement="bottom">
+					<PopoverTrigger>
+						<div className="button" onClick={encodeQueryString}>
+              Copy Link
+						</div>
+					</PopoverTrigger>
+					<PopoverContent>{urlQueryString}</PopoverContent>
+				</Popover>
+        {/*<div className="button" onClick={() => window && window.print()}>
           Print
-        </div>
+        </div>*/}
         <div className="button" onClick={onDataTableDisplayToggled}>
           {showTable ? "Hide Table" : "View Data"}
         </div>
