@@ -257,12 +257,13 @@ export default function App() {
       searchParams.append(k, encoded);
     }
 
-    const out = window.location.href.replace(
-        window.location.search,
-        "?" + searchParams.toString());
+    const out = window.location.search ? 
+      window.location.href.replace(window.location.search, 
+                                   "?" + searchParams.toString()) :
+      window.location.href + "?" + searchParams.toString(); 
 
     setUrlQueryString(out);
-    navigator.clipboard.writeText(out);
+    //navigator.clipboard.writeText(out);
   };
 
   const decodeQueryParams = (_available) => {
@@ -679,7 +680,7 @@ export default function App() {
 				<Popover placement="bottom">
 					<PopoverTrigger>
 						<div className="button" onClick={encodeQueryString}>
-              Copy Link
+              Create Link
 						</div>
 					</PopoverTrigger>
 					<PopoverContent>{urlQueryString}</PopoverContent>
