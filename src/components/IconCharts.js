@@ -94,8 +94,8 @@ const PersonIcon = ({ value = 0, label = 0, race = "" }) => {
 };
 
 const CHART_DISCLAIMER = {
-  n_a: "A displayed value of N/A indicates there are 10 or fewer underlying observations for at least one of the variables needed to compute the metric.",
-  zero: "A displayed value of 0.00 means that sufficient data is available, but the value is less than 0.005.",
+  n_a: "A displayed value of N/A indicates there are 10 or fewer underlying observations for at least one of the variables needed to compute the selected metric.",
+  zero: "A displayed value of 0.00 means that sufficient data is available to compute the selected metric, but its value is less than 0.005.",
   agg: "Data may not be available for all selected offenses, counties, and years. Aggregate numbers reflect the combination of all available data. Select ‘View Data’ to see which data points are included in the aggregate data shown above.",
 };
 
