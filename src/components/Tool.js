@@ -60,7 +60,7 @@ const MEASUREMENTS_MAP = {
 const RACES = {
   White: "White",
   Black: "Black",
-  Hispanic: "Latino",
+  Hispanic: "Hispanic",
   AAPI: "Asian / Pacific Islander",
   "Native American": "Native American",
 };
@@ -113,7 +113,7 @@ export default function App() {
     years: [],
     counties: [],
     offenses: [],
-    decisionPoints: Object.keys(DECISION_POINTS),
+    decisionPoints: DECISION_POINTS,
     races: Object.keys(RACES),
   });
 
