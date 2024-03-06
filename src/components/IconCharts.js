@@ -19,6 +19,33 @@ const formatNumber = (n) => {
   }
 };
 
+const getYearsLabel = (years) => {
+  if (years.includes("All Years")) {
+    return "All Years (2010-2021)";
+  }
+
+  let years_list = [];
+  let last_year = [years[0], years[0]];
+  for (let i = 1; i < years.length; i++) {
+    if (parseInt(years[i]) === parseInt(years[i-1]) + 1) {
+      last_year[1] = years[i];
+    } else {
+      if (last_year[0] === last_year[1]) {
+        years_list.push(last_year[0]);
+      } else {
+        years_list.push(last_year.join("-"));
+      }
+      last_year = [years[i], years[i]];
+    }
+  }
+  if (last_year[0] === last_year[1]) {
+    years_list.push(last_year[0]);
+  } else {
+    years_list.push(last_year.join("-"));
+  }
+  return years_list.join(", ");
+};
+
 const PersonIcon = ({ value = 0, label = 0, race = "" }) => {
   const valueRoof = Math.ceil(value);
   const maskHeight = {
@@ -69,7 +96,7 @@ const PersonIcon = ({ value = 0, label = 0, race = "" }) => {
 const CHART_DISCLAIMER = {
   n_a: "A displayed value of N/A indicates there are 10 or fewer underlying observations for at least one of the variables needed to compute the metric.",
   zero: "A displayed value of 0.00 means that sufficient data is available, but the value is less than 0.005.",
-  pep: "No rate per prior event information is available for arrests because arrests are the beginning of the process.",
+  agg: "Data may not be available for all selected offenses for all selected years. Aggregate numbers reflect the combination of all available data. Select ‘View Data’ to see which data points are included in the aggregate data shown above.",
 };
 
 const MEASUREMENTS = {
@@ -125,7 +152,6 @@ const IconChartInner = ({ years, data, races, eventPoints, measurement, }) => {
   let disclaimers = {
     n_a: false,
     zero: false,
-    pep: measurement.indexOf("prior event point") > -1,
   };
 
   let scale = 1;
@@ -183,7 +209,7 @@ const IconChartInner = ({ years, data, races, eventPoints, measurement, }) => {
     postScaleString = "per " + (1 / scale).toLocaleString();
   }
 
-  const years_label = years.includes("All Years") ? "All Years" : years.join(", ");
+  const years_label = getYearsLabel(years);
 
   return (
     <div className="icon-chart" key={years_label}>
@@ -250,4 +276,4 @@ const IconCharts = ({ data, years, races, eventPoints, measurement }) => {
   );
 };
 
-export { IconCharts, PersonIcon };
+export { IconCharts, PersonIcon, getYearsLabel };
