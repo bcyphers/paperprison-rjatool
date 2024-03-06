@@ -96,7 +96,7 @@ const PersonIcon = ({ value = 0, label = 0, race = "" }) => {
 const CHART_DISCLAIMER = {
   n_a: "A displayed value of N/A indicates there are 10 or fewer underlying observations for at least one of the variables needed to compute the metric.",
   zero: "A displayed value of 0.00 means that sufficient data is available, but the value is less than 0.005.",
-  agg: "Data may not be available for all selected offenses for all selected years. Aggregate numbers reflect the combination of all available data. Select ‘View Data’ to see which data points are included in the aggregate data shown above.",
+  agg: "Data may not be available for all selected offenses, counties, and years. Aggregate numbers reflect the combination of all available data. Select ‘View Data’ to see which data points are included in the aggregate data shown above.",
 };
 
 const MEASUREMENTS = {
@@ -148,10 +148,11 @@ const scaleUp = (data) => {
   return SCALE[`${list[list.sort((a, b) => a - b).indexOf(max) + 1]}`];
 };
 
-const IconChartInner = ({ years, data, races, eventPoints, measurement, }) => {
+const IconChart = ({ data, years, races, eventPoints, measurement, agg }) => {
   let disclaimers = {
     n_a: false,
     zero: false,
+    agg: agg,
   };
 
   let scale = 1;
@@ -212,6 +213,7 @@ const IconChartInner = ({ years, data, races, eventPoints, measurement, }) => {
   const years_label = getYearsLabel(years);
 
   return (
+    <div className="icon-charts">
     <div className="icon-chart" key={years_label}>
       <h3>
         {years_label}
@@ -259,21 +261,8 @@ const IconChartInner = ({ years, data, races, eventPoints, measurement, }) => {
           ))}
       </div>
     </div>
-  );
-};
-
-const IconCharts = ({ data, years, races, eventPoints, measurement }) => {
-  return (
-    <div className="icon-charts">
-      <IconChartInner
-        years={years}
-        data={data}
-        races={races}
-        eventPoints={eventPoints}
-        measurement={measurement}
-      />
     </div>
   );
 };
 
-export { IconCharts, PersonIcon, getYearsLabel };
+export { IconChart, PersonIcon, getYearsLabel };
