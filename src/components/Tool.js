@@ -181,8 +181,6 @@ export default function App() {
   const B32_CHR = 'abcdefghijklmnopqrstuvwxyzABCDEF'.split('');
 
   const encode = (vals, valsAvailable) => {
-    console.log("encoding " + JSON.stringify(vals));
-    console.log("Values available: " + valsAvailable);
     let out = "";
     let chr = 0;
     for (let i = 0; i < valsAvailable.length; i++) {
@@ -195,12 +193,10 @@ export default function App() {
       }
     }
     out += B32_CHR[chr];
-    console.log(out);
     return out;
   };
 
   const decode = (coded, valsAvailable) => {
-    console.log("Decoding " + coded);
     let bits;
     let vals = [];
     for (let i = 0; i < valsAvailable.length; i++) {
@@ -213,7 +209,6 @@ export default function App() {
       };
       bits >>= 1;
     }
-    console.log(vals);
     return vals;
   };
 
@@ -261,8 +256,13 @@ export default function App() {
       }
       searchParams.append(k, encoded);
     }
-    console.log("Setting query string");
-    setUrlQueryString(window.location.pathname + "?" + searchParams.toString());
+
+    const out = window.location.href.replace(
+        window.location.search,
+        "?" + searchParams.toString());
+
+    setUrlQueryString(out);
+    navigator.clipboard.writeText(out);
   };
 
   const decodeQueryParams = (_available) => {
@@ -276,7 +276,6 @@ export default function App() {
         query[k] = vals;
       }
     }
-    console.log(query);
     return query;
   };
 
@@ -322,7 +321,6 @@ export default function App() {
       body: JSON.stringify(query),
     }).then(res => res.json())
       .then((result) => {
-      console.log(result);
       setFilteredRecords(result);
       setLoading(false);
     });
