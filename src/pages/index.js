@@ -161,47 +161,18 @@ export default function App() {
             <strong>event points</strong> include arrests, charges filed in
             court, convictions, felony convictions, and prison sentences. We
             explain the different <strong>measurements</strong> available and
-            how they were calculated, as well as some limitations of the data,
+            how they are calculated, as well as some limitations of the data,
             below.
           </p>
           <h3>Incidents & Lifecycle of a Case </h3>
           <p>
-            The source (CORI) data set records each of the events associated
-            with a given cycle of an individual’s involvement with the criminal
-            justice system, where a cycle is defined as the series of events in
-            the criminal justice system that flow from a specific initial
-            incident for an individual. A cycle typically begins with an arrest,
-            in which a person may be charged with one or more offenses. The
-            arrest step may be followed by a prosecutor filing charges in court
-            on one or more offenses. Offenses filed in court may be the same as
-            or different from those charged at arrest, with changes occurring
-            because of plea deals or prosecutorial discretion. The offenses
-            charged at court lead to a disposition on each offense, such as a
-            conviction, dismissal, acquittal, or other outcome. A conviction
-            results in a sentence, which may include incarceration. The CORI
-            data come from the courts, not from the corrections system, so we do
-            not have information on actual incarcerations or terms served, only
-            sentences to incarceration.
+          The source (CORI) data set records each of the events associated with a given cycle of an individual’s involvement with the criminal justice system, where a cycle is defined as the series of events in the criminal justice system that flow from a specific initial incident for an individual. A cycle typically begins with an arrest, in which a person may be charged with one or more offenses. The arrest step may be followed by a prosecutor filing charges in court on one or more offenses. Offenses in court may be the same as or different from those charged at arrest. The offenses charged at court lead to a disposition on each offense, such as a conviction, dismissal, acquittal, or other outcome. A conviction results in a sentence, which may include incarceration. The CORI data come from the courts, not from the corrections system, so we do not have information on actual incarcerations or terms served, only sentences to incarceration.
           </p>
           <p>
-            In our tool, we count the number of incidents for which a given
-            offense was charged. An incident is associated with a specific
-            offense charged in a specific cycle. Multiple counts of the same
-            offense charged for the same incident are only counted once in the
-            tool. For example, suppose that following a particular arrest, a
-            person ended up convicted in court on three counts of PC 242
-            (battery) and two counts of PC 148(A)(1) (obstructing/ resisting).
-            For this cycle, we would count one incident of conviction for PC 242
-            and one incident of conviction for PC 148(A)(1).{" "}
+          In our tool, we count the number of incidents for which a given offense was charged. An incident is associated with a specific offense charged in a specific cycle. Multiple counts of the same offense charged for the same incident are only counted once in the tool. For example, suppose that following a particular arrest, a person ended up convicted in court on three counts of PC 242 (battery) and two counts of PC 148(A)(1) (obstructing/ resisting). For this cycle, we would count one incident of conviction for PC 242 and one incident of conviction for PC 148(A)(1). We applied the same approach at the arrest and charge in court levels.
           </p>
           <p>
-            For arrest events, the year of the incident recorded in the tool is
-            the minimum (first) year for the cycle. For court events (all
-            non-arrest events), the year is the maximum (last) year for the
-            cycle. We count any event that occurs in a cycle up to the last
-            event. We assign years this way to take account of the fact that
-            someone might be arrested on a charge in one year and go to court in
-            a subsequent year.
+          For arrest events, the year of the incident recorded in the tool is the minimum (first) year for the cycle. For court events (all non-arrest events), the year is the maximum (last) year for the cycle. We count any event that occurs in a cycle up to the last event. We assign years this way to take account of the fact that someone might be arrested on a charge in one year and go to court in a subsequent year.
           </p>
           <h3>Event Points</h3>
           <p>
@@ -218,45 +189,13 @@ export default function App() {
           </ul>
           <h3>Offenses</h3>
           <p>
-            The CORI data set used for the tool includes information on a large
-            number of criminal (California Penal Code) offenses; however, there
-            are very small sample sizes for many offenses and populations,
-            especially at the county-specific level. Due to confidentiality
-            concerns, our website does not display data for any selections for
-            which the metric of interest is constructed from samples of the data
-            that contain 10 or fewer observations. Our charts and tables will
-            show gaps and/or "N/A" when data are not available. This restriction
-            results in very limited coverage of offenses in the smallest
-            counties– in fact, we cannot report data for any offenses in
-            California’s least populous county, Alpine County. Even in larger
-            counties, the tool may not be able to display results for offenses
-            that are relatively uncommon.
+          The CORI data set used for the tool includes information on a large number of criminal (California Penal Code) offenses; however, there are very small sample sizes for many offenses and populations, especially at the county-specific level. Due to confidentiality concerns, our website does not display data for any selections for which the metric of interest is constructed from samples of the data that contain 10 or fewer observations. Our charts and tables will show gaps and/or "N/A" when data are not available. This restriction results in very limited coverage of offenses in the smallest counties– in fact, we cannot report data for any offenses in California’s least populous county, Alpine County. Even in larger counties, the tool may not be able to display results for offenses that are relatively uncommon.
           </p>
           <p>
-            Each Penal Code subsection is treated as a distinct offense (for
-            example, PC 148(A) is treated as a distinct offense from PC 148(B)).
-            Despite this level of detail, users should be aware that identifying
-            offenses with PC subsections lumps together some charges that come
-            under a single subsection but have different consequences. Examples
-            would include so-called “wobbler” offenses that are felonies by
-            default but may be charged as misdemeanors under some conditions.
-            Burglary, which is PC 459, may be charged as first-degree or
-            second-degree burglary, but the source data do not always
-            distinguish the degree, so these charges are combined into a single
-            offense code. Some common offenses are for probation violations
-            (e.g., Penal Code section 1203.2), and their only corresponding
-            event point is an arrest. For any given incident, the offense
-            charged at court may be different from the offense cited at arrest,
-            given prosecutorial decisions and plea bargaining. As a result, the
-            probability of a particular outcome conditional on the prior event
-            point may reflect imprecision going from arrest to court events. To
-            ease searching, we include not just the PC code section number but
-            the offense description (such as “PC 148(A) PC-OBSTRUCTS/RESISTS
-            PUBLIC OFFICER/ETC”) most commonly attached to that offense in the
-            CORI data.
+          Each Penal Code subsection is treated as a distinct offense (for example, PC 148(A) is treated as a distinct offense from PC 148(B)). Despite this level of detail, users should be aware that identifying offenses with PC subsections lumps together some charges that come under a single subsection but have different consequences. Examples would include so-called “wobbler” offenses that are felonies by default but may be charged as misdemeanors under some conditions. Burglary, which is PC 459, may be charged as first-degree or second-degree burglary, but the source data do not always distinguish the degree, so these charges are combined into a single offense code. Some common offenses are for probation violations (e.g., Penal Code section 1203.2), and their only corresponding event point is an arrest. For any given incident, the offense charged at court may be different from the offense cited at arrest, given prosecutorial decisions and plea bargaining. To ease searching, we include not just the PC code section number but the offense description (such as “PC 148(A) PC-OBSTRUCTS/RESISTS PUBLIC OFFICER/ETC”) most commonly attached to that offense code in the CORI data.
           </p>
           <h3>Measurements</h3>
-          <p>Five different metrics can be viewed in the tool:</p>
+          <p>Three different metrics can be viewed in the tool:</p>
           <ol>
             <li>
               <p>
@@ -314,59 +253,21 @@ export default function App() {
             </li>
             <li>
               <p>
-                <b>Rate per prior event point</b> measures the rate (in percent)
-                at which a given event or decision occurs for a selected racial
-                or ethnic group, relative to the number of people in that group
-                at risk of that event. Specifically, it is the number of
-                criminal justice decisions of the requested type for the
-                requested ethnic group during the requested year, divided by the
-                number of individuals of that group who had reached the
-                immediately prior step or event point in the criminal justice
-                process and were thus “at risk” of this decision.
-              </p>
-              <p>
-                Example: Suppose there were 100 incidents in a particular county
-                and year in which Hispanic individuals were charged in court
-                with burglary (PC 459), and in 60 of those incidents they were
-                convicted of burglary. Then the rate of conviction per prior
-                event point (charge in court) would be 60/100 = 0.6 or 60%.
-              </p>
-            </li>
-            <li>
-              <p>
-                <b>Disparity gap per population</b> compares the rate per
+                <b>Population disparity v. White</b> compares the rate per
                 population of a given racial/ethnic group with that of
                 non-Hispanic White individuals. The racial gap can be considered
                 the chance that a person of the given race/ethnicity experiences
                 a certain outcome or decision, relative to the chances of a
                 non-Hispanic White adult, given underlying populations.
               </p>
+              <p>A "population disparity v. white" value greater than 1.0 indicates that a specific racial/ethnic group experiences a higher rate of a particular outcome or decision compared to non-Hispanic whites, considering their respective population sizes. Conversely, a value less than 1.0 suggests that the specified group is less likely to experience the outcome relative to non-Hispanic whites, given the underlying populations. A value of 1.00 means that the two groups experience the outcome at the same rate relative to population.</p>
               <p>
                 Example: Suppose that in a particular county in a particular
                 year, there were 2 incidents in which Black adults experienced
                 felony convictions for burglary for every 100 Black individuals
                 in the population, and 1 such incident per 100 non-Hispanic
-                White individuals. Then the disparity gap per population for
-                Black relative to White is 2/1 = 2.{" "}
-              </p>
-            </li>
-            <li>
-              <p>
-                <b>Disparity gap per prior event point</b> compares the rate per
-                prior event point of a given racial/ethnic group with that of
-                non-Hispanic White individuals. It shows the chances that a
-                person of the given race/ethnicity experiences a certain outcome
-                or decision, given that they have reached a specific prior event
-                point, relative to the chances of a non-Hispanic White adult,
-                given that they have reached the same prior event point.
-              </p>
-              <p>
-                Example: Suppose that in a particular county in a particular
-                year, of 100 incidents in which Black individuals were charged
-                with burglary in court, 50 incidents resulted in convictions,
-                compared with 40 per 100 for non-Hispanic White individuals.
-                Then the disparity gap per prior event point for Black relative
-                to White is 50/40 = 1.25.
+                White individuals. Then the population disparity for the
+                Black relative to White population is 2/1 = 2.{" "}
               </p>
             </li>
           </ol>
@@ -423,6 +324,14 @@ export default function App() {
               <td>White race alone, not Hispanic</td>
             </tr>
           </table>
+
+          <h3>Combining Data </h3>
+          <p>
+          The tool permits data to be combined across years, counties, or offenses. When a user selects multiple values, the values displayed reflect aggregate counts in the case of raw count metrics (e.g. adding counts from 2018 and counts from 2019). In the case of rate per population or disparity gap per population metrics, the values displayed reflect weighted averages, taking into account combined event and combined population counts. When an underlying data point is unavailable, due data limitations, the tool will simply not include that data point in the calculation and will also include a message warning the user that not all selected values are reflected in the displayed values. As such, we encourage users to select the “View Data” to see which values are actually included in the aggregation, and to consider the metrics individually whenever also considering them in combination.
+          </p>
+          <p>Example where rate data is aggregated: Suppose there were 350 incidents in which Hispanic individuals had been arrested in county X on a charge of PC 459 (burglary) during the year in question, and the Hispanic population of county X was 100,000, The rate per 100 population in county X would be 350/(100,000/100) = 0.35 per 100 population. Suppose that for another country, county Y, there were also 350 incidents in which Hispanic individuals had been arrested on a charge of PC 459 (burglary) during the year in question, but the Hispanic population of county Y was 350,000. The rate per 100 population in county X would be 350/(350,000/100) = 0.10 per 100 population. To get the aggregate rate across counties X and Y, the numerators and denominators would be added, for a combined number of arrests of Hispanic individuals of 700 and a combined Hispanic population of 350,000 + 100,000 = 450,000. The combined rate per 100 population in county X and Y would be 700/(450,000/100) = 0.157 per 100 population.</p>
+          <p>Example where data is limited: Suppose that in a particular county in a particular year, say 2019, there were 12 incidents in which Native American adults experienced felony convictions for burglary, and in 2018, the number of equivalent incidents was N/A, due to the total being 10 or fewer. The raw count metrics for 2018 and 2019 in combination would still reflect 12 incidents, and a warning message would appear. In the case where the metric is the population disparity v. white gap, the chance that a person of the given race/ethnicity experiences a certain outcome or decision, relative to the chances of a non-Hispanic white adult, given underlying populations, and the data for either white or non-white populations is insufficient, neither will be included.</p>
+          
         </GenericPage>
         <GenericPage id="acknowledgements">
           <h2>Acknowledgements</h2>

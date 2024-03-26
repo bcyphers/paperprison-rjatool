@@ -35,7 +35,7 @@ const DATA_COLUMN_MAP = {
 const MEASUREMENTS = {
   RAW: "Raw numbers",
   RATE: "Rate per population",
-  DG: "Disparity gap per population",
+  DG: "Population disparity v. White",
   //R_PEP: "Rate per prior event point",
   //DG_PEP: "Disparity gap per prior event point",
 };
@@ -43,7 +43,7 @@ const MEASUREMENTS = {
 const MEASUREMENTS_MAP = {
   [MEASUREMENTS.RAW]: "Raw numbers",
   [MEASUREMENTS.RATE]: "Rate per unit population",
-  [MEASUREMENTS.DG]: "Disparity gap vs. white adults",
+  [MEASUREMENTS.DG]: "Population disparity v. Whites",
   //MEASUREMENTS.R_PEP: "Rate per prior decision point",
   //MEASUREMENTS.DG_PEP: "Disparity gap per prior decision point",
 };

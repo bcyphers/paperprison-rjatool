@@ -8,8 +8,9 @@ const Footer = () => {
   }, []);
   return (
     <div className="disclaimer footer">
-      <a href="mailto:rja@paperprisons.org">info@paperprisons.org</a>
+      <a href="mailto:rja@paperprisons.org">rja@paperprisons.org</a>
       <p>{`© ${year}. Paper Prison Initiative.`} </p>
+      <p>Last Modified Date : 26<sup>th</sup> March 2024</p>
       <p>
         <a href="https://paperprisons.org/privacypolicy.html">Privacy Policy</a>{" "}
         |{" "}
