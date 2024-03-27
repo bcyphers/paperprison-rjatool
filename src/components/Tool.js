@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PublicGoogleSheetsParser from "public-google-sheets-parser";
 import { utils, writeFileXLSX } from "xlsx";
-import { IconCharts } from "@/components/IconCharts";
+import { IconChart, getYearsLabel } from "@/components/IconCharts";
 import DataTable from "@/components/DataTable";
 import PrivateSelect from "@/components/Select";
 import Grid from "@/components/Grid";
@@ -472,7 +472,7 @@ export default function App() {
               decisionPoints.length === decisionPointsAvailable.length
                 ? "All Event Points"
                 : decisionPoints.join(", "),
-              years.join(", "),
+              getYearsLabel(years),
               races.length === racesAvailable.length
                 ? "All Races"
                 : races.join(", "),
@@ -480,7 +480,7 @@ export default function App() {
                 ? "All Offenses"
                 : (offenses.length <= 4
                   ? offenses.join(", ")
-                  : (offenses.length + " offenses: "
+                  : (offenses.length + " Offenses: "
                      + offenses[0] + ", ..., "
                      + offenses[offenses.length-1])
                 ),
@@ -497,7 +497,7 @@ export default function App() {
             <Grid />
           </div>
         ) : Object.keys(filteredRecords.chart).length > 0 ? (
-          <IconCharts
+          <IconChart
             data={filteredRecords.chart}
             years={years}
             races={Object.fromEntries(
@@ -505,6 +505,7 @@ export default function App() {
             )}
             eventPoints={decisionPoints}
             measurement={measurement}
+            agg={years.length > 1 || offenses.length > 1 || counties.length > 1}
           />
         ) : (
           <div style={{ textAlign: "center", fontWeight: "bold" }}>
