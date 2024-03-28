@@ -38,7 +38,7 @@ export default async function handler(req, res) {
 
   const offenses = ('offenses' in body ? body.offenses : DEFAULTS.offenses);
   if (offenses[0] !== "All Offenses") {
-    query += ` AND PC_offense in (${"?,".repeat(offenses.length - 1) + "?"})`;
+    query += ` AND offense_name in (${"?,".repeat(offenses.length - 1) + "?"})`;
     vars.push(...offenses);
   }
 
