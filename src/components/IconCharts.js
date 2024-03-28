@@ -102,9 +102,7 @@ const CHART_DISCLAIMER = {
 const MEASUREMENTS = {
   RAW: "Raw numbers",
   RATE: "Rate per population",
-  R_PEP: "Rate per prior event point",
-  DG: "Disparity gap per population",
-  DG_PEP: "Disparity gap per prior event point",
+  DG: "Population disparity v. White",
 };
 
 const scaleDown = (data) => {
@@ -153,17 +151,12 @@ const IconChart = ({ data, years, races, eventPoints, measurement, agg }) => {
     scale = scaleDown(data);
   }
 
-  const base = (measurement === MEASUREMENTS.DG ||
-                measurement === MEASUREMENTS.DG_PEP) ? "white" : null;
+  const base = (measurement === MEASUREMENTS.DG) ? "white" : null;
   const filteredRaces = Object.keys(races).filter(
     (raceItem) => raceItem.toLowerCase() !== base,
   );
 
-  const filteredEventPoints = eventPoints.filter(
-    (ep) => !(
-      [MEASUREMENTS.R_PEP, MEASUREMENTS.DG_PEP].includes(measurement) &&
-      ep === "Arrest"
-    ));
+  const filteredEventPoints = eventPoints;
 
   const scaledData = {};
   for (const r of filteredRaces) {
