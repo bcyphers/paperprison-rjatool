@@ -32,7 +32,7 @@ const DATA_COLUMN_MAP = {
   "pop": DATA_COLUMNS.pop,
 };
 
-const MEASUREMENTS = {
+export const MEASUREMENTS = {
   RAW: "Raw numbers",
   RATE: "Rate per population",
   DG: "Population disparity v. White",
