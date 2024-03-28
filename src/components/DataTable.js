@@ -22,8 +22,6 @@ const DataTable = ({ data }) => {
   const endIndex = startIndex + itemsPerPage;
   const visibleData = data.slice(startIndex, endIndex);
 
-  console.log(DATA_COLUMNS);
-
   return (
     <div className="table-container">
       <table className="ui celled table">

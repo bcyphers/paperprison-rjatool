@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     counties: "county",
     years: "year",
     decisionPoints: "decision",
-    offenses: "PC_offense",
+    offenses: "offense_name",
     races: "race",
   }
 

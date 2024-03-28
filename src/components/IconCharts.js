@@ -107,20 +107,6 @@ const MEASUREMENTS = {
   DG_PEP: "Disparity gap per prior event point",
 };
 
-const SCALE = {
-  100: 10,
-  500: 50,
-  1000: 100,
-  5000: 500,
-  10000: 1000,
-  50000: 5000,
-  100000: 10000,
-  500000: 50000,
-  1000000: 100000,
-  5000000: 500000,
-  10000000: 1000000,
-};
-
 const scaleDown = (data) => {
   let max = 0;
 
@@ -142,10 +128,14 @@ const scaleUp = (data) => {
   Object.values(data).forEach((items) => {
     max = Math.max(...Object.values(items), max);
   });
-  const list = Object.keys(SCALE)
-    .map((item) => parseInt(item, 10))
-    .concat([max]);
-  return SCALE[`${list[list.sort((a, b) => a - b).indexOf(max) + 1]}`];
+  let scale = 10;
+  while (max / scale > 10) {
+    scale *= 10;
+  }
+  if (max / scale < 2) {
+    scale /= 2;
+  }
+  return scale;
 };
 
 const IconChart = ({ data, years, races, eventPoints, measurement, agg }) => {

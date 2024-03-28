@@ -9,7 +9,7 @@ import Grid from "@/components/Grid";
 export const DATA_COLUMNS = {
   county: "County",
   year: "Year",
-  code: "Penal Code Section",
+  code: "Code Section",
   offense: "Offense",
   decision: "Event Point",
   race: "Race",
@@ -23,8 +23,8 @@ export const DATA_COLUMNS = {
 const DATA_COLUMN_MAP = {
   "county": DATA_COLUMNS.county,
   "year": DATA_COLUMNS.year,
-  "PC_code": DATA_COLUMNS.code,
-  "PC_offense": DATA_COLUMNS.offense,
+  "code_section": DATA_COLUMNS.code,
+  "offense_name": DATA_COLUMNS.offense,
   "decision": DATA_COLUMNS.decision,
   "race": DATA_COLUMNS.race,
   //"gender": "Gender",
@@ -61,6 +61,7 @@ const DECISION_POINTS = [
   "Charge",
   "Conviction",
   "Felony conviction",
+  "Incarceration",
   "Prison sentence",
 ];
 
@@ -109,8 +110,10 @@ export default function App() {
     const data = filteredRecords.raw.map((r) => {
       let row = {};
       for (let [k, v] of Object.entries(r)) {
-        if (k === "PC_offense") {
-          v = v.slice(v.indexOf("PC-") + 3);
+        if (k === "offense_name") {
+          // this is a little risky -- assumes there is never a - in the penal
+          // code section number
+          v = v.slice(v.indexOf("-") + 1);
         }
         if (k in DATA_COLUMN_MAP) {
           row[DATA_COLUMN_MAP[k]] = v;
@@ -395,7 +398,7 @@ export default function App() {
             value={years}
             onChange={onYearsChange}
             options={yearsAvailable.map((y) => ({
-              text: y,
+              text: y === "All Years" ? "All Years (2010-2021)" : y,
               value: y,
             }))}
           />
