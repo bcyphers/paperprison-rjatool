@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PublicGoogleSheetsParser from "public-google-sheets-parser";
-import { utils, writeFileXLSX } from "xlsx";
+import { utils, read, writeFileXLSX } from "xlsx";
+import ExcelJS from "exceljs";
 import { IconChart, getYearsLabel } from "@/components/IconCharts";
 import DataTable from "@/components/DataTable";
 import PrivateSelect from "@/components/Select";
@@ -131,12 +132,23 @@ export default function App() {
     return data;
   };
 
-  const onDataDownload = () => {
+  const onDataDownload = async() => {
+    // load the cover sheet
+    const url = "/CoverSheet.xlsx";
+    const data = await (await fetch(url)).arrayBuffer();
+    const cover_wb = new ExcelJS.Workbook();
+    await cover_wb.xlsx.load(data).getWorksheet("Methodology");
+
+    // generate the data sheet
     const filteredJsonList = prepTableData();
-    const ws = utils.json_to_sheet(filteredJsonList);
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, "Data");
-    writeFileXLSX(wb, "PaperPrison - RJA Data.xlsx");
+    const data_ws = wb.addWorksheet("Data");
+    data_ws.columns = filteredJsonList;
+
+    // generate the output xlsx file
+    const wb = ExcelJS.Workbook();
+    utils.book_append_sheet(wb, cover_ws, "Methodology");
+    utils.book_append_sheet(wb, data_ws, "Data");
+    wb.xlsx.writeFile("PaperPrison - RJA Data.xlsx");
   };
 
   const onDataTableDisplayToggled = () => {
