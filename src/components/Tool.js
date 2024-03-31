@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from "react";
 import PublicGoogleSheetsParser from "public-google-sheets-parser";
-import { utils, writeFileXLSX } from "xlsx";
+import ExcelJS from "exceljs";
 import { IconChart, getYearsLabel } from "@/components/IconCharts";
 import DataTable from "@/components/DataTable";
 import PrivateSelect from "@/components/Select";
 import Grid from "@/components/Grid";
+
+export const MEASUREMENTS = {
+  RAW: "Raw numbers",
+  RATE: "Rate per unit population",
+  DG: "Population disparity v. white",
+  //R_PEP: "Rate per prior event point",
+  //DG_PEP: "Disparity gap per prior event point",
+};
 
 export const DATA_COLUMNS = {
   county: "County",
@@ -16,8 +24,8 @@ export const DATA_COLUMNS = {
   //gender: "Gender",
   number: "Number",
   pop: "Population",
-  rate_pop: "Rate per 1,000 Population per Year",
-  //dg_pop: "Disparity Gap per Population",
+  rate_pop: "Rate per 1,000 population per year",
+  dg_pop: MEASUREMENTS.DG,
 };
 
 const DATA_COLUMN_MAP = {
@@ -32,26 +40,10 @@ const DATA_COLUMN_MAP = {
   "pop": DATA_COLUMNS.pop,
 };
 
-export const MEASUREMENTS = {
-  RAW: "Raw numbers",
-  RATE: "Rate per population",
-  DG: "Population disparity v. White",
-  //R_PEP: "Rate per prior event point",
-  //DG_PEP: "Disparity gap per prior event point",
-};
-
-const MEASUREMENTS_MAP = {
-  [MEASUREMENTS.RAW]: "Raw numbers",
-  [MEASUREMENTS.RATE]: "Rate per unit population",
-  [MEASUREMENTS.DG]: "Population disparity v. Whites",
-  //MEASUREMENTS.R_PEP: "Rate per prior decision point",
-  //MEASUREMENTS.DG_PEP: "Disparity gap per prior decision point",
-};
-
 const RACES = {
   White: "White",
   Black: "Black",
-  Hispanic: "Latino",
+  Hispanic: "Hispanic",
   AAPI: "Asian / Pacific Islander",
   "Native American": "Native American",
 };
@@ -107,7 +99,7 @@ export default function App() {
   });
 
   const prepTableData = () => {
-    const data = filteredRecords.raw.map((r) => {
+    const rows = filteredRecords.raw.map((r) => {
       let row = {};
       for (let [k, v] of Object.entries(r)) {
         if (k === "offense_name") {
@@ -122,21 +114,43 @@ export default function App() {
       const pop_mul = r["year"] === "All Years" ? 11.75 : (
           r["year"] == 2021 ? 0.75 : 1);
       row[DATA_COLUMNS.rate_pop] = 1000 * r["number"] / (r["pop"] * pop_mul);
-      //row[DATA_COLUMNS.dg_pop] = (
-        //(r["number"] / r["pop"]) / (r["number_white"] / r["pop_white"])
-      //);
+      row[DATA_COLUMNS.dg_pop] = (
+        (r["number"] / r["pop"]) / (r["number_white"] / r["pop_white"])
+      );
       return row;
     });
 
-    return data;
+    return rows;
   };
 
-  const onDataDownload = () => {
+  const onDataDownload = async() => {
+    // load the workbook with the cover sheet
+    const url = "/CoverSheet.xlsx";
+    const data = await (await fetch(url)).arrayBuffer();
+    const wb = new ExcelJS.Workbook();
+    await wb.xlsx.load(data);
+
+    // generate the data sheet
     const filteredJsonList = prepTableData();
-    const ws = utils.json_to_sheet(filteredJsonList);
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, "Data");
-    writeFileXLSX(wb, "PaperPrison - RJA Data.xlsx");
+    const data_ws = wb.addWorksheet("Data");
+    data_ws.columns = Object.keys(filteredJsonList[0]).map((k) => {
+      return {header: k, key: k};
+    });
+    data_ws.addRows(filteredJsonList);
+
+    // generate and download the output xlsx file
+    // this code from
+    // https://github.com/exceljs/exceljs/issues/354#issuecomment-442801401
+    wb.xlsx.writeBuffer().then((data) => {
+      const blob = new Blob([data],
+        {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+      const url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "PaperPrisons RJA Data.xlsx"
+      anchor.click();
+      window.URL.revokeObjectURL(url);
+    });
   };
 
   const onDataTableDisplayToggled = () => {
@@ -457,7 +471,7 @@ export default function App() {
             label="Measurement"
             value={measurement}
             onChange={onMeasurementChange}
-            options={Object.keys(MEASUREMENTS_MAP).map((m) => ({
+            options={Object.values(MEASUREMENTS).map((m) => ({
               text: m,
               value: m,
             }))}
@@ -471,7 +485,7 @@ export default function App() {
         <p
           dangerouslySetInnerHTML={{
             __html: [
-              MEASUREMENTS_MAP[measurement],
+              measurement,
               decisionPoints.length === decisionPointsAvailable.length
                 ? "All Event Points"
                 : decisionPoints.join(", "),

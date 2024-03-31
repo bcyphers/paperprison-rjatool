@@ -40,7 +40,7 @@ const DataTable = ({ data }) => {
                   let value = row[k];
                   if (k === DATA_COLUMNS.number && value < 10) {
                     value = "N/A";
-                  } else if ([DATA_COLUMNS.rate_pop].includes(k)) {
+                  } else if ([DATA_COLUMNS.rate_pop, DATA_COLUMNS.dg_pop].includes(k)) {
                     value = parseFloat(value).toPrecision(3);
                   }
                   return <td key={k}>{value}</td>;
