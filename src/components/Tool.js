@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import PublicGoogleSheetsParser from "public-google-sheets-parser";
-import { utils, read, writeFileXLSX } from "xlsx";
 import ExcelJS from "exceljs";
 import { IconChart, getYearsLabel } from "@/components/IconCharts";
 import DataTable from "@/components/DataTable";
@@ -133,22 +132,25 @@ export default function App() {
   };
 
   const onDataDownload = async() => {
-    // load the cover sheet
+    // load the workbook with the cover sheet
     const url = "/CoverSheet.xlsx";
     const data = await (await fetch(url)).arrayBuffer();
-    const cover_wb = new ExcelJS.Workbook();
-    await cover_wb.xlsx.load(data).getWorksheet("Methodology");
+    const wb = new ExcelJS.Workbook();
+    await wb.xlsx.load(data);
 
     // generate the data sheet
     const filteredJsonList = prepTableData();
-    const data_ws = wb.addWorksheet("Data");
+    const data_ws = wb.getWorksheet("Data");
     data_ws.columns = filteredJsonList;
 
     // generate the output xlsx file
-    const wb = ExcelJS.Workbook();
-    utils.book_append_sheet(wb, cover_ws, "Methodology");
-    utils.book_append_sheet(wb, data_ws, "Data");
-    wb.xlsx.writeFile("PaperPrison - RJA Data.xlsx");
+    response.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+    workbook.xlsx.write(response).then(function(){
+        response.end();
+    });
+    await wb.xlsx.writeFile("PaperPrison - RJA Data.xlsx");
   };
 
   const onDataTableDisplayToggled = () => {
