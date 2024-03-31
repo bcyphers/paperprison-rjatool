@@ -24,7 +24,7 @@ export const DATA_COLUMNS = {
   //gender: "Gender",
   number: "Number",
   pop: "Population",
-  rate_pop: MEASUREMENTS.RATE,
+  rate_pop: "Rate per 1,000 population per year",
   dg_pop: MEASUREMENTS.DG,
 };
 
