@@ -9,9 +9,9 @@ const ALLOW_NA = true;
 
 const MEASUREMENT_MAP = {
   "Raw numbers": "number",
-  "Rate per population": "rate_per_pop",
+  "Rate per unit population": "rate_per_pop",
   //"Rate per prior event point": "rate_cond_previous",
-  "Population disparity v. White": "disparity_gap_pop_w",
+  "Population disparity v. white": "disparity_gap_pop_w",
   //"Disparity gap per prior event point": "disparity_gap_cond_w",
 };
 
