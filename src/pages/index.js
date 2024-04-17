@@ -5,6 +5,8 @@ import GenericPage from "@/components/GenericPage";
 import BackToTopButton from "@/components/BackToTopButton";
 import "@fontsource/ibm-plex-sans";
 import Head from "@/components/Head";
+import { initGA, logPageView } from "@/components/gnalytics"; 
+
 
 const DynamicTool = dynamic(() => import("@/components/Tool"), {
   ssr: false,
@@ -12,6 +14,7 @@ const DynamicTool = dynamic(() => import("@/components/Tool"), {
 const DynamicLayout = dynamic(() => import("@/components/Layout"), {
   ssr: false,
 });
+
 
 export default function App() {
   return (
