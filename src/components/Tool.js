@@ -540,9 +540,9 @@ export default function App() {
 
       {/* <pre>{JSON.stringify(filteredRecords, null, 4)}</pre> */}
       <div className="buttons">
-        <div className="button" onClick={() => window && window.print()}>
+        { /*<div className="button" onClick={() => window && window.print()}>
           Print
-        </div>
+            </div>*/}
         <div className="button" onClick={onDataTableDisplayToggled}>
           {showTable ? "Hide Table" : "View Data"}
         </div>
