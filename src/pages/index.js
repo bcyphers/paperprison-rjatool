@@ -5,7 +5,7 @@ import GenericPage from "@/components/GenericPage";
 import BackToTopButton from "@/components/BackToTopButton";
 import "@fontsource/ibm-plex-sans";
 import Head from "@/components/Head";
-import { initGA, logPageView } from "@/components/gnalytics"; 
+import { GTMPageView } from "@/components/gtm";
 
 
 const DynamicTool = dynamic(() => import("@/components/Tool"), {
@@ -17,9 +17,23 @@ const DynamicLayout = dynamic(() => import("@/components/Layout"), {
 
 
 export default function App() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      GTMPageView(url);
+    };
+    
+    router.events.on('routeChangeComplete', handleRouteChange);
+    
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
   return (
     <>
       <Head />
+      
       <DynamicLayout>
         <div className="inner-anchors">
           <div className="sub-nav-wrapper">
