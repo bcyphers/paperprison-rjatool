@@ -34,6 +34,8 @@
   justify-content: space-around;
 }
 
+
+
 .sub-nav-wrapper a {
   text-decoration: none;
   color: #e0e1dd !important;
@@ -725,4 +727,12 @@
 
 .clear-icon:hover {
   color: #333;
+}
+.heading {
+  background-color: lightgray;
+  text-align: center;
+}
+.centered {
+  text-align: center;
+  font-weight: bold;
 }
