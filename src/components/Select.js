@@ -78,11 +78,11 @@ const Select = ({
       {show && (
         <div ref={wrapperRef} className="modal-wrapper">
           <h3>{label}</h3>
-          {label === "Offense" && (
+          {(label === "Offense" || label === "County") && (
             <div className="search-bar-container">
               <input
                 type="text"
-                placeholder="Search Offenses"
+                placeholder={`Search ${label}`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-bar"
