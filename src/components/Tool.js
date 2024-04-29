@@ -61,7 +61,7 @@ const DEFAULTS = {
   years: ["All Years"],
   counties: ["All Counties"],
   decisionPoints: [...DECISION_POINTS],
-  offenses: ["459 PC-BURGLARY"],
+  offenses: ["All Offenses"],
   races: Object.keys(RACES),
   measurement: MEASUREMENTS.RAW,
 }
