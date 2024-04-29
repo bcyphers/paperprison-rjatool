@@ -99,18 +99,13 @@ export default function App() {
             difference. ”
           </p>
           <p>
-            This tool is intended to help you access and analyze criminal
-            justice data and identify potential racial disparities for counties
-            across California and the state as a whole. Please reach out to us
-            with any questions or potential errors you spot by emailing
-            paperprisons@gmail.com. Your feedback will help us improve the tool.
-            Thank you.
+          <strong>Disclaimer:</strong> This tool is intended to help you access and analyze criminal justice data and identify potential racial disparities for counties across California and the state as a whole. The tool and the accompanying data are provided as a public service 'as-is', and do not constitute legal advice or 'official proof' of actionable disparity or lack thereof. Please reach out to us with any questions or potential errors you spot by emailing <a href="mailto:rja@paperprisons.org?subject=Feedback%20for%20Your%20App">rja@paperprisons.org</a>. Your feedback will help us improve the tool. Thank you.
           </p>
         </GenericPage>
         <GenericPage id="about-the-data">
           <h2>About the Data</h2>
           <p>
-          The source for data on this site is a comprehensive dataset of all arrests, charges, convictions, and sentences in California, the Criminal Offender Record Information (CORI) database, available to researchers through the California Department of Justice Automated Criminal History System (ACHS) under the provisions of the CA DOJ Research Data Request process. Our records were downloaded between 9/23/2021 and 9/29/2021; the data we present therefore range from 2010 through (nearly) the first nine months of 2021. (2021 rates per population are adjusted upward by 12/9 to account for the limitation of the data to the first 9 months of the year.)
+          The source for data on this site is a comprehensive dataset of arrests, court actions, convictions, and sentences in California, the Criminal Offender Record Information (CORI) database, available to researchers through the California Department of Justice Automated Criminal History System (ACHS) under the provisions of the CA DOJ Research Data Request process. Our records were downloaded between 9/23/2021 and 9/29/2021; the data we present therefore range from 2010 through (nearly) the first nine months of 2021. (2021 rates per population are adjusted upward by 12/9 to account for the limitation of the data to the first 9 months of the year).
           </p>
           <p>
           While the CORI dataset provides valuable comprehensive statistics, it is not without limitations. Among the known disadvantages of the CORI data are that it does not include systematic information on the conditions of the arrest (such as whether or not a weapon was present) or other aspects of the defendant’s conduct which might influence the evaluation of the “similar conduct” standard under the RJA statute. Two additional shortcomings of our database are that it does not include juvenile or out-of-state records. Errors in underlying data are due to reporting errors and/or fundamental limitations to the Automated Criminal History System set up and maintained by CA DOJ.
@@ -118,12 +113,12 @@ export default function App() {
           <p>
           The CORI source data used for the tool are anonymous, with names removed and separate individuals identified only by an internal ID code. Personally identifying information, such as date of birth or social security number, has been removed. The tool reports summaries of the CORI data that have been processed to calculate counts (raw numbers) or rates for the specified user query. These summaries are never reported at the level of a particular individual. To protect confidentiality, our data sharing agreement with the CA DOJ requires that the tool only report metrics when the raw number of incidents for each race being compared is greater than 10.
           </p>
+
         </GenericPage>
         <GenericPage id="methodology">
           <h2>Methodology</h2>
           <p>
-          The "Paper Prisons Racial Justice Act Tool" allows visitors to customize the data in various ways. This methodology section presents important information about the data provided in this website and how you can use it for your own analysis.
-          </p>
+          The "Paper Prisons Racial Justice Act Tool" allows visitors to customize the data in various ways. This methodology section presents important information about the data provided in this website and how you can use it for your own analysis.          </p>
           <h3>Customization</h3>
           <p>
             You can customize the data presented by year, county, event point,
@@ -134,11 +129,13 @@ export default function App() {
           </p>
           <h3>Incidents & Lifecycle of a Case </h3>
           <p>
-          The source (CORI) data set records each of the events associated with a given cycle of an individual’s involvement with the criminal justice system, where a cycle is defined as the series of events in the criminal justice system that flow from a specific initial incident for an individual. A cycle typically begins with an arrest, in which a person may be charged with one or more offenses, and then may proceed through a series of additional steps; for example, the arrest step is frequently followed by a prosecutor filing charges in court on one or more offenses. Offenses charged in court may be the same as or different from those charged at arrest. The offenses charged in court lead to a disposition on each offense, such as a conviction, dismissal, acquittal, diversion, or other outcome. A conviction results in a sentence, which may include incarceration in jail or prison, a fine, probation, etc. The CORI data does not provide information on actual incarcerations or completed length of term served, only on sentences to incarceration.          </p>
+          The source (CORI) data set records each of the events associated with a given cycle of an individual’s involvement with the criminal justice system, where a cycle is defined as the series of events in the criminal justice system that flow from a specific initial incident for an individual. A cycle typically begins with an arrest, in which a person may be accused of one or more offenses, and then may proceed through a series of additional steps; for example, the arrest step is frequently followed by a prosecutor filing charges in court on one or more offenses. Offenses charged in court may be the same as or different from those recorded at arrest. The offenses charged in court lead to a disposition on each offense, such as a conviction, dismissal, acquittal, diversion, or other outcome. A conviction results in a sentence, which may include incarceration in jail or prison, a fine, probation, etc. The CORI data does not provide information on actual incarcerations or completed length of term served, only on sentences to incarceration.          </p>
           <p>
-          The tool counts the number of incidents in which a particular offense has been charged. An incident is defined as a particular cycle for a particular individual. For example, if a person has at least one arrest on a charge of Penal Code § 242 (battery) in a particular cycle, one incident of arrest on PC 242 is added to the number of arrest incidents. Multiple counts of the same offense charged in the same arrest cycle are only counted once in the tool. For example, suppose that following a particular arrest, a person ended up convicted of three counts of Penal Code § 242 (battery) and two counts of Penal Code § 148(A)(1) (obstructing/resisting arrest). For this cycle, we would count one incident of conviction for Penal Code § 242 and one incident of conviction for Penal Code § 148(A)(1). We apply the same approach at the arrest and court levels.          </p>
+          The tool counts the number of incidents in which a particular offense has been charged. An incident is defined as a particular cycle for a particular individual. For example, if a person has at least one arrest for violating Penal Code § 242 (battery) in a particular cycle, one incident of arrest on PC 242 is added to the number of arrest incidents. Multiple counts of the same offense charged in the same arrest cycle are only counted once in the tool. For example, suppose that following a particular arrest, a person ended up convicted of three counts of Penal Code § 242 (battery) and two counts of Penal Code § 148(A)(1) (obstructing/resisting arrest). For this cycle, we would count one incident of conviction for Penal Code § 242 and one incident of conviction for Penal Code § 148(A)(1). We apply the same approach at the arrest and court levels.          
+          </p>
           <p>
-          If the same individual is arrested and charged with a certain offense on more than one occasion (in different arrest cycles), each cycle will be counted separately. For that reason, the number of incidents counted in the tool is greater than the number of individuals involved.          </p>
+          If the same individual is arrested and charged with a certain offense on more than one occasion (in different arrest cycles), each cycle will be counted separately. For that reason, the number of incidents counted in the tool is greater than the number of individuals involved.
+          </p>
           <h3>Event Points</h3>
           <p>
           Racial disparities can occur at each of a number of specific event points or steps in the criminal legal system. Criminal records are complex and present an array of event types that may be defined in various ways; in designing the tool we have striven to use simple definitions of key events based on unambiguous interpretation of variables in the CORI data source. The tool provides metrics at the following specific event points or decisions, as derived from the CORI data.
@@ -176,7 +173,7 @@ export default function App() {
             </tr>
           </table>
 
-          <h3>Years</h3>
+          <h3>Year</h3>
           <p>
           For arrest event points, the year of the incident recorded in the tool is the minimum (first) calendar year for the cycle. For court events (all non-arrest events), the year is the maximum (last) year for the cycle. We count any event point that occurs in a cycle up to the last event. We assign years this way to take account of the fact that someone might be arrested in one year and go to court in a subsequent year.
           </p>
@@ -184,12 +181,12 @@ export default function App() {
           <h3>Offenses</h3>
           <p>
           The CORI data set includes information on all the categories of criminal offenses that are chargeable as a misdemeanor or felony, most of which are in the penal code (PC), but also appear in a variety of additional California codes, including vehicular (VC) and health and safety (HS) codes. Offenses chargeable only as infractions, for example certain vehicular code violations, are excluded, as are probation violations (e.g. PC 1203.2).
-          </p>
+            </p>
           <p>
           Each code subsection is treated as a distinct offense (for example, PC 148(A) is treated as distinct from PC 148(B)). In situations where subsections might more appropriately be combined, users can select multiple code subsections in the tool, and access aggregate data outputs (as described more fully in the methodology section below, “Combining Data.”) At the same time, users should also be aware that our approach of identifying offenses with code subsections lumps together some charges that come under a single subsection but have different consequences. Examples would include so-called “wobbler” offenses that are felonies by default but may be charged as misdemeanors under some conditions. Burglary, which is PC 459, may be charged as first-degree or second-degree burglary, but the source data do not always distinguish the degree, so these charges are combined into a single offense code. In addition, offenses with different levels of detail are also lumped together, so that "459 PC-BURGLARY"  and "459 PC-BURGLARY:FIRST DEGREE" charges are aggregated in our tool. Some offenses may only be associated with a limited set of event points.
           </p>
           <p>
-          For any given incident, the offense charged at court may be different from the offense cited at arrest, given prosecutorial decisions and plea bargaining. To ease searching, we include not just the code section number but the offense description (such as “PC 148(A) PC-OBSTRUCTS/RESISTS PUBLIC OFFICER/ETC”) most commonly attached to that offense code in the CORI data. We have excluded from the tool any records in the CORI data set for which a specific code section is not provided or cannot be identified.
+          For any given incident, the offense charged at court may be different from the offense cited at arrest, given prosecutorial decisions and plea bargaining. To ease searching, we include not just the code section number but the offense description (such as “PC 148(A) PC-OBSTRUCTS/RESISTS PUBLIC OFFICER/ETC”) most commonly attached to that offense code in the CORI data. We have excluded from the tool any records in the CORI data set for which a specific code section is not provided or cannot be identified. 
           </p>
 
           <h3>County</h3>
@@ -199,10 +196,10 @@ export default function App() {
 
           <h3>Racial classifications</h3>
           <p>
-          We extracted race data as recorded in the CORI dataset as the basis for calculating racial differences in patterns of arrest, charging, conviction, and sentencing. The CORI data source indicates the racial/ethnic identity of each individual with a single mutually exclusive “race” identifier. Multiple racial identities are not recorded. While white, Hispanic, Black, and American Indian populations are specifically identified in the CORI database, we aggregated several races into the “AAPI” category (Asian Indian, Cambodian, Chinese, Filipino, Guamanian, Hawaiian, Japanese, Korean, Laotian, Other Asian, Pacific Islander, Samoan, and Vietnamese.), masking considerable heterogeneity in this population. Outside of the five groups that the tool  collapses the various CORI categories into, persons of “other” and “unknown” race, representing 3.0% of the total incidents 6.9% of individuals, are not included in the tool. How, specifically, racial/ethnic groups are assigned in the CORI data (whether self-identified or assigned by authorities) is not indicated in the source. Although the CORI database also includes information on national origin (country of birth), this information is not reported in the current version of the tool.
+          We extracted race data as recorded in the CORI dataset as the basis for calculating racial differences in patterns of arrest, charging, conviction, and sentencing. The CORI data source indicates the racial/ethnic identity of each individual with a single mutually exclusive “race” identifier. Multiple racial identities are not recorded. While white, Hispanic, Black, and American Indian populations are specifically identified in the CORI database, we aggregated several races into the “AAPI” category (Asian Indian, Cambodian, Chinese, Filipino, Guamanian, Hawaiian, Japanese, Korean, Laotian, Other Asian, Pacific Islander, Samoan, and Vietnamese.), masking considerable heterogeneity in this population. Outside of the five groups that the tool  collapses the various CORI categories into, persons of “other” and “unknown” race, representing 3.0% of the total incidents 6.9% of individuals, are not included in the tool. How, specifically, racial/ethnic groups are assigned in the CORI data (whether self-identified or assigned by authorities) is not indicated in the source. Although the CORI database also includes information on national origin (country of birth), this information is not reported in the current version of the tool. 
           </p>
           <p>
-          We obtain county population numbers from the 5-year estimates of the Census Bureau’s American Community Survey (ACS). The racial/ethnic classifications reported in the ACS do not correspond directly to the CORI race categories. In particular, the ACS asks separate questions about racial identity and Hispanic/Latino identity, and allows individuals to belong to more than one race. The ACS categories we use are not mutually exclusive, but in our judgment are likely to correspond reasonably well to the CORI mutually exclusive categories. The following table displays the racial categories from the CORI data and the corresponding ACS categories. The percent of incidents and percent of persons is based on the CORI data populating the tool (2010-2021), and the percent of the California population is from the ACS 2016-2020 population estimates.
+          We obtain county population numbers from the 5-year estimates of the Census Bureau’s American Community Survey (ACS). The racial/ethnic classifications reported in the ACS do not correspond directly to the CORI race categories. In particular, the ACS asks separate questions about racial identity and Hispanic/Latino identity, and allows individuals to belong to more than one race. The ACS categories we use are not mutually exclusive, but in our judgment are likely to correspond reasonably well to the CORI mutually exclusive categories. The following table displays the racial categories from the CORI data and the corresponding ACS categories. The percent of incidents and percent of persons is based on the CORI data populating the tool (2010-2021), and the percent of the California population is from the ACS 2016-2020 population estimates. 
           </p>
           <table>
             <tr>
@@ -305,6 +302,8 @@ export default function App() {
               <p class="centered">
               population disparity v. white = rate per population (selected race) / rate per population (white)
               </p>
+            </li>
+            <li>
               <p>
               The racial gap can be considered the chance that a person of the given race/ethnicity experiences a certain outcome or decision, relative to the chances of a non-Hispanic white adult, given underlying populations.
               </p>
