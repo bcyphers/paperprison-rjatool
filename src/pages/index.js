@@ -302,13 +302,11 @@ export default function App() {
               <p class="centered">
               population disparity v. white = rate per population (selected race) / rate per population (white)
               </p>
-            </li>
-            <li>
-              <p>
-              The racial gap can be considered the chance that a person of the given race/ethnicity experiences a certain outcome or decision, relative to the chances of a non-Hispanic white adult, given underlying populations.
-              </p>
               <p>
               The  "population disparity v. white" can be considered the relative likelihood that a person of the given race/ethnicity experiences the outcome or decision (event point), compared to the likelihood of a non-Hispanic white person, given their respective underlying populations.
+              </p>
+              <p>
+              A population disparity v. white value greater than 1.0 indicates that a specific racial/ethnic group experiences a higher rate of a particular outcome or decision compared to non-Hispanic whites, considering their respective population sizes. Conversely, a value less than 1.0 suggests that the specified group is less likely to experience the outcome relative to non-Hispanic whites, given the underlying populations. A value of 1.00 means that the two groups experience the outcome at the same rate relative to population. 
               </p>
               <p>
               Example: Suppose that in a particular county in a particular year, there were 2 incidents in which Black adults experienced felony convictions for burglary for every 100 Black individuals in the population, and 1 such incident per 100 non-Hispanic white individuals. Then the population disparity for the Black relative to white population is 2/1 = 2.
