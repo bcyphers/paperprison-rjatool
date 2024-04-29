@@ -185,7 +185,7 @@ const IconChart = ({ data, years, races, eventPoints, measurement, agg }) => {
   let postScaleString = "";
   if (scale < 1) {
     scaleString = "1";
-    postScaleString = "per " + (1 / scale).toLocaleString();
+    postScaleString = "per " + (1 / scale).toLocaleString() + " population";
   }
 
   const years_label = getYearsLabel(years);
@@ -197,8 +197,8 @@ const IconChart = ({ data, years, races, eventPoints, measurement, agg }) => {
         {years_label}
         <div className="chart-meta">
           <div className="chart-scale">
-            <PersonIcon value={1} race={base} /> {scaleString}{" "}
-            {base ? "Incidents relative to white" : scale > 1 ? "Incidents" : "Incident"}{" "}
+            <PersonIcon value={1} race={null} /> {scaleString}{" "}
+            {base ? "incident per population relative to white" : scale > 1 ? "incidents" : "incident"}{" "}
             {postScaleString}
           </div>
         </div>
