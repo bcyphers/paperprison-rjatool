@@ -180,7 +180,9 @@ export default function App() {
       .then((result) => {
         setYearsAvailable(result.years.sort(sortYears));
         setCountiesAvailable(result.counties.sort(sortCounties));
-        setOffensesAvailable(result.offenses.sort(sortOffenses));
+        let allOffenses = result.offenses.sort(sortOffenses);
+        setOffensesAvailable(allOffenses);
+        setOffenses(allOffenses);
     }).then(fetchData({
       counties: counties,
       decisionPoints: decisionPoints,
@@ -336,13 +338,6 @@ export default function App() {
   };*/
 
   const onOffensesChange = (values) => {
-    if (values[values.length-1] === "All Offenses") {
-       values = ["All Offenses"];
-    } else if (values.includes("All Offenses")) {
-      values = values.filter((w) => w != "All Offenses");
-    } 
-   
-    values.sort();
     setOffenses(values);
 
     if (values.length === 0) {
@@ -466,7 +461,6 @@ export default function App() {
             label="Offense"
             multiple={true}
             value={offenses}
-            disableAll={true}
             onChange={onOffensesChange}
             options={offensesAvailable.map((o) => ({
               text: o,
