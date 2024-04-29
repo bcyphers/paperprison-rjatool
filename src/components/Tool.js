@@ -50,10 +50,10 @@ const RACES = {
 
 const DECISION_POINTS = [
   "Arrest",
-  "Charge",
+  "Court action",
   "Conviction",
   "Felony conviction",
-  "Incarceration",
+  "Incarceration sentence",
   "Prison sentence",
 ];
 
