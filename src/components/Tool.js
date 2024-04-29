@@ -336,6 +336,13 @@ export default function App() {
   };*/
 
   const onOffensesChange = (values) => {
+    if (values[values.length-1] === "All Offenses") {
+       values = ["All Offenses"];
+    } else if (values.includes("All Offenses")) {
+      values = values.filter((w) => w != "All Offenses");
+    } 
+   
+    values.sort();
     setOffenses(values);
 
     if (values.length === 0) {
@@ -459,6 +466,7 @@ export default function App() {
             label="Offense"
             multiple={true}
             value={offenses}
+            disableAll={true}
             onChange={onOffensesChange}
             options={offensesAvailable.map((o) => ({
               text: o,
@@ -495,7 +503,7 @@ export default function App() {
                 : races.join(", "),
               offenses.length === offensesAvailable.length
                 ? "All Offenses"
-                : (offenses.length <= 4
+                : (offenses.length <= 8
                   ? offenses.join(", ")
                   : (offenses.length + " Offenses: "
                      + offenses[0] + ", ..., "
