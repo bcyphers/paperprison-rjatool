@@ -198,7 +198,7 @@ const IconChart = ({ data, years, races, eventPoints, measurement, agg }) => {
         <div className="chart-meta">
           <div className="chart-scale">
             <PersonIcon value={1} race={base} /> {scaleString}{" "}
-            {base ? "White Adult" : scale > 1 ? "Adults" : "Adult"}{" "}
+            {base ? "Incidents relative to white" : scale > 1 ? "Incidents" : "Incident"}{" "}
             {postScaleString}
           </div>
         </div>
