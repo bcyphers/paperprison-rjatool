@@ -20,7 +20,7 @@ const Header = () => {
         <a href="https://paperprisons.org/states.html">State Reports</a>
         <a href="https://paperprisons.org/news_blog.html">News/Blog</a>
         <a href="https://paperprisons.org/diary.html">Diary</a>
-        <a href="https://paperprisons.org/diary.html">Team</a>
+        <a href="https://paperprisons.org/team.html">Team</a>
         <a href="https://paperprisons.org/RJA.html">RJA</a>
       </div>
     </div>
