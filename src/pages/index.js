@@ -253,7 +253,7 @@ export default function App() {
             </tr>
           </table>
           <p>
-          (Population of indicated ACS racial grouping as percent of total California population, 2016-2020 ACS. Provided for illustrative purposes. Categories are not mutually exclusive and percentages do not add to 100%. Also, the CORI racial categories of “Other” or “Unknown” are not an option in the tool because there is no corresponding ACS population count.)
+          Notes to table: The CORI racial category of “Other” is not an option in the tool because there is no corresponding ACS population count. Population categories (last column) are not mutually exclusive and percentages do not add to 100%. 
           </p>
 
           <h3>Measurements</h3>
@@ -266,7 +266,7 @@ export default function App() {
             </li>
             <li>
               <p>
-                <b>Rate per population</b> measures the rate at which a given event or decision occurs for a selected racial or ethnic group, relative to that group’s total population in the county. Specifically, it is the raw number of offense incidents of the requested type for the requested ethnic group during the requested year, per 100 individuals of that group in the county population, according to the following formula:
+                <b>Rate per population</b> measures the rate at which a given event or decision occurs for a selected racial or ethnic group, relative to that group’s total population in the county. Specifically, it is the raw number of offense incidents of the requested type for the requested ethnic group during the requested year, per indicated number of individuals of that group in the county population, according to the following formula:
               </p>
               <p class="centered">rate per population = raw number / county population (race-specific)</p>
               <p> Population data come from the American Community Survey (ACS) 5-year estimates for the combined period 2016-2020. ACS summary tables were accessed through the Census Bureau API interface (see
@@ -308,7 +308,7 @@ export default function App() {
               The racial gap can be considered the chance that a person of the given race/ethnicity experiences a certain outcome or decision, relative to the chances of a non-Hispanic white adult, given underlying populations.
               </p>
               <p>
-              A "population disparity v. white" value greater than 1.0 indicates that a specific racial/ethnic group experiences a higher rate of a particular outcome or decision compared to non-Hispanic whites, considering their respective population sizes. Conversely, a value less than 1.0 suggests that the specified group is less likely to experience the outcome relative to non-Hispanic whites, given the underlying populations. A value of 1.00 means that the two groups experience the outcome at the same rate relative to population.
+              The  "population disparity v. white" can be considered the relative likelihood that a person of the given race/ethnicity experiences the outcome or decision (event point), compared to the likelihood of a non-Hispanic white person, given their respective underlying populations.
               </p>
               <p>
               Example: Suppose that in a particular county in a particular year, there were 2 incidents in which Black adults experienced felony convictions for burglary for every 100 Black individuals in the population, and 1 such incident per 100 non-Hispanic white individuals. Then the population disparity for the Black relative to white population is 2/1 = 2.
