@@ -396,7 +396,7 @@ export default function App() {
           </a>, 76 UC L. Journal 1 (2023); see also{" "}
           <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4852606" target="_blank">
             <i>The Paper Prisons Racial Justice Act Data Tool</i>
-          </a>, Berkeley Journal of Criminal Law (forthcoming 2024).)
+          </a>, 29 Berkeley J. Crim. L. 29 (2024).)
         </p>
         <p>
           This site is currently in beta testing and may experience bugs or
