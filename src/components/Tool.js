@@ -5,6 +5,7 @@ import { IconChart, getYearsLabel } from "@/components/IconCharts";
 import DataTable from "@/components/DataTable";
 import PrivateSelect from "@/components/Select";
 import Grid from "@/components/Grid";
+import GenericPage from "@/components/GenericPage";
 
 export const MEASUREMENTS = {
   RAW: "Raw numbers",
@@ -376,34 +377,40 @@ export default function App() {
 
   return (
     <div className="tool" id="tool">
-      <p className="generic-page">
-        This site provides summary data representing the raw numbers, rates per
-        population, and disparity gaps by race of adults in the California
-        criminal justice system using data provided by the California Department
-        of Justice as well as by the Census Department. Access the Census data{" "}
-        <a
-          href="https://docs.google.com/spreadsheets/d/1acKdr3w9NlALgfUt8nLbtSWDqEfVxyQLKuz3r_pGkes/edit#gid=840124101"
-          target="_blank"
-        >
-          here
-        </a>
-        {". "}
-        For questions or comments, please email us at{" "}
-        <a href="mailto:rja@paperprisons.org?subject=Feedback%20for%20Your%20App">
-          rja@paperprisons.org
-        </a>{" "}
-        (See also{" "}
-        <a
-          href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4392014"
-          target="_blank"
-        >
-          <i>
-            Proving Actionable Racial Disparity Under the California Racial
-            Justice Act
-          </i>
-        </a>
-        , 76 UC L. Journal 1 (2023))
-      </p>
+      <GenericPage id="intro">
+        <p>
+          This site provides summary data representing the raw numbers, rates per
+          population, and disparity gaps by race of adults in the California
+          criminal justice system using data provided by the California Department
+          of Justice as well as by the Census Department. Access the Census data{" "}
+          <a
+            href="https://docs.google.com/spreadsheets/d/1acKdr3w9NlALgfUt8nLbtSWDqEfVxyQLKuz3r_pGkes/edit#gid=840124101"
+            target="_blank"
+          >
+            here
+          </a>
+          {". "}
+          (See also{" "}
+          <a
+            href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4392014"
+            target="_blank"
+          >
+            <i>
+              Proving Actionable Racial Disparity Under the California Racial
+              Justice Act
+            </i>
+          </a>
+          , 76 UC L. Journal 1 (2023).)
+        </p>
+        <p>
+          This site is currently in beta testing and may experience bugs or
+          interruptions in service. Please send questions, comments, or bug reports
+          to{" "}
+          <a href="mailto:rja@paperprisons.org?subject=Feedback%20for%20Your%20App">
+            rja@paperprisons.org
+          </a>.
+        </p>
+      </GenericPage>
       <div className="filters">
         <div>Customize: </div>
         <div className="filter">

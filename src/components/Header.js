@@ -13,7 +13,7 @@ const Header = () => {
         </a>
       </div>
       <div className="center">
-        <p className="website-name">Racial Justice Act Tool</p>
+        <p className="website-name">Racial Justice Act Tool <span className="beta">[beta]</span></p>
       </div>
       <div className="right">
         <a href="https://paperprisons.org/about.html">About</a>

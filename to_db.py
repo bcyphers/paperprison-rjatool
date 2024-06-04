@@ -1,12 +1,12 @@
 import pandas as pd
+import configparser
 from sqlalchemy import create_engine, URL
 
 
 def clean_csv():
     df = pd.read_csv('RJA_tool_table_04-01-2024.csv')
 
-    df = df.rename(columns={'event': 'decision', 'w_pop': 'pop_white',
-                            'offense_name': 'offense'})
+    df = df.rename(columns={'event': 'decision', 'w_pop': 'pop_white'})
     df = df.drop(['rate_per_100_pop', 'disparity_gap_pop_w'], axis=1)
     df = df.assign(county=df.county.replace('California', 'All Counties'))
     df = df.assign(year=df.year.replace('All', 'All Years'))

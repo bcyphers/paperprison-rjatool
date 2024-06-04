@@ -736,3 +736,9 @@
   text-align: center;
   font-weight: bold;
 }
+
+.beta {
+  margin-left: 10px;
+  /*font-family: monospace;*/
+  color: rgba(0, 0, 0, 0.5);
+}
