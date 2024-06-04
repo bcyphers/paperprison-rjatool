@@ -1891,11 +1891,6 @@ mysql@^2.18.1:
     safe-buffer "5.1.2"
     sqlstring "2.3.1"
 
-n@^9.2.3:
-  version "9.2.3"
-  resolved "https://registry.npmjs.org/n/-/n-9.2.3.tgz"
-  integrity sha512-iKU/fMITB+bJe0wQ6Q6THSWBpfF/f/g4elhr23Mp4TywSY0rJvaHVdkMhL9uWEdwdipAPidmTIqafI0BTJj/lQ==
-
 nanoid@^3.3.4, nanoid@^3.3.7:
   version "3.3.7"
   resolved "https://registry.npmjs.org/nanoid/-/nanoid-3.3.7.tgz"
