@@ -383,24 +383,20 @@ export default function App() {
           population, and disparity gaps by race of adults in the California
           criminal justice system using data provided by the California Department
           of Justice as well as by the Census Department. Access the Census data{" "}
-          <a
-            href="https://docs.google.com/spreadsheets/d/1acKdr3w9NlALgfUt8nLbtSWDqEfVxyQLKuz3r_pGkes/edit#gid=840124101"
-            target="_blank"
-          >
+          <a href="https://docs.google.com/spreadsheets/d/1acKdr3w9NlALgfUt8nLbtSWDqEfVxyQLKuz3r_pGkes/edit#gid=840124101" target="_blank">
             here
           </a>
           {". "}
-          (See also{" "}
-          <a
-            href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4392014"
-            target="_blank"
-          >
+          (See{" "}
+          <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4392014" target="_blank">
             <i>
               Proving Actionable Racial Disparity Under the California Racial
               Justice Act
             </i>
-          </a>
-          , 76 UC L. Journal 1 (2023).)
+          </a>, 76 UC L. Journal 1 (2023); see also{" "}
+          <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4852606" target="_blank">
+            <i>The Paper Prisons Racial Justice Act Data Tool</i>
+          </a>, Berkeley Journal of Criminal Law (forthcoming 2024).)
         </p>
         <p>
           This site is currently in beta testing and may experience bugs or
