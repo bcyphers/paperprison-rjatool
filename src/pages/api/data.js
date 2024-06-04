@@ -1,9 +1,9 @@
 const http = require("http"),
       url = require("url"),
-      sqlite3 = require("sqlite3").verbose(),
-      sqlite = require("sqlite");
-
-const filepath = "./rja.db";
+      ini = require("ini"),
+      fs = require("fs"),
+      util = require("util"),
+      mysql = require("mysql");
 
 const ALLOW_NA = true;
 
@@ -22,10 +22,14 @@ const DEFAULTS = {
   measurement: "number",
 };
 
+const config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+
 export default async function handler(req, res) {
-  const db = await sqlite.open({
-    filename: filepath,
-    driver: sqlite3.Database,
+  const con = await mysql.createConnection({
+    host: config.mysqlDB.host,
+    user: config.mysqlDB.user,
+    password: config.mysqlDB.pass,
+    database: config.mysqlDB.db,
   });
 
   console.log("API request at " + new Date(Date.now()));
@@ -63,7 +67,9 @@ export default async function handler(req, res) {
   const measurement = ('measurement' in body ?
     MEASUREMENT_MAP[body.measurement] : DEFAULTS.measurement);
 
-  const rows = await db.all(query, vars);
+  const doQuery = util.promisify(con.query).bind(con);
+  const rows = await doQuery(query, vars);
+  con.end();
 
   let data = {};
   for (const r of rows) {
