@@ -19,6 +19,7 @@
 .DS_Store
 *.pem
 *.db
+*.ini
 
 # debug
 npm-debug.log*
