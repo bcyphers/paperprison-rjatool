@@ -742,3 +742,78 @@
   /*font-family: monospace;*/
   color: rgba(0, 0, 0, 0.5);
 }
+.nav > a {
+  padding: 14px 15px; /* Added horizontal padding for spacing */
+  font-weight: bold;
+  color: black; /* Changed text color to black */
+  text-decoration: none; /* Removed underline */
+}
+
+.nav:hover {
+  color: #707070;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  left: 0;
+  padding: 5px 20px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 2;
+  background-color: white;
+  margin-top: 14px;
+  width: max-content;
+  border-radius: 5px; /* Rounded corners */
+}
+
+.dropdown-content a {
+  display: block;
+  text-decoration: none;
+  color: black;
+  padding: 5px 0; /* Adjusted padding for spacing */
+  text-align: left;
+  font-weight: bold;
+  transition: color 0.3s; /* Smooth color transition on hover */
+}
+
+.dropdown-content a:hover {
+  color: #707070;
+}
+
+
+.dropbtn {
+  position: relative; /* Ensures dropdown-content is positioned relative to parent */
+}
+
+.dropbtn:hover .dropdown-content {
+  display: block;
+}
+
+
+div.dropdown-content > a:hover {
+  color: #707070; /* Changed hover color */
+}
+
+@media screen and (max-width: 845px) {
+  .nav {
+      width: 100%;
+      padding: 10px 0; /* Adjusted padding for spacing */
+  }
+  .dropbtn:hover .dropdown-content {
+      display: none;
+  }
+  .contact {
+      display: block;
+      max-height: 750px;
+  }
+  #logo {
+      text-align: center;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+  }
+}
+.states-dropdown {
+  max-height: 500px; /* Adjust the maximum height as needed */
+  overflow-y: auto; /* Enable vertical scrollbar if content exceeds the maximum height */
+}
