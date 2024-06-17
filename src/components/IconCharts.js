@@ -1,13 +1,20 @@
 import React from "react";
 import { MEASUREMENTS } from "@/components/Tool";
 
-const formatNumber = (n) => {
+const formatNumber = (n, decimal=true) => {
   const number = Number(n);
   if (number > 1000000) {
-    return (number / 1000000).toPrecision(3) + "M";
+    if (decimal) {
+      return (number / 1000000).toPrecision(3) + "M";
+    } else {
+      return Math.round(number / 1000000) + "M";
+    }
   } else if (number > 1000) {
-    // we want three sig figs
-    return (number / 1000).toPrecision(3) + "k";
+    if (decimal) {
+      return (number / 1000).toPrecision(3) + "k";
+    } else {
+      return Math.round(number / 1000) + "k";
+    }
   } else if (Number.isInteger(number)) {
     // if it's an integer less than 1000, display normally
     return number;
@@ -181,11 +188,11 @@ const IconChart = ({ data, years, races, eventPoints, measurement, agg }) => {
     }
   }
 
-  let scaleString = scale.toLocaleString();
+  let scaleString = formatNumber(scale, false);
   let postScaleString = "";
   if (scale < 1) {
     scaleString = "1";
-    postScaleString = "per " + (1 / scale).toLocaleString() + " population";
+    postScaleString = "per " + formatNumber(1 / scale, false) + " population";
   }
 
   const years_label = getYearsLabel(years);
