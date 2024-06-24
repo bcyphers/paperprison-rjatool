@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import dynamic from "next/dynamic";
 
 import GenericPage from "@/components/GenericPage";
 import BackToTopButton from "@/components/BackToTopButton";
 import "@fontsource/ibm-plex-sans";
 import Head from "@/components/Head";
+import FeedbackDialog from "@/components/FeedbackDialog";
 
 const DynamicTool = dynamic(() => import("@/components/Tool"), {
   ssr: false,
@@ -380,6 +381,7 @@ export default function App() {
           </p>
         </GenericPage>
         <BackToTopButton />
+        <FeedbackDialog />
       </DynamicLayout>
     </>
   );

@@ -694,11 +694,13 @@
   align-items: center;
   justify-content: center;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4); /* Add a shadow effect */
+  z-index: 999; 
 }
 
 .back-to-top:hover {
   background: linear-gradient(to bottom, #333, #666);
 }
+
 
 .search-bar {
   width: 100%;
@@ -763,17 +765,17 @@
   background-color: white;
   margin-top: 14px;
   width: max-content;
-  border-radius: 5px; /* Rounded corners */
+  border-radius: 5px; 
 }
 
 .dropdown-content a {
   display: block;
   text-decoration: none;
   color: black;
-  padding: 5px 0; /* Adjusted padding for spacing */
+  padding: 5px 0; 
   text-align: left;
   font-weight: bold;
-  transition: color 0.3s; /* Smooth color transition on hover */
+  transition: color 0.3s; 
 }
 
 .dropdown-content a:hover {
@@ -782,7 +784,7 @@
 
 
 .dropbtn {
-  position: relative; /* Ensures dropdown-content is positioned relative to parent */
+  position: relative; 
 }
 
 .dropbtn:hover .dropdown-content {
@@ -791,13 +793,13 @@
 
 
 div.dropdown-content > a:hover {
-  color: #707070; /* Changed hover color */
+  color: #707070; 
 }
 
 @media screen and (max-width: 845px) {
   .nav {
       width: 100%;
-      padding: 10px 0; /* Adjusted padding for spacing */
+      padding: 10px 0; 
   }
   .dropbtn:hover .dropdown-content {
       display: none;
@@ -814,6 +816,117 @@ div.dropdown-content > a:hover {
   }
 }
 .states-dropdown {
-  max-height: 500px; /* Adjust the maximum height as needed */
-  overflow-y: auto; /* Enable vertical scrollbar if content exceeds the maximum height */
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.feedback-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.feedback-dialog {
+  background-color: white;
+  padding: 20px; 
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.feedback-dialog h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 15px; 
+  color: #333;
+}
+
+.feedback-dialog form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 15px; 
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.feedback-dialog input,
+.feedback-dialog textarea {
+  width: 100%;
+  padding: 10px; 
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  resize: none; 
+}
+
+.feedback-dialog textarea {
+  min-height: 80px; 
+  resize: vertical; 
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px; 
+}
+
+.feedback-button {
+  padding: 8px 16px; 
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.feedback-button-cancel {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.feedback-button-submit {
+  background: linear-gradient(to bottom, #000, #333);
+  color: white;
+  border: none;
+}
+
+.feedback-button:hover {
+  opacity: 0.8;
+}
+
+.feedback-icon {
+  position: fixed;
+  bottom: calc(50vh - 20px); 
+  right: 20px;
+  padding: 10px;
+  background: linear-gradient(to bottom, #000, #333);
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1000; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4); 
+}
+
+.feedback-icon:hover {
+  background: linear-gradient(to bottom, #333, #666);
 }
