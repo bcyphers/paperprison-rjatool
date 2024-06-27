@@ -92,7 +92,7 @@ const Header = () => {
             <a className="mr-5 hover:text-gray-900 nav dropbtn" href="https://paperprisons.org#">News/Blog</a>
             <div className="dropdown-content">
               <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/news.html">News</a>
-              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/blog.html">Blog</a>
+              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/blog.html?source=rja">Blog</a>
             </div>
           </span>
           <span className="nav dropbtn">
