@@ -5,14 +5,14 @@ const FeedbackDialog = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [feedback, setFeedback] = useState('');
-  const [submitting, setSubmitting] = useState(false); // State to manage submission status
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true); // Set submitting state to true during submission
+    setSubmitting(true);
 
     try {
-      const response = await fetch('/api/send-feedback', {
+      const response = await fetch('/api/submit-feedback-to-sheet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, feedback }),
@@ -31,21 +31,25 @@ const FeedbackDialog = () => {
       console.error('Error submitting feedback:', error);
       alert('Error submitting feedback. Please try again.');
     } finally {
-      setSubmitting(false); // Reset submitting state
+      setSubmitting(false);
     }
+  };
+
+  const openDialog = () => {
+    setIsOpen(true);
   };
 
   return (
     <>
-      {/* Feedback button */}
-      <button 
-        onClick={() => setIsOpen(true)} 
-        className="feedback-button"
+      {/* Feedback icon */}
+      <span
+        onClick={openDialog}
+        className="feedback-icon"
+        role="button"
         aria-label="Provide feedback"
       >
-        <span role="img" aria-hidden="true" className="feedback-icon">💬</span>
-        <span>Feedback</span>
-      </button>
+        💬
+      </span>
 
       {/* Feedback dialog */}
       {isOpen && (
@@ -86,16 +90,16 @@ const FeedbackDialog = () => {
                 />
               </div>
               <div className="button-group">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setIsOpen(false)}
                   className="feedback-button feedback-button-cancel"
                   disabled={submitting}
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="feedback-button feedback-button-submit"
                   disabled={submitting}
                 >
