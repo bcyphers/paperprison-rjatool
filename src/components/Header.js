@@ -1,10 +1,45 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const menuRef = useRef(null);
+  const hamburgerRef = useRef(null);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleDropdown = (dropdown) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target) &&
+          hamburgerRef.current && !hamburgerRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.classList.add('menu-open');
+    } else {
+      document.body.classList.remove('menu-open');
+    }
+  }, [isMenuOpen]);
+
   return (
     <div className="rja-tool-header">
-      <div className="left">
-        <a href="https://paperprisons.orghttps://paperprisons.org">
+      <div className="header-left">
+        <a href="https://paperprisons.org" className="logo-link">
           <img
             src="https://paperprisons.org/images/logo.png"
             alt="Paper Prisons RJA Tool"
@@ -12,41 +47,45 @@ const Header = () => {
           />
         </a>
       </div>
-      <div className="center">
-        <p className="website-name">Racial Justice Act Tool <span className="beta">[beta]</span></p>
+      <div className="header-center">
+        <h1 className="website-name">Racial Justice Act Tool <span className="beta">[beta]</span></h1>
       </div>
-      <div className="container mx-auto px-4">
-        <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
-          <span className="nav dropbtn">
-            <a className="mr-5 hover:text-gray-900 nav dropbtn" href="https://paperprisons.org/about.html">About</a>
-            <div className="dropdown-content">
-              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/SecondChanceGap.html">What is the Second Chance Gap?</a>
-              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/team.html">Team</a>
-              <p><strong><u>Research Papers:</u> &nbsp;&nbsp;&nbsp;</strong></p>
-              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/PaperPrisons.html">- The Second Chance Gap Paper</a>
-              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/LossOfEarnings.html">- Loss of Earnings Paper</a>
-              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/ProvingRacialDisparity.html">- Proving Racial Disparity Paper</a>
-              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/RJATool.html">- RJA Data Tool Paper</a>
-            </div>
-          </span>
-          <span className="nav dropbtn">
-            <a className="mr-5 hover:text-gray-900 nav dropbtn" href="https://paperprisons.org/blog.html?source=rja">News/Blog</a>
-            <div className="dropdown-content">
-              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/news.html?source=rja">News</a>
-              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/blog.html?source=rja">Blog</a>
-            </div>
-          </span>
-          <span className="nav dropbtn">
-          <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/rja-diary.html">Diary</a>
-          </span>
-          <span className="nav dropbtn">
-          <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/RJA">RJA <span className="text-gray-900">[beta]</span></a>
-          </span>
-        </nav>
+      <div className="header-right">
+        <button ref={hamburgerRef} className="hamburger-menu" onClick={toggleMenu}>
+          ☰
+        </button>
+        {isMenuOpen && (
+          <nav ref={menuRef} className="main-nav open">
+            <span className={`nav dropbtn ${activeDropdown === 'about' ? 'active' : ''}`} onClick={() => toggleDropdown('about')}>
+              <a className="mr-5 hover:text-gray-900 nav dropbtn" href="https://paperprisons.org/about.html">About</a>
+              <div className="dropdown-content">
+                <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/SecondChanceGap.html">What is the Second Chance Gap?</a>
+                <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/team.html">Team</a>
+                <p><strong><u>Research Papers:</u> &nbsp;&nbsp;&nbsp;</strong></p>
+                <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/PaperPrisons.html">- The Second Chance Gap Paper</a>
+                <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/LossOfEarnings.html">- Loss of Earnings Paper</a>
+                <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/ProvingRacialDisparity.html">- Proving Racial Disparity Paper</a>
+                <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/RJATool.html">- RJA Data Tool Paper</a>
+              </div>
+            </span>
+            <span className={`nav dropbtn ${activeDropdown === 'news' ? 'active' : ''}`} onClick={() => toggleDropdown('news')}>
+              <a className="mr-5 hover:text-gray-900 nav dropbtn" href="https://paperprisons.org/blog.html?source=rja">News/Blog</a>
+              <div className="dropdown-content">
+                <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/news.html?source=rja">News</a>
+                <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/blog.html?source=rja">Blog</a>
+              </div>
+            </span>
+            <span className="nav dropbtn">
+              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/rja-diary.html">Diary</a>
+            </span>
+            <span className="nav dropbtn">
+              <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/RJA">RJA <span className="text-gray-900">[beta]</span></a>
+            </span>
+          </nav>
+        )}
       </div>
     </div>
   );
 }
 
 export default Header;
-

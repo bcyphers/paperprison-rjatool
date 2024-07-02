@@ -202,6 +202,8 @@ export default function App() {
           <p>
           We obtain county population numbers from the 5-year estimates of the Census Bureau’s American Community Survey (ACS). The racial/ethnic classifications reported in the ACS do not correspond directly to the CORI race categories. In particular, the ACS asks separate questions about racial identity and Hispanic/Latino identity, and allows individuals to belong to more than one race. The ACS categories we use are not mutually exclusive, but in our judgment are likely to correspond reasonably well to the CORI mutually exclusive categories. The following table displays the racial categories from the CORI data and the corresponding ACS categories. The percent of incidents and percent of persons is based on the CORI data populating the tool (2010-2021), and the percent of the California population is from the ACS 2016-2020 population estimates.
           </p>
+
+          <div className="table-container-mobile">
           <table>
             <tr>
               <td class="heading">CORI race</td>
@@ -253,6 +255,7 @@ export default function App() {
               <td>NA</td>
             </tr>
           </table>
+          </div>
           <p>
           Notes to table: The CORI racial category of “Other” is not an option in the tool because there is no corresponding ACS population count. Population categories (last column) are not mutually exclusive and percentages do not add to 100%.
           </p>
