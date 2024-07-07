@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
   const menuRef = useRef(null);
   const hamburgerRef = useRef(null);
 
@@ -24,9 +25,21 @@ const Header = () => {
       }
     };
 
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset;
+      if (scrollTop > 0) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener('scroll', handleScroll);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -53,9 +66,11 @@ const Header = () => {
         <h1 className="website-name">Racial Justice Act Tool <span className="beta">[beta]</span></h1>
       </div>
       <div className="header-right">
-        <button ref={hamburgerRef} className="hamburger-menu" onClick={toggleMenu}>
-          ☰
-        </button>
+        {(isScrolled && !isMenuOpen) ? null : (
+          <button ref={hamburgerRef} className="hamburger-menu" onClick={toggleMenu}>
+            ☰
+          </button>
+        )}
         <nav ref={menuRef} className={`main-nav ${isMenuOpen ? 'open' : ''}`}>
           <span className={`nav dropbtn ${activeDropdown === 'about' ? 'active' : ''}`} onClick={() => toggleDropdown('about')}>
             <a className="mr-5 hover:text-gray-900 nav dropbtn" href="https://paperprisons.org/about.html">About</a>
