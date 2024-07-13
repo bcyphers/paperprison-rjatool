@@ -92,7 +92,7 @@ const Header = () => {
             </div>
           </span>
           <span className="nav dropbtn">
-            <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/rja-diary.html">Diary</a>
+            <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/diary.html?source=rja">Diary</a>
           </span>
           <span className="nav dropbtn">
             <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/RJA">RJA <span className="text-gray-900">[beta]</span></a>
