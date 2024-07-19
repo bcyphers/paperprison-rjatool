@@ -85,7 +85,7 @@ const Header = () => {
             </div>
           </span>
           <span className={`nav dropbtn ${activeDropdown === 'news' ? 'active' : ''}`} onClick={() => toggleDropdown('news')}>
-            <a className="mr-5 hover:text-gray-900 nav dropbtn" href="https://paperprisons.org/blog.html?key=all%2Frja-blog%2F">News/Blog</a>
+            <a className="mr-5 hover:text-gray-900 nav dropbtn" href="https://paperprisons.org/news-blog.html?key=all%2Frja-blog%2F">News/Blog</a>
             <div className="dropdown-content">
               <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/news-blog.html?key=all%2Frja-news%2F">News</a>
               <a className="mr-5 hover:text-gray-900 nav" href="https://paperprisons.org/news-blog.html?key=all%2Frja-blog%2F">Blog</a>
