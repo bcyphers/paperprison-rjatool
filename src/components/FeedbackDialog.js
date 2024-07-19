@@ -55,7 +55,7 @@ const FeedbackDialog = () => {
       {isOpen && (
         <div className="feedback-dialog-overlay">
           <div className="feedback-dialog">
-            <h2>Provide Feedback</h2>
+            <h2>Drop us a line!</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="name">Name:</label>
@@ -80,10 +80,10 @@ const FeedbackDialog = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="feedback">Feedback:</label>
+                <label htmlFor="feedback">Message:</label>
                 <textarea
                   id="feedback"
-                  placeholder="Enter your feedback"
+                  placeholder="Enter your message"
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                   required
