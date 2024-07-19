@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
+import Partners from "@/components/Partners";
 
 import GenericPage from "@/components/GenericPage";
 import BackToTopButton from "@/components/BackToTopButton";
@@ -383,6 +384,7 @@ export default function App() {
             519 (2020)
           </p>
         </GenericPage>
+        <Partners />
         <BackToTopButton />
         <FeedbackDialog />
       </DynamicLayout>
