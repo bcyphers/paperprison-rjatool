@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import Partners from "@/components/Partners";
-
 import GenericPage from "@/components/GenericPage";
 import BackToTopButton from "@/components/BackToTopButton";
 import "@fontsource/ibm-plex-sans";
