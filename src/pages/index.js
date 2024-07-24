@@ -382,7 +382,6 @@ export default function App() {
             519 (2020)
           </p>
         </GenericPage>
-        <Partners />
         <BackToTopButton />
         <FeedbackDialog />
       </DynamicLayout>
