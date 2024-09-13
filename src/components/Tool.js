@@ -9,7 +9,7 @@ import GenericPage from "@/components/GenericPage";
 
 export const MEASUREMENTS = {
   RAW: "Raw numbers",
-  RATE: "Rate per unit population",
+  RATE: "Annualized rate per unit population",
   DG: "Population disparity v. white",
   //R_PEP: "Rate per prior event point",
   //DG_PEP: "Disparity gap per prior event point",
@@ -25,7 +25,7 @@ export const DATA_COLUMNS = {
   //gender: "Gender",
   number: "Number",
   pop: "Population",
-  rate_pop: "Rate per 1,000 population per year",
+  rate_pop: "Annualized rate per 1,000 population",
   dg_pop: MEASUREMENTS.DG,
 };
 
@@ -64,7 +64,7 @@ const DEFAULTS = {
   decisionPoints: [...DECISION_POINTS],
   offenses: ["All Offenses"],
   races: Object.keys(RACES),
-  measurement: MEASUREMENTS.RAW,
+  measurement: "RAW",
 }
 
 const getURLQueryParameterByName = (name, url = window.location.href) => {
@@ -476,9 +476,9 @@ export default function App() {
             label="Measurement"
             value={measurement}
             onChange={onMeasurementChange}
-            options={Object.values(MEASUREMENTS).map((m) => ({
-              text: m,
-              value: m,
+            options={Object.entries(MEASUREMENTS).map(([k, v]) => ({
+              text: v,
+              value: k,
             }))}
           />
         </div>
@@ -490,7 +490,7 @@ export default function App() {
         <p
           dangerouslySetInnerHTML={{
             __html: [
-              measurement,
+              MEASUREMENTS[measurement],
               decisionPoints.length === decisionPointsAvailable.length
                 ? "All Event Points"
                 : decisionPoints.join(", "),

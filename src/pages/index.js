@@ -269,7 +269,7 @@ export default function App() {
             </li>
             <li>
               <p>
-                <b>Rate per population</b> measures the rate at which a given event or decision occurs for a selected racial or ethnic group, relative to that group’s total population in the county. Specifically, it is the raw number of offense incidents of the requested type for the requested ethnic group during the requested year, per indicated number of individuals of that group in the county population, according to the following formula:
+                <b>Annualized rate per population</b> measures the rate at which a given event or decision occurs for a selected racial or ethnic group, relative to that group’s total population in the county. Specifically, it is the raw number of offense incidents of the requested type for the requested ethnic group during the requested year, per indicated number of individuals of that group in the county population, according to the following formula:
               </p>
               <p class="centered">rate per population = raw number / county population (race-specific)</p>
               <p> Population data come from the American Community Survey (ACS) 5-year estimates for the combined period 2016-2020. ACS summary tables were accessed through the Census Bureau API interface (see
@@ -296,6 +296,12 @@ export default function App() {
                 (burglary) during the year in question, and the Hispanic
                 population of county X was 100,000, the rate per 100 population
                 would be 350/(100,000/100) = 0.35 per 100 population.
+              </p>
+              <p>
+                In cases where data from more than one year are combined, the rate per population is annualized. That is, the rate is adjusted to represent the average number of incidents <b>per year</b> by dividing by the number of years in the query. In cases involving the year 2021 we only have 9 months of data, so that year is counted as 9/12 = 0.75 years of cases.
+              </p>
+              <p>
+                For example: Suppose we wanted to run the above example combining data for 2012, 2013, and 2014, and suppose there were 350 incidents in which Hispanic individuals had been arrested in county X on a charge of PC 459 (Burglary) during 2012, 250 such incidents during 2013, and 300 such incidents in 2014. The annualized rate per 100 population for that time frame would then be [(350+250+300)/3]/(100,000/100) = 0.30 per 100 population per year.
               </p>
             </li>
             <li>
