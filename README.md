@@ -1,19 +1,52 @@
-# [PaperPrison RJATool](https://paperprison-rjatool-lilac.vercel.app)
+# [Paper Prisons RJA Tool](https://rja.paperprisons.org)
 
-## How to run it in your local
+This is the repository for the Paper Prisons intiative's Racial Justice Act data
+tool. Learn more about the tool in the Berkeley Journal of Criminal Law article
+[here](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4852606).
 
-`npm i && npm run dev`
+## Setup
 
-## How to host the site
+The site requires [Node.js and
+npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) and uses
+[Next.js](https://nextjs.org/).
 
-`npm run build`
+This repository has all content necessary to host the site except for database
+configuration details. To connect to a database, place a file called
+`config.ini` in the base directory with the following content:
 
-It will generate everything under ./docs folder. Please follow https://docs.github.com/en/pages
+```
+[mysqlDB]
+host=<dbhost>
+db=<dbname>
+user=<username>
+pass=<password>
+```
 
-## Exporting site to paperprisons.org
+Fill out the hostname, database name, username, and password with the correct
+details.
 
-1. Uncomment `basePath` & `assetPrefix` in `next.config.js`
-2. Build and export the site
-   `next build && next export`
-3. Copy the contents of the `out` folder to the `paperprisons.org` repo's `/rja` folder
-4. Copy the images from `public/images` to the `paperprisons.org` repo's `/images` folder (not the `/rja/images` folder)
+### Setting up Node 
+
+`npm i`
+
+### Populating the database
+
+To populate a MySQL database from the formatted csv file, first make sure MySQL
+is installed and running and that `config.ini` contains the correct credentials
+for that database. Then run the `to_db.py` script. 
+
+**WARNING**: This will overwrite anything currently in the `data` table in your
+database! Make sure `config.ini` is pointing to the right place.
+
+```
+$ pip install -r requirements.txt
+$ python to_db.py <path_to_file.csv>
+```
+
+## Test the site locally
+
+`npm run dev`
+
+## Run the site in production
+
+`npm run start`
