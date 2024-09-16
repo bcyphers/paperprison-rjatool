@@ -7,19 +7,19 @@ const http = require("http"),
 
 const ALLOW_NA = true;
 
-const MEASUREMENT_MAP = {
-  "Raw numbers": "number",
-  "Rate per unit population": "rate_per_pop",
-  //"Rate per prior event point": "rate_cond_previous",
-  "Population disparity v. white": "disparity_gap_pop_w",
-  //"Disparity gap per prior event point": "disparity_gap_cond_w",
+const MEASUREMENTS = {
+  RAW: "number",
+  RATE: "rate_per_pop",
+  DG: "disparity_gap_pop_w",
+  //R_PEP: "rate_cond_previous",
+  //DG_PEP: "disparity_gap_cond_w",
 };
 
 const DEFAULTS = {
   counties: ["All Counties"],
   years: ["All Years"],
   offenses: ["459 PC-BURGLARY"],
-  measurement: "number",
+  measurement: MEASUREMENTS.RAW,
 };
 
 const config = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
   query += ";";
 
   const measurement = ('measurement' in body ?
-    MEASUREMENT_MAP[body.measurement] : DEFAULTS.measurement);
+    MEASUREMENTS[body.measurement] : DEFAULTS.measurement);
 
   const doQuery = util.promisify(con.query).bind(con);
   const rows = await doQuery(query, vars);
@@ -103,7 +103,7 @@ export default async function handler(req, res) {
 
     data[r.race][r.decision][r.year][r.county].num += r.number;
 
-    if (measurement == 'disparity_gap_pop_w') {
+    if (measurement == MEASUREMENTS.DG) {
       data[r.race][r.decision][r.year][r.county].num_w += r.number_white;
     }
   }
@@ -123,11 +123,11 @@ export default async function handler(req, res) {
         }
       }
 
-      if (measurement === "number") {
+      if (measurement === MEASUREMENTS.RAW) {
         out[r][d] = agg.num;
-      } else if (measurement === "rate_per_pop") {
+      } else if (measurement === MEASUREMENTS.RATE) {
         out[r][d] = agg.num / agg.pop;
-      } else if (measurement === "disparity_gap_pop_w") {
+      } else if (measurement === MEASUREMENTS.DG) {
         out[r][d] = (agg.num / agg.pop) / (agg.num_w / agg.pop_w);
       }
     }

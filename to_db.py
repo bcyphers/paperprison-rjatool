@@ -10,7 +10,7 @@ def clean_csv():
     df = df.drop(['rate_per_100_pop', 'disparity_gap_pop_w'], axis=1)
     df = df.assign(county=df.county.replace('California', 'All Counties'))
     df = df.assign(year=df.year.replace('All', 'All Years'))
-    df = df.assign(offense=df.offense.replace('All', 'All Offenses'))
+    df = df.assign(offense_name=df.offense_name.replace('All', 'All Offenses'))
     df = df.assign(decision=df.decision.replace('Court', 'Court action'))
 
     return df

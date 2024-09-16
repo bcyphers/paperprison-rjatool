@@ -1,5 +1,4 @@
 import React from "react";
-import { MEASUREMENTS } from "@/components/Tool";
 
 const formatNumber = (n, decimal=true) => {
   const number = Number(n);
@@ -147,13 +146,13 @@ const IconChart = ({ data, years, races, eventPoints, measurement, agg }) => {
 
   let scale = 1;
 
-  if (measurement === MEASUREMENTS.RAW) {
+  if (measurement === "RAW") {
     scale = scaleUp(data);
-  } else if (measurement === MEASUREMENTS.RATE) {
+  } else if (measurement === "RATE") {
     scale = scaleDown(data);
   }
 
-  const base = (measurement === MEASUREMENTS.DG) ? "white" : null;
+  const base = (measurement === "DG") ? "white" : null;
   const filteredRaces = Object.keys(races).filter(
     (raceItem) => raceItem.toLowerCase() !== base,
   );
@@ -192,7 +191,7 @@ const IconChart = ({ data, years, races, eventPoints, measurement, agg }) => {
   let postScaleString = "";
   if (scale < 1) {
     scaleString = "1";
-    postScaleString = "per " + formatNumber(1 / scale, false) + " population";
+    postScaleString = "per " + formatNumber(1 / scale, false) + " population per year";
   }
 
   const years_label = getYearsLabel(years);
