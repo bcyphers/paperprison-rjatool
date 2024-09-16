@@ -1,10 +1,11 @@
 import pandas as pd
 import configparser
+import sys
 from sqlalchemy import create_engine, URL
 
 
-def clean_csv():
-    df = pd.read_csv('RJA_tool_table_04-01-2024.csv')
+def clean_csv(path):
+    df = pd.read_csv(path)
 
     df = df.rename(columns={'event': 'decision', 'w_pop': 'pop_white'})
     df = df.drop(['rate_per_100_pop', 'disparity_gap_pop_w'], axis=1)
@@ -16,7 +17,7 @@ def clean_csv():
     return df
 
 if __name__ == '__main__':
-    df = clean_csv()
+    df = clean_csv(sys.argv[1])
 
     config = configparser.ConfigParser()
     config.read('config.ini')
