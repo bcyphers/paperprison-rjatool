@@ -1,7 +1,8 @@
-# [Paper Prisons RJA Tool](https://rja.paperprisons.org)
+# Paper Prisons RJA Tool
 
-This is the repository for the Paper Prisons intiative's Racial Justice Act data
-tool. Learn more about the tool in the Berkeley Journal of Criminal Law article
+This is the repository for the Paper Prisons intiative's [Racial Justice Act data
+tool](https://rja.paperprisons.org). Learn more about the tool in the Berkeley
+Journal of Criminal Law article
 [here](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4852606).
 
 ## Setup
@@ -40,7 +41,7 @@ database! Make sure `config.ini` is pointing to the right place.
 
 ```
 $ pip install -r requirements.txt
-$ python to_db.py <path_to_file.csv>
+$ python cli/to_db.py <path_to_file.csv>
 ```
 
 ## Test the site locally
